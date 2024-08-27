@@ -34,6 +34,7 @@ Graphics_Context :: struct {
 
     sprites : Table(string, *Sprite);
     spritesheet : Sprite;
+    fishes : Sprite;
 
     fbo : GLuint;
     render_texture : GLuint;

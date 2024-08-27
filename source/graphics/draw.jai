@@ -20,15 +20,11 @@ draw_tile_at :: (tile: Tile, at: Pair) {
 
         horizontal_flip = false,
 
-        use_color_override = true,
-        color_override = tile.color,
+        use_color_override = false,
     );
 }
 
-draw_entity :: (entity: Entity, camera_center : Pair) {
-    relative_position_to_camera_center := to_pair(get_position(entity)) - camera_center;
-    draw_entity_at(entity, relative_position_to_camera_center);
-}
+SPRITESHEET_WIDTH :: 16;
 
 draw_entity_at :: (entity: Entity, at: Pair) {
     bottom_left_corner_of_sprite := at  // Bottom left corner of collider
@@ -38,31 +34,29 @@ draw_entity_at :: (entity: Entity, at: Pair) {
 
     draw_sprite(
         graphics_context.spritesheet,
-        index = entity.sprite,
+        index = (entity.sprite * SPRITESHEET_WIDTH) + entity.frame,
         pixel = bottom_left_corner_of_sprite,
 
         scale_factor = 1,
 
         horizontal_flip = entity.facing_left,
 
+        use_color_override = false,
+
+        /*
         use_color_override = true,
         color_override = entity.color,
+        */
     );
 }
 
 draw_entity :: (entity: Entity) {
-    draw_sprite(
-        graphics_context.spritesheet,
-        index = entity.sprite,
-        pixel = to_pair(get_position(entity)),
+    draw_entity_at(entity, to_pair(get_position(entity)));
+}
 
-        scale_factor = 1,
-
-        horizontal_flip = entity.facing_left,
-
-        use_color_override = true,
-        color_override = entity.color,
-    );
+draw_entity :: (entity: Entity, camera_center : Pair) {
+    relative_position_to_camera_center := to_pair(get_position(entity)) - camera_center;
+    draw_entity_at(entity, relative_position_to_camera_center);
 }
 
 

@@ -16,6 +16,8 @@ AI_Controller :: struct {
         SIT;
         WANDER;
         SPIN;
+
+        DEBUG;
     }
 }
 
@@ -57,6 +59,14 @@ update :: (ai: *AI_Controller, dt: float) -> something_new: bool {
 
                 return true;
             }
+
+        case .DEBUG;
+            if ai.wants_to_move_this_direction == .{} {
+                ai.wants_to_move_this_direction = .{1, 1};
+                return true;
+            }
+
+            return false;
     }
 
     return false;

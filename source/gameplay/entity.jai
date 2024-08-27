@@ -18,7 +18,7 @@ Entity :: struct {
 
     // Appearance
     sprite : int;
-    color : Color;
+    frame : int = 0;
     facing_left : bool;
 
     z_index  : int;
@@ -54,8 +54,28 @@ update :: (entity: *Entity, dt: float) {
         if collided_y then entity.velocity.y = -1 * entity.velocity.y;
 
         // The Tank
-        collided_tank := clamp_entity_to_the_game_extents(entity, game.level.pixel_extents);
-        if collided_tank then entity.velocity = -1 * entity.velocity;
+        {
+            ENTITY_TILE_SIZE :: 16; // TODO: What about the sharks???
+            extents := game.level.pixel_extents;
+
+            collided_x := (entity.x < extents.x)
+                       || (entity.x + entity.width > extents.width)
+            ;
+            collided_y := (entity.y < extents.y)
+                       || (entity.y + entity.height > extents.height)
+            ;
+
+            if collided_x {
+                entity.x = clamp(entity.x, xx extents.x, xx (extents.x + extents.width - entity.width));
+                entity.x_remainder = 0.0;
+                entity.velocity.x = -1 * entity.velocity.x;
+            }
+            if collided_y {
+                entity.y = clamp(entity.y, xx extents.y, xx (extents.y + extents.height - entity.height));
+                entity.y_remainder = 0.0;
+                entity.velocity.y = -1 * entity.velocity.y;
+            }
+        }
     }
 
     // Update Visuals
@@ -91,19 +111,3 @@ new_entity :: (entities : *[..] *Entity, kind : Entity.Kind) -> *Entity {
 get_position :: (entity: Entity) -> Vector2 {
     return Vector2.{entity.x + entity.x_remainder, entity.y + entity.y_remainder};
 }
-
-clamp_entity_to_the_game_extents :: (entity: *Entity, extents : Collider) -> collided : bool {
-    collided := (entity.x < extents.x)
-             || (entity.x - entity.width >= extents.width)
-             || (entity.y < extents.y)
-             || (entity.y - entity.height >= extents.height)
-    ;
-
-    ENTITY_TILE_SIZE :: 16; // TODO: What about the sharks???
-    entity.x = clamp(entity.x, xx extents.x, xx (extents.x + extents.width  - ENTITY_TILE_SIZE));
-    entity.y = clamp(entity.y, xx extents.y, xx (extents.y + extents.height - ENTITY_TILE_SIZE));
-
-    return collided;
-}
-
-

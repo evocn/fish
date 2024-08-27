@@ -125,6 +125,14 @@ gather_input :: (input: *Input, gamepad: *SDL_Joystick) {
                     if event.key.keysym.sym == SDLK_F2 {
                         program_state.mode = .DEBUG;
                     }
+
+                    if event.key.keysym.sym == SDLK_1 {
+                        program_state.simulation_state.paused = !program_state.simulation_state.paused;
+                    }
+
+                    if event.key.keysym.sym == SDLK_2 {
+                        program_state.simulation_state.step = true;
+                    }
                 }
 
 

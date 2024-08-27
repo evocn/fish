@@ -82,6 +82,15 @@ draw_game :: (game : Game) {
         for entity : game.entities {
             draw_entity(entity, camera_center);
         }
+
+        // Just to test sprites out here...
+        /*
+        draw_sprite(
+            graphics_context.spritesheet,
+            index = 3 * 16 + 2,
+            pixel = .{48, 64},
+        );
+        */
     }
 
     if game.player.state == {

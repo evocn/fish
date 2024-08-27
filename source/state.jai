@@ -46,6 +46,12 @@ using program_state : struct {
     imgui_capturing_mouse    := false;
     imgui_capturing_keyboard := false;
     framerate : float;
+
+
+    using simulation_state : struct {
+        paused : bool;
+        step : bool;
+    }
 }
 
 

@@ -39,124 +39,115 @@ main :: () {
 
     // Load Entities (Hardcoded for now)
 
-    bird : *Guy = xx new_entity(*game.entities, .GUY);
+    blowfish : *Guy = xx new_entity(*game.entities, .GUY);
     {
-        bird.sprite = 0;
-        bird.color = yellow;
+        blowfish.sprite = 2;
 
-        bird.x = 0;
-        bird.y = 16;
-        bird.width  = 8;
-        bird.height = 10;
+        blowfish.x = 0;
+        blowfish.y = 16;
+        blowfish.width  = 14;
+        blowfish.height = 14;
 
-        bird.ai.state = .WANDER;
+        blowfish.ai.state = .DEBUG;
 
-        bird.speed = 45;
+        blowfish.speed = 150;
 
-        array_add(*simulation.actors, bird);
+        array_add(*simulation.actors, blowfish);
 
-        bird.animation_sleep = animation_integer_make(
-            value = *bird.sprite,
-            duration = 1.0,
+        blowfish.animation_sleep = animation_integer_make(
+            value = *blowfish.frame,
+            duration = 2.0,
             keyframes = ...[
-                .{0.0, 12},
+                .{0.0, 4},
+                .{1.0, 5},
             ],
         );
 
-        bird.animation_idle = animation_integer_make(
-            value = *bird.sprite,
+        blowfish.animation_idle = animation_integer_make(
+            value = *blowfish.frame,
+            duration = 1.0,
+            keyframes = ...[
+                .{0.0, 1},
+            ],
+        );
+
+        blowfish.animation_walk = animation_integer_make(
+            value = *blowfish.frame,
+            duration = 1.0,
+            keyframes = ...[
+                .{0.0, 7},
+            ],
+        );
+
+        blowfish.animation_talk = animation_integer_make(
+            value = *blowfish.frame,
+            duration = 0.4,
+            keyframes = ...[
+                .{0.0,   9},
+                .{0.25,  10},
+            ],
+        );
+
+        blowfish.animation_dance = animation_integer_make(
+            value = *blowfish.frame,
             duration = 0.6,
+            keyframes = ...[
+                .{0.0,  10},
+                .{0.15, 0},
+            ],
+        );
+    }
+
+    jellyfish : *Guy = xx new_entity(*game.entities, .GUY);
+    {
+        jellyfish.sprite = 1;
+
+        jellyfish.speed = 6;
+
+        jellyfish.x = 32;
+        jellyfish.y = 16;
+        jellyfish.width  = 4;
+        jellyfish.height = 4;
+
+        jellyfish.ai.state = .SPIN;
+
+        array_add(*simulation.actors, jellyfish);
+
+        jellyfish.animation_idle = animation_integer_make(
+            value = *jellyfish.frame,
+            duration = 0.8,
             keyframes = ...[
                 .{0.0, 0},
                 .{0.4, 1},
             ],
         );
 
-        bird.animation_walk = animation_integer_make(
-            value = *bird.sprite,
-            duration = 0.6,
-            keyframes = ...[
-                .{0.0,  8},
-                .{0.15, 9},
-                .{0.3,  10},
-                .{0.45, 11},
-            ],
-        );
-
-        bird.animation_talk = animation_integer_make(
-            value = *bird.sprite,
-            duration = 0.4,
-            keyframes = ...[
-                .{0.0,   14},
-                .{0.25,  15},
-            ],
-        );
-
-        bird.animation_dance = animation_integer_make(
-            value = *bird.sprite,
-            duration = 0.6,
-            keyframes = ...[
-                .{0.0,  4},
-                .{0.15, 5},
-                .{0.3,  6},
-                .{0.45, 7},
-            ],
-        );
-    }
-
-    mouse : *Guy = xx new_entity(*game.entities, .GUY);
-    {
-        mouse.sprite = 18;
-        mouse.color = pink;
-
-        mouse.speed = 5;
-
-        mouse.x = 32;
-        mouse.y = 16;
-        mouse.width  = 4;
-        mouse.height = 4;
-
-        mouse.ai.state = .SPIN;
-
-        array_add(*simulation.actors, mouse);
-
-        mouse.animation_idle = animation_integer_make(
-            value = *mouse.sprite,
-            duration = 1.5,
-            keyframes = ...[
-                .{0.0, 20},
-                .{0.8, 21},
-                .{1.0, 20},
-                .{1.3, 21},
-            ],
-        );
-
-        mouse.animation_walk = animation_integer_make(
-            value = *mouse.sprite,
+        jellyfish.animation_walk = animation_integer_make(
+            value = *jellyfish.frame,
             duration = 0.3,
             keyframes = ...[
-                .{0.0,  21},
-                .{0.15, 22},
+                .{0.0,  2},
+                .{0.15, 3},
             ],
         );
 
-        mouse.animation_sleep = animation_integer_make(
-            value = *mouse.sprite,
-            duration = 1.0,
+        jellyfish.animation_sleep = animation_integer_make(
+            value = *jellyfish.frame,
+            duration = 3.0,
             keyframes = ...[
-                .{0.0,  23},
+                .{0.0,  4},
+                .{1.5,  5},
             ],
         );
 
-        mouse.animation_talk   = mouse.animation_idle;
-        mouse.animation_dance  = mouse.animation_idle;
+        jellyfish.animation_talk   = jellyfish.animation_idle;
+        jellyfish.animation_dance  = jellyfish.animation_idle;
     }
 
 
     frog : *Guy = xx new_entity(*game.entities, .GUY);
     {
-        frog.sprite = 16;
-        frog.color = green;
+        frog.sprite = 3;
 
         frog.x = 100;
         frog.y = 16;
@@ -170,83 +161,37 @@ main :: () {
         array_add(*simulation.actors, frog);
 
         frog.animation_idle = animation_integer_make(
-            value = *frog.sprite,
+            value = *frog.frame,
             duration = 2.0,
             keyframes = ...[
-                .{0.0, 16},
-                .{1.0, 17},
+                .{0.0, 0},
+                .{1.0, 1},
             ],
         );
 
         frog.animation_walk = animation_integer_make(
-            value = *frog.sprite,
+            value = *frog.frame,
             duration = 0.8,
             keyframes = ...[
-                .{0.0, 18},
-                .{0.2, 16},
-                .{0.4, 19},
-                .{0.6, 17},
+                .{0.0, 2},
+                .{0.2, 0},
+                .{0.4, 3},
+                .{0.6, 1},
             ],
         );
 
         frog.animation_sleep = animation_integer_make(
-            value = *frog.sprite,
-            duration = 1.0,
+            value = *frog.frame,
+            duration = 1.5,
             keyframes = ...[
-                .{0.0, 16},
+                .{0.0, 4},
+                .{0.5, 5},
             ],
         );
 
         frog.animation_talk   = frog.animation_idle;
         frog.animation_dance  = frog.animation_idle;
     }
-
-    dog : *Guy = xx new_entity(*game.entities, .GUY);
-    {
-        dog.sprite = 16;
-        dog.color = blue;
-
-        dog.x = 128;
-        dog.y = 16;
-        dog.width  = 10;
-        dog.height = 8;
-
-        dog.speed = 100;
-
-        dog.ai.state = .WANDER;
-
-        array_add(*simulation.actors, dog);
-
-        dog.animation_idle = animation_integer_make(
-            value = *dog.sprite,
-            duration = 1.0,
-            keyframes = ...[
-                .{0.0, 28},
-                .{7.0, 29},
-            ],
-        );
-
-        dog.animation_walk = animation_integer_make(
-            value = *dog.sprite,
-            duration = 0.5,
-            keyframes = ...[
-                .{0.0, 28},
-                .{0.2, 29},
-            ],
-        );
-
-        dog.animation_sleep = animation_integer_make(
-            value = *dog.sprite,
-            duration = 1.0,
-            keyframes = ...[
-                .{0.0, 28},
-            ],
-        );
-
-        dog.animation_talk   = dog.animation_idle;
-        dog.animation_dance  = dog.animation_idle;
-    }
-
 
     dt, last_frame := 0.0;
     while program_state.running {

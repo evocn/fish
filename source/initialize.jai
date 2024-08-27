@@ -115,15 +115,11 @@ initialize_graphics_context :: () {
         success : bool;
 
         // Sprites
-        full_path := tprint("%/sheet.png", sprites_path);
-        success = make_sprite_sheet(*spritesheet, full_path, TILE_SIZE_IN_PIXELS, TILE_SIZE_IN_PIXELS);
-        assert(success);
-
-        /*
-        full_path = tprint("%/haruhachi.png", sprites_path);
-        success = make_sprite(*graphics_context.haruhachi, full_path);
-        assert(success);
-        */
+        {
+            full_path := tprint("%/fishes.png", sprites_path);
+            success = make_sprite_sheet(*spritesheet, full_path, TILE_SIZE_IN_PIXELS, TILE_SIZE_IN_PIXELS);
+            assert(success);
+        }
     }
 }
 

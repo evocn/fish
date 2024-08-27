@@ -9,7 +9,6 @@ Tile :: struct {
     width   = TILE_SIZE_IN_PIXELS;
     height  = TILE_SIZE_IN_PIXELS;
 
-
     debug_color : Color;
 }
 
@@ -19,7 +18,6 @@ Tile_Properties :: struct {
     kind : Tile_Kind;
 
     sprite : int;
-    color : Color = white;
 }
 
 Tile_Kind :: enum {
@@ -41,21 +39,19 @@ tile_catalogue := Tile_Properties.[
     .{
         catalogue_index = 0,
         kind = .EMPTY,
-        sprite = 44,
+        sprite = 1023,
     },
 
     .{
         catalogue_index = 1,
         kind = .SOLID,
-        sprite = 48,
-        color = white,
+        sprite = 337,
     },
 
     .{
         catalogue_index = 2,
         kind = .SOLID,
-        sprite = 59,
-        color = white,
+        sprite = 336,
     },
 ];
 
