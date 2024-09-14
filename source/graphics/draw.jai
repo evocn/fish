@@ -3,7 +3,6 @@
 // August 2024
 
 
-
 // Entity
 draw_tile :: (tile: Tile, place : Pair, camera_center : Pair) {
     relative_position_to_camera_center := place - camera_center;
@@ -89,7 +88,7 @@ draw_menu_element :: (using element: *Menu_Element, height : int, color := white
 
         case .SLIDER;
             using cast(*Menu_Element_Slider)element;
-            draw_text(tprint("% - %", name, value), 1, height, color=color);
+            draw_text(tprint("% - %", name, value.*), 1, height, color=color);
     }
 }
 

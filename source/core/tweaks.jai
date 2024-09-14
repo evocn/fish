@@ -13,8 +13,8 @@ save_tweaks_file :: (file_name : string) {
 
         print_to_builder(*builder, "fullscreen %\n", graphics_context.fullscreen);
 
-        print_to_builder(*builder, "sfx %\n", ma_sound_group_get_volume(*audio_context.sfx_group));
-        print_to_builder(*builder, "music %\n", ma_sound_group_get_volume(*audio_context.music_group));
+        print_to_builder(*builder, "sfx %\n", audio_context.sfx_volume);
+        print_to_builder(*builder, "music %\n", audio_context.music_volume);
     }
 
     full_path := tprint("%/%.tweaks", tweaks_path, file_name);
@@ -47,12 +47,10 @@ load_tweaks_file_and_apply_results :: (file_name : string) -> file_exists: bool 
                     set_screen_mode_according_to_fullscreen_variable();
 
                 case "sfx";
-                    sfx_volume :, successfully_parsed = parse_float(*right);
-                    set_sfx_volume(sfx_volume);
+                    audio_context.sfx_volume, successfully_parsed = parse_float(*right);
 
                 case "music";
-                    music_volume:, successfully_parsed = parse_float(*right);
-                    set_music_volume(music_volume);
+                    audio_context.music_volume, successfully_parsed = parse_float(*right);
             }
             if !successfully_parsed {
                 log_error("Problem parsing the tweaks file!\n");
@@ -76,6 +74,6 @@ apply_default_settings :: () {
 
     set_screen_mode_according_to_fullscreen_variable();
 
-    set_sfx_volume(DEFAULT_SFX_VOLUME);
-    set_music_volume(DEFAULT_MUSIC_VOLUME);
+    audio_context.sfx_volume = DEFAULT_SFX_VOLUME;
+    audio_context.music_volume = DEFAULT_MUSIC_VOLUME;
 }

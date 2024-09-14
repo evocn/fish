@@ -10,10 +10,10 @@ main :: () {
     main_menu := menu_initialize();
 
     play_music("nagata");
+    play_music("bach");
 
 
     // Load Level from file
-
     load_overworld_tiles_from_level_file :: () {
         raw_text, success := read_entire_file(tprint("%/%", data_path, "1.tank"));
         stripped_newlines, line_count := replace(raw_text, "\r\n", "");
@@ -267,6 +267,7 @@ main :: () {
         ////////////////////////////////////////////////////////////////////////////////
         // Frame Cleanup
         {
+            Sound.update();
 
             current_time := cast(float32)seconds_since_init();
             dt = current_time - last_frame;
@@ -295,18 +296,20 @@ using Basic :: #import "Basic"()(MEMORY_DEBUGGER=DEBUG_MEMORY);
 #import "File";
 #import "Text_File_Handler";
 #import "Sort";
+
 File_Utilities :: #import "File_Utilities"; // For file_list()
 System         :: #import "System";         // For get_path_of_running_executable()
 #import "Random";
 
 
-// Third Party Dependencies
+// Additional Components
 #import "SDL";
 #import "GL";
 ImGui :: #import "ImGui";
 #import "stb_image";
 #import "freetype-2.12.1";
-#import "miniaudio";
+
+using Sound :: #import "Sound_Player";
 
 
 // Loads
@@ -326,7 +329,8 @@ ImGui :: #import "ImGui";
 // Subsystems
 #load "gameplay/gameplay.jai";
 #load "graphics/graphics.jai";
-#load "audio/audio.jai";
+
+#load "audio.jai";
 
 #load "animation/animation.jai";
 

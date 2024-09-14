@@ -31,7 +31,7 @@ using program_state : struct {
 
     data_path       :: "assets/data";
 
-    tweaks_path     :: ".";
+    tweaks_path     :: "bin";
 
     // Loose Globals
     scratch_memory  : Flat_Pool;

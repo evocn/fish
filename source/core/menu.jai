@@ -62,15 +62,15 @@ menu_initialize :: () -> Menu {
         array_add(*elements, cast(*Menu_Element)screen_mode);
 
         sfx := New(Menu_Element_Slider,, a);
-        sfx.name = "Sounds";
-        sfx.value = ma_sound_group_get_volume(*audio_context.sfx_group);
-        sfx.callback = set_sfx_volume;
+        sfx.name = "Sfx";
+        sfx.value = *audio_context.sfx_volume;
+        sfx.callback = null;
         array_add(*elements, cast(*Menu_Element)sfx);
 
         music := New(Menu_Element_Slider,, a);
         music.name = "Music";
-        music.value = ma_sound_group_get_volume(*audio_context.music_group);
-        music.callback = set_music_volume;
+        music.value = *audio_context.music_volume;
+        music.callback = null;
         array_add(*elements, cast(*Menu_Element)music);
 
         quit := New(Menu_Element_Go,, a);
@@ -115,8 +115,8 @@ Menu_Element_Slider :: struct {
     using #as menu_element: Menu_Element;
     kind = .SLIDER;
 
-    value : float;
-    callback : (float) -> ();
+    value : *float;
+    callback : #type ();
 
     increment : float = 0.25;
     min : float = 0.0;
@@ -144,13 +144,13 @@ toggle_menu_element :: (using element: *Menu_Element) {
     if kind == {
         case .GO;
             using cast(*Menu_Element_Go)element;
-            callback();
+            if callback then callback();
             play_sfx("click");
 
         case .CHECKBOX;
             using cast(*Menu_Element_Checkbox)element;
             value.* = !(value.*);
-            callback();
+            if callback then callback();
             play_sfx("click");
 
         case .SLIDER;
@@ -169,18 +169,18 @@ nudge_menu_element :: (using element: *Menu_Element, left := false) {
         case .CHECKBOX;
             using cast(*Menu_Element_Checkbox)element;
             value.* = !(value.*);
-            callback();
+            if callback then callback();
             play_sfx("click");
 
         case .SLIDER;
             using cast(*Menu_Element_Slider)element;
             if left {
-                value = clamp(value - increment, min, max);
-                callback(value);
+                value.* = clamp(value.* - increment, min, max);
+                if callback then callback();
             }
             else {
-                value = clamp(value + increment, min, max);
-                callback(value);
+                value.* = clamp(value.* + increment, min, max);
+                if callback then callback();
             }
 
             play_sfx("click");
@@ -189,9 +189,9 @@ nudge_menu_element :: (using element: *Menu_Element, left := false) {
     save_tweaks_file("all");
 }
 
-////////////////////////////////////////////////////////////////////////////////
+
+
 // Callbacks for Menu Elements
-////////////////////////////////////////////////////////////////////////////////
 resume_game :: () {
     return_to_prior_scene();
 }

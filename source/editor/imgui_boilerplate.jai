@@ -1,7 +1,6 @@
 // Dayne
 // ImGui Initialization
-// Alex Hartford
-// June 2023
+// September 2024
 
 // This file is copied from the jai beta. It handles a bunch of the low-level nonsense you need with Imgui/SDL.
 // Just ignore this for the most part!
@@ -31,15 +30,12 @@ cursor_resize_ew: *SDL_Cursor;
 cursor_resize_nesw: *SDL_Cursor;
 cursor_resize_nwse: *SDL_Cursor;
 
-// This is the main rendering function that you have to implement and provide
-// to ImGui (via setting up 'RenderDrawListsFn' in the ImGuiIO structure) Note
-// that this implementation is little overcomplicated because we are
-// saving/setting up/restoring every OpenGL state explicitly, in order to be
-// able to run within any OpenGL engine that doesn't do so.  If text or lines
-// are blurry when integrating ImGui in your engine: in your Render function,
-// try translating your projection matrix by (0.5f,0.5f) or (0.375f,0.375f)
+
+// This is the main rendering function that you have to implement and provide to ImGui (via setting up 'RenderDrawListsFn' in the ImGuiIO structure)
+// Note that this implementation is little overcomplicated because we are saving/setting up/restoring every OpenGL state explicitly, in order to be able to run within any OpenGL engine that doesn't do so.
+// If text or lines are blurry when integrating ImGui in your engine: in your Render function, try translating your projection matrix by (0.5f,0.5f) or (0.375f,0.375f)
 ImGui_ImplSdl_RenderDrawLists :: (draw_data: *ImGui.ImDrawData) #c_call {
-    // Watch out, we don't have a context here!
+    // @@ Watch out, we don't have a context here!
 
     // Avoid rendering when minimized, scale coordinates for retina displays (screen coordinates != framebuffer coordinates)
     io := ImGui.GetIO();
@@ -113,7 +109,7 @@ ImGui_ImplSdl_RenderDrawLists :: (draw_data: *ImGui.ImDrawData) #c_call {
                 else {
                     glBindTexture(GL_TEXTURE_2D, xx pcmd.TextureId);
                     glScissor(xx pcmd.ClipRect.x, xx (fb_height - pcmd.ClipRect.w), xx (pcmd.ClipRect.z - pcmd.ClipRect.x), xx (pcmd.ClipRect.w - pcmd.ClipRect.y));
-                    
+
                     glDrawElements(GL_TRIANGLES, pcmd.ElemCount, GL_UNSIGNED_SHORT, idx_buffer_offset);
                 }
                 idx_buffer_offset += pcmd.ElemCount;
@@ -169,7 +165,7 @@ ImGui_ImplSdl_ProcessEvent :: (event: *SDL_Event) -> bool {
             return true;
         case SDL_KEYDOWN; #through;
         case SDL_KEYUP;
-            //key := event.key.keysym.sym & ~SDLK_SCANCODE_MASK;
+            //@@key := event.key.keysym.sym & ~SDLK_SCANCODE_MASK;
             key := event.key.keysym.sym & (xx ~(1<<30));
             io.KeysDown[key] = (event.type == SDL_KEYDOWN);
             kmod := SDL_GetModState();
@@ -272,7 +268,7 @@ ImGui_ImplSdl_CreateDeviceObjects ::() -> bool {
     glEnableVertexAttribArray(xx g_AttribLocationUV);
     glEnableVertexAttribArray(xx g_AttribLocationColor);
 
-    // Is there a function to easily get the offset of a member?
+    // @@ Is there a function to easily get the offset of a member?
     //ImDrawVert :: struct {
     //   pos: ImVec2;       // 0
     //   uv: ImVec2;        // 8
@@ -359,8 +355,8 @@ ImGui_ImplSdl_NewFrame :: (window: *SDL_Window) {
     display_w, display_h: s32;
     SDL_GetWindowSize(window, *w, *h);
     SDL_GL_GetDrawableSize(window, *display_w, *display_h);
-    io.DisplaySize = make_vector2(xx w, xx h);
-    io.DisplayFramebufferScale = make_vector2(cast(float) display_w / w, cast(float) display_h / h);
+    io.DisplaySize = .{xx w, xx h};
+    io.DisplayFramebufferScale = .{cast(float) display_w / w, cast(float) display_h / h};
 
     // Setup time step
     frequency := SDL_GetPerformanceFrequency();
@@ -379,9 +375,11 @@ ImGui_ImplSdl_NewFrame :: (window: *SDL_Window) {
     // (we already got mouse wheel, keyboard keys & characters from SDL_PollEvent())
     mx, my: s32;
     mouseMask := SDL_GetMouseState(*mx, *my);
-    if (SDL_GetWindowFlags(window) & SDL_WINDOW_MOUSE_FOCUS) io.MousePos = make_vector2(xx mx, xx my);   // Mouse position, in pixels (set to -1,-1 if no mouse / on another screen, etc.)
-    else 
-        io.MousePos = make_vector2(-FLOAT32_MAX,-FLOAT32_MAX);
+    if (SDL_GetWindowFlags(window) & SDL_WINDOW_MOUSE_FOCUS) {
+        io.MousePos = .{xx mx, xx my};   // Mouse position, in pixels (set to -1,-1 if no mouse / on another screen, etc.)
+    } else {
+        io.MousePos = .{-FLOAT32_MAX,-FLOAT32_MAX};
+    }
 
     io.MouseDown[0] = (g_MousePressed[0] || (mouseMask & SDL_BUTTON(SDL_BUTTON_LEFT)) != 0);      // If a mouse press event came, always pass it as "mouse held this frame", so we don't miss click-release events that are shorter than 1 frame.
     io.MouseDown[1] = (g_MousePressed[1] || (mouseMask & SDL_BUTTON(SDL_BUTTON_RIGHT)) != 0);

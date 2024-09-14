@@ -26,10 +26,8 @@ initialize_everything :: () {
     if tweaks_file_exists then log("Applied tweaks file settings.\n");
 }
 
-////////////////////////////////////////////////////////////////////////////////
-// Subsystem Initialization ////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
 
+// Subsystem Initialization ////////////////////////////////////////////////////
 initialize_sdl :: () {
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK);
 
@@ -127,47 +125,32 @@ initialize_graphics_context :: () {
 initialize_audio_context :: () {
     using audio_context;
 
-    result := ma_engine_init(null, *engine);
-    if result != .MA_SUCCESS {
-        log_error("Unable to initialize the miniaudio engine!\n");
-        assert(false);
-    }
+    devices := get_devices();
+    print("devices: %\n", devices);
 
-    // Sound Groups
-    {
-        result = ma_sound_group_init(*engine, 0, null, *music_group);
-        if result != .MA_SUCCESS {
-            log_error("Unable to initialize one or more sound groups.\n");
-            assert(false);
-        }
-
-        result = ma_sound_group_init(*engine, 0, null, *sfx_group);
-        if result != .MA_SUCCESS {
-            log_error("Unable to initialize one or more sound groups.\n");
-            assert(false);
-        }
-    }
+    success := sound_player_init(.{});
+    assert(success);
 
     // SFX
     {
-        sfx_paths := File_Utilities.file_list(sfx_path, recursive = true, follow_symlinks = false);
-        for sfx_paths {
-            load_sfx(it);
-            free(it.data);
-        }
+        sfx_paths := File_Utilities.file_list(sfx_path, recursive = true, follow_directory_symlinks = false,, allocator=temp);
+        for path : sfx_paths {
+            name := basename(path);
 
-        array_reset(*sfx_paths);
+            sfx := table_add(*audio_context.sfx, name, load_audio_file(path));
+            assert(sfx.loaded);
+        }
     }
 
     // Music
     {
-        music_paths := File_Utilities.file_list(music_path, recursive = true, follow_symlinks = false);
-        for music_paths {
-            load_music(it);
-            free(it.data);
-        }
+        music_paths := File_Utilities.file_list(music_path, recursive = true, follow_directory_symlinks = false,, allocator=temp);
+        for path : music_paths {
+            name := basename(path);
 
-        array_reset(*music_paths);
+            music := table_add(*audio_context.music, name, load_audio_file(path));
+            assert(music.loaded);
+        }
     }
 }
 
@@ -184,19 +167,12 @@ cleanup_for_shutdown :: (menu: *Menu) {
     {
         using audio_context;
 
-        for sfx {
-            free(it_index.data);
-            ma_sound_uninit(it);
-        }
+        /*
         deinit(*sfx);
-
-        for music {
-            free(it_index.data);
-            ma_sound_uninit(it);
-        }
         deinit(*music);
+        */
 
-        ma_engine_uninit(*engine);
+        sound_player_shutdown();
     }
 
     // Graphics Cleanup
@@ -216,4 +192,3 @@ cleanup_for_shutdown :: (menu: *Menu) {
     SDL_DestroyWindow(window);
     SDL_Quit();
 }
-
