@@ -2,12 +2,6 @@
 // Collider
 // August 2024
 
-// All colliders are axis-aligned bounding boxes (AABBs)
-// All collider positions, widths, and heights are integer numbers
-// Except for special circumstances, Actors and Solids will never overlap
-// Solids do not interact with other Solids
-
-
 Collider :: struct {
     x, y : int;
     width, height : int;
@@ -29,11 +23,11 @@ check_collision_against_all_solids :: (collider : Collider, solids : [] *Solid) 
     return false;
 }
 
-check_if_hitting_head :: (actor : *Entity) -> bool {
+check_if_hitting_head :: (actor : *Actor) -> bool {
     extended_collider := actor.collider;
     extended_collider.y += 1;
 
-    relevant_solids := filter_irrelevant_solids(simulation.solids, actor);
+    relevant_solids := filter_irrelevant_solids(game.simulation.solids, actor);
 
     for solid : relevant_solids {
         if collision(extended_collider, solid.collider) return true;
@@ -42,11 +36,11 @@ check_if_hitting_head :: (actor : *Entity) -> bool {
     return false;
 }
 
-check_if_grounded :: (actor : *Entity) -> bool {
+check_if_grounded :: (actor : *Actor) -> bool {
     extended_collider := actor.collider;
     extended_collider.y -= 1;
 
-    relevant_solids := filter_irrelevant_solids(simulation.solids, actor);
+    relevant_solids := filter_irrelevant_solids(game.simulation.solids, actor);
 
     for solid : relevant_solids {
         if collision(extended_collider, solid.collider) {

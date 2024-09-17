@@ -1,9 +1,7 @@
 // Dayne
-// Utils to fill gaps in the standard library
+// Utils
 // August 2024
 
-
-// Pair Definition
 
 Pair :: struct {
     x: int;
@@ -18,6 +16,7 @@ operator - :: (a: Pair, b: Pair) -> Pair { return .{a.x - b.x, a.y - b.y};  }
 operator * :: (f: int, a: Pair)  -> Pair { return .{a.x * f,   a.y * f};    }
 operator - :: (p: Pair) -> Pair { return .{-p.x, -p.x}; }
 
+////////////////////////////////////////////////////////////////////////////////
 
 get_random_direction_vector_on_unit_circle :: () -> Vector2 {
     angle := random_get_zero_to_one() * (2 * PI) - PI;
@@ -29,6 +28,7 @@ get_random_direction_vector_on_unit_circle :: () -> Vector2 {
     return result;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 
 // Rounds a float to the nearest int.
 round :: (f: float) -> int {
@@ -42,3 +42,26 @@ round :: (f: float) -> int {
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////
+
+// [0, 1]
+random :: inline () -> float {
+    return random_get_zero_to_one();
+}
+
+// [0, max]
+random :: inline (max: float) -> float {
+    return random_get_zero_to_one() * max;
+}
+
+// [min, max]
+random :: inline (min: float, max: float) -> float {
+    return random_get_within_range(min, max);
+}
+
+random_choice :: inline (choices: [] $T) -> T {
+    min := 0.0;
+    max := cast(float)(choices.count);
+    index := cast(int)random_get_within_range(min, max);
+    return choices[index];
+}

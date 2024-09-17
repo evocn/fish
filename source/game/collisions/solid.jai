@@ -11,12 +11,12 @@ Solid :: struct {
     one_way     : bool = false;
 }
 
-get_riding_actors :: (solid: Solid, actors: [..] *Entity) -> [..] *Entity {
-    result : [..] *Entity;
+get_riding_actors :: (solid: Solid, actors: [..] *Actor) -> [..] *Actor {
+    result : [..] *Actor;
     result.allocator = temp;
 
     for actor : actors {
-        if is_riding(*actor.actor, solid) {
+        if is_riding(actor, solid) {
             array_add(*result, actor);
         }
     }
@@ -25,7 +25,7 @@ get_riding_actors :: (solid: Solid, actors: [..] *Entity) -> [..] *Entity {
 }
 
 move :: (solid: *Solid, x: float, y: float) {
-    relevant_actors := simulation.actors;
+    relevant_actors := game.simulation.actors;
     riding_actors   := get_riding_actors(solid, relevant_actors);
 
     solid.x_remainder += x;

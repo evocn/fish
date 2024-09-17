@@ -1,6 +1,5 @@
 // Dayne
 // Input
-// Alex Hartford
 // February 2024
 
 Button :: struct {
@@ -54,8 +53,6 @@ Input :: struct {
     select  : Button;
 }
 
-//
-//
 
 gather_input :: (input: *Input, gamepad: *SDL_Joystick) {
     event : SDL_Event;

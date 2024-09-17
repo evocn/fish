@@ -63,13 +63,13 @@ menu_initialize :: () -> Menu {
 
         sfx := New(Menu_Element_Slider,, a);
         sfx.name = "Sfx";
-        sfx.value = *audio_context.sfx_volume;
+        sfx.value = *mix_levels[Sound_Category.GENERAL_SFX];
         sfx.callback = null;
         array_add(*elements, cast(*Menu_Element)sfx);
 
         music := New(Menu_Element_Slider,, a);
         music.name = "Music";
-        music.value = *audio_context.music_volume;
+        music.value = *mix_levels[Sound_Category.MUSIC];
         music.callback = null;
         array_add(*elements, cast(*Menu_Element)music);
 
@@ -83,7 +83,6 @@ menu_initialize :: () -> Menu {
 }
 
 
-// Definition
 
 Menu :: struct {
     name : string;
@@ -92,8 +91,7 @@ Menu :: struct {
     element_index : int;
 }
 
-
-// Elements
+// Elements below
 
 Menu_Element_Go :: struct {
     using #as menu_element: Menu_Element;
@@ -138,8 +136,6 @@ Menu_Element :: struct {
 
 // Functions
 
-// This could return false if we want there to be menu options that bonk on failure.
-// Not sure what that would be useful for, just figured I'd mention it in case it became useful.
 toggle_menu_element :: (using element: *Menu_Element) {
     if kind == {
         case .GO;
@@ -163,9 +159,7 @@ toggle_menu_element :: (using element: *Menu_Element) {
 
 nudge_menu_element :: (using element: *Menu_Element, left := false) {
     if kind == {
-        case .GO;
-            // Don't do anything.
-
+        case .GO; ; // Nothing
         case .CHECKBOX;
             using cast(*Menu_Element_Checkbox)element;
             value.* = !(value.*);
@@ -188,7 +182,6 @@ nudge_menu_element :: (using element: *Menu_Element, left := false) {
 
     save_tweaks_file("all");
 }
-
 
 
 // Callbacks for Menu Elements

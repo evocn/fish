@@ -1,12 +1,6 @@
-// Cross
+// Dayne
 // Animation
-// Alex Hartford
-// February 2024
-
-// @NOTE: As of feb 2024, I don't think it's worth saving a few lines in here
-// to unite the interfaces of these two kinds of animation structs. It's cool
-// to have two different update functions, etc... Stop worrying about shit you
-// don't actually care about.
+// September 2024
 
 Animation_Float :: struct {
     value: *float;
@@ -75,6 +69,8 @@ get_value :: (animation: Animation_Float) -> float {
     return animation.keyframes[animation.keyframes.count - 1].value;
 }
 
+
+
 ////////////////////////////////////////////////////////////////////////////////
 // Integer Animation (For stuff like spritesheets.)
 ////////////////////////////////////////////////////////////////////////////////
@@ -133,6 +129,8 @@ get_value :: (animation: Animation_Integer) -> int {
 
     return animation.keyframes[animation.keyframes.count-1].value;
 }
+
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // Easing Functions

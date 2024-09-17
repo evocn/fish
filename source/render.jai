@@ -3,7 +3,7 @@
 // August 2024
 
 render :: (game: Game, menu: Menu) {
-    // Render everything in this block to the framebuffer.
+    // render everything in this block to the framebuffer.
     {
         glBindFramebuffer(GL_FRAMEBUFFER, graphics_context.fbo);
         glViewport(0, 0, PIXEL_WIDTH, PIXEL_HEIGHT);
@@ -23,8 +23,7 @@ render :: (game: Game, menu: Menu) {
 
             case .EDITOR;
                 draw_game(game);
-                // Editor Rendering is contained in editor.jai
-                // due to the nature of imgui.
+                // editor rendering is contained in editor.jai.
         }
     }
 
@@ -37,7 +36,7 @@ draw_user_interface :: () {
 
 draw_title_screen :: () {
     draw_text(
-        "Fish",
+        "Dayne",
         x = PIXEL_WIDTH / 2,
         y = 7,
         alignment   = Alignment.CENTER,
@@ -50,8 +49,6 @@ draw_title_screen :: () {
 ////////////////////////////////////////////////////////////////////////////////
 
 draw_game :: (game : Game) {
-    camera_center := Pair.{};
-
     // Draw Level
     for tile, index : game.level.tiles {
         if tile.kind == .EMPTY then continue;
@@ -64,7 +61,7 @@ draw_game :: (game : Game) {
         pixel.x = world_column * TILE_SIZE_IN_PIXELS;
         pixel.y = world_row    * TILE_SIZE_IN_PIXELS;
 
-        draw_tile(tile, pixel, camera_center);
+        draw_tile(tile, pixel);
     }
 
     // Draw Entities
@@ -80,19 +77,12 @@ draw_game :: (game : Game) {
         }
 
         for entity : game.entities {
-            draw_entity(entity, camera_center);
+            draw(entity);
         }
-
-        // Just to test sprites out here...
-        /*
-        draw_sprite(
-            graphics_context.spritesheet,
-            index = 3 * 16 + 2,
-            pixel = .{48, 64},
-        );
-        */
     }
 
+
+    // Special Code per player state?
     if game.player.state == {
         case .DEFAULT;
     }
@@ -100,14 +90,14 @@ draw_game :: (game : Game) {
 
     // Debug Overlays
     if program_state.mode == .DEBUG {
-        for tile : game.level.tiles {
-            draw(tile.collider, color=tile.debug_color);
-        }
+        // Draw Colliders
+        {
+            for tile : game.level.tiles {
+                draw(tile.collider, color=tile.debug_color);
+            }
 
-        for entity : game.entities {
-            if entity.kind == {
-                case .GUY;
-                    draw(entity.collider, color=entity.debug_color);
+            for entity : game.entities {
+                draw_debug(entity);
             }
         }
     }

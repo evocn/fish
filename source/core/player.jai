@@ -1,5 +1,5 @@
 // Dayne
-// Player Interface
+// Player
 // August 2024
 
 Player_Interface :: struct {

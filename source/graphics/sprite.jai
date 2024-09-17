@@ -7,6 +7,7 @@ Sprite :: struct {
     texture : Texture = ---;
     tile_width_in_pixels, tile_height_in_pixels : int;
     columns, rows : int;
+    loaded := false;
 }
 
 draw_sprite :: (
@@ -64,26 +65,33 @@ draw_sprite :: (
 
 ////////////////////////////////////////////////////////////////////////////////
 
-make_sprite :: (sprite: *Sprite, full_path: string) -> success: bool {
+load_sprite :: (full_path: string) -> Sprite {
+    sprite : Sprite;
     success : bool;
+
     sprite.texture, success = load_texture(full_path);
+    if success {
+        sprite.loaded = true;
+    }
+    else {
+        log_error("Unable to load sprite at %\n", full_path);
+    }
 
     sprite.tile_width_in_pixels  = sprite.texture.width;
     sprite.tile_height_in_pixels = sprite.texture.height;
     sprite.columns = 1;
     sprite.rows = 1;
 
-    return success;
+    return sprite;
 }
 
-make_sprite_sheet :: (sprite : *Sprite, full_path : string, tile_width_in_pixels : int, tile_height_in_pixels : int) -> success: bool {
-    success : bool;
-    sprite.texture, success = load_texture(full_path);
+load_sheet :: (full_path : string, tile_width_in_pixels : int, tile_height_in_pixels : int) -> Sprite {
+    sprite := load_sprite(full_path);
 
     sprite.tile_width_in_pixels  = tile_width_in_pixels;
     sprite.tile_height_in_pixels = tile_height_in_pixels;
     sprite.columns = sprite.texture.width  / tile_width_in_pixels;
     sprite.rows    = sprite.texture.height / tile_height_in_pixels;
 
-    return success;
+    return sprite;
 }

@@ -1,6 +1,5 @@
 // Dayne
 // Tweaks
-// Alex Hartford
 // February 2024
 
 save_tweaks_file :: (file_name : string) {
@@ -13,8 +12,8 @@ save_tweaks_file :: (file_name : string) {
 
         print_to_builder(*builder, "fullscreen %\n", graphics_context.fullscreen);
 
-        print_to_builder(*builder, "sfx %\n", audio_context.sfx_volume);
-        print_to_builder(*builder, "music %\n", audio_context.music_volume);
+        print_to_builder(*builder, "sfx %\n", mix_levels[Sound_Category.GENERAL_SFX]);
+        print_to_builder(*builder, "music %\n", mix_levels[Sound_Category.MUSIC]);
     }
 
     full_path := tprint("%/%.tweaks", tweaks_path, file_name);
@@ -47,10 +46,10 @@ load_tweaks_file_and_apply_results :: (file_name : string) -> file_exists: bool 
                     set_screen_mode_according_to_fullscreen_variable();
 
                 case "sfx";
-                    audio_context.sfx_volume, successfully_parsed = parse_float(*right);
+                    mix_levels[Sound_Category.GENERAL_SFX], successfully_parsed = parse_float(*right);
 
                 case "music";
-                    audio_context.music_volume, successfully_parsed = parse_float(*right);
+                    mix_levels[Sound_Category.MUSIC], successfully_parsed = parse_float(*right);
             }
             if !successfully_parsed {
                 log_error("Problem parsing the tweaks file!\n");
@@ -68,12 +67,10 @@ load_tweaks_file_and_apply_results :: (file_name : string) -> file_exists: bool 
 //
 
 apply_default_settings :: () {
-    DEFAULT_SFX_VOLUME :: 1.0;
-    DEFAULT_MUSIC_VOLUME :: 1.0;
     graphics_context.fullscreen = false;
-
     set_screen_mode_according_to_fullscreen_variable();
 
-    audio_context.sfx_volume = DEFAULT_SFX_VOLUME;
-    audio_context.music_volume = DEFAULT_MUSIC_VOLUME;
+    default_mix :: float.[1.0, 1.0, 1.0, 1.0, 1.0];
+    mix_levels[Sound_Category.GENERAL_SFX] = default_mix[Sound_Category.GENERAL_SFX];
+    mix_levels[Sound_Category.MUSIC]       = default_mix[Sound_Category.MUSIC];
 }

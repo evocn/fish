@@ -51,8 +51,7 @@ update_rainbow_color :: (dt: float) -> Color {
 }
 
 // Random Color
-
-get_random_color :: () -> Color {
+random_color :: () -> Color {
     return Color.{
         x = random_get_zero_to_one(),
         y = random_get_zero_to_one(),

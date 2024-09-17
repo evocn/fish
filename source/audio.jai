@@ -6,9 +6,6 @@ Audio_Context :: struct {
     sfx : Table(string, Sound_Data);
     music : Table(string, Sound_Data);
 
-    sfx_volume : float;
-    music_volume : float;
-
     music_stream : *Sound_Stream;
 }
 
@@ -22,7 +19,6 @@ play_sfx :: (name : string, perturb := false) {
 
     // Modify SFX properties
     {
-        // TODO: Volume
         if perturb {
             stream.user_volume_scale = random_get_within_range(0.5, 1.4);
             stream.rate_scale        = random_get_within_range(0.7, 1.22);
@@ -45,7 +41,6 @@ play_music :: (name : string) {
 
     // Modify Music properties
     {
-        // TODO: Volume
         set_repeating(stream, true);
     }
 
@@ -53,4 +48,7 @@ play_music :: (name : string) {
 
     // Hold onto this so you can kill the music sometimes.
     audio_context.music_stream = stream;
+}
+
+change_playing_song_volume :: (name : string) {
 }

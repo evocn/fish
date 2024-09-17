@@ -32,9 +32,8 @@ Graphics_Context :: struct {
     // Primitives for drawing things
     quad : Quad;
 
-    sprites : Table(string, *Sprite);
-    spritesheet : Sprite;
-    fishes : Sprite;
+    sprites : Table(string, Sprite);
+    sheets : Table(string, Sprite);
 
     fbo : GLuint;
     render_texture : GLuint;

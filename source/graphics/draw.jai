@@ -4,14 +4,20 @@
 
 
 // Entity
-draw_tile :: (tile: Tile, place : Pair, camera_center : Pair) {
-    relative_position_to_camera_center := place - camera_center;
-    draw_tile_at(tile, relative_position_to_camera_center);
+draw_tile :: (tile: Tile, place : Pair) {
+    screen_position := world_space_to_screen_pixel(place.x, place.y);
+    draw_tile_at(tile, screen_position);
 }
 
 draw_tile_at :: (tile: Tile, at: Pair) {
+    sprite := table_find_pointer(*graphics_context.sheets, "fishes");
+    if !sprite {
+        log_error("Couldn't load tile spritesheet.\n");
+        return;
+    }
+
     draw_sprite(
-        graphics_context.spritesheet,
+        sprite,
         index = tile.sprite,
         pixel = at,
 
@@ -22,42 +28,6 @@ draw_tile_at :: (tile: Tile, at: Pair) {
         use_color_override = false,
     );
 }
-
-SPRITESHEET_WIDTH :: 16;
-
-draw_entity_at :: (entity: Entity, at: Pair) {
-    bottom_left_corner_of_sprite := at  // Bottom left corner of collider
-        + .{entity.width / 2, 0}        // Gets us the center bottom of collider
-        - .{TILE_SIZE_IN_PIXELS / 2, 0} // Bottom left corner!
-    ;
-
-    draw_sprite(
-        graphics_context.spritesheet,
-        index = (entity.sprite * SPRITESHEET_WIDTH) + entity.frame,
-        pixel = bottom_left_corner_of_sprite,
-
-        scale_factor = 1,
-
-        horizontal_flip = entity.facing_left,
-
-        use_color_override = false,
-
-        /*
-        use_color_override = true,
-        color_override = entity.color,
-        */
-    );
-}
-
-draw_entity :: (entity: Entity) {
-    draw_entity_at(entity, to_pair(get_position(entity)));
-}
-
-draw_entity :: (entity: Entity, camera_center : Pair) {
-    relative_position_to_camera_center := to_pair(get_position(entity)) - camera_center;
-    draw_entity_at(entity, relative_position_to_camera_center);
-}
-
 
 // Menu
 draw_menu :: (using menu: Menu) {

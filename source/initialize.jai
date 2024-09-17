@@ -4,7 +4,7 @@
 
 initialize_everything :: () {
     set_working_directory_to_base_folder :: () {
-        executable_path := path_strip_filename(System.get_path_of_running_executable());
+        executable_path := path_strip_filename(get_path_of_running_executable());
         set_working_directory(tprint("%/../", executable_path));
     }
     set_working_directory_to_base_folder();
@@ -108,15 +108,29 @@ initialize_graphics_context :: () {
     }
 
 
-    // Initialize Images
+    // Initialize Sprites
     {
-        success : bool;
+        sprite_paths := file_list(sprites_path, recursive = true, follow_directory_symlinks = false,, allocator=temp);
+        for path : sprite_paths {
+            if path_extension(path) != "png" then continue;
 
-        // Sprites
-        {
-            full_path := tprint("%/fishes.png", sprites_path);
-            success = make_sprite_sheet(*spritesheet, full_path, TILE_SIZE_IN_PIXELS, TILE_SIZE_IN_PIXELS);
-            assert(success);
+            name := basename(path);
+
+            sprite := table_add(*graphics_context.sprites, copy_string(name), load_sprite(path));
+            assert(sprite.loaded);
+        }
+    }
+
+    // Initialize Spritesheets
+    {
+        sheet_paths := file_list(sheets_path, recursive = true, follow_directory_symlinks = false,, allocator=temp);
+        for path : sheet_paths {
+            if path_extension(path) != "png" then continue;
+
+            name := basename(path);
+
+            sheet := table_add(*graphics_context.sheets, copy_string(name), load_sheet(path, TILE_SIZE_IN_PIXELS, TILE_SIZE_IN_PIXELS));
+            assert(sheet.loaded);
         }
     }
 }
@@ -133,22 +147,22 @@ initialize_audio_context :: () {
 
     // SFX
     {
-        sfx_paths := File_Utilities.file_list(sfx_path, recursive = true, follow_directory_symlinks = false,, allocator=temp);
+        sfx_paths := file_list(sfx_path, recursive = true, follow_directory_symlinks = false,, allocator=temp);
         for path : sfx_paths {
             name := basename(path);
 
-            sfx := table_add(*audio_context.sfx, name, load_audio_file(path));
+            sfx := table_add(*audio_context.sfx, copy_string(name), load_audio_file(path));
             assert(sfx.loaded);
         }
     }
 
     // Music
     {
-        music_paths := File_Utilities.file_list(music_path, recursive = true, follow_directory_symlinks = false,, allocator=temp);
+        music_paths := file_list(music_path, recursive = true, follow_directory_symlinks = false,, allocator=temp);
         for path : music_paths {
             name := basename(path);
 
-            music := table_add(*audio_context.music, name, load_audio_file(path));
+            music := table_add(*audio_context.music, copy_string(name), load_audio_file(path));
             assert(music.loaded);
         }
     }
@@ -166,12 +180,6 @@ cleanup_for_shutdown :: (menu: *Menu) {
     // Audio Cleanup
     {
         using audio_context;
-
-        /*
-        deinit(*sfx);
-        deinit(*music);
-        */
-
         sound_player_shutdown();
     }
 

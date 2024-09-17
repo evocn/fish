@@ -15,38 +15,26 @@ using program_state : struct {
         window          : *SDL_Window;
         gl_context      : *SDL_GLContext;
         imgui_context   : *ImGui.ImGuiContext;
+
+        imgui_capturing_mouse    := false;
+        imgui_capturing_keyboard := false;
     }
+
+    scratch_memory  : Flat_Pool;
+
+    ////////////////////////////////////////////////////////////////////////////
 
     game    : Game;
     editor  : Editor;
     graphics_context    : Graphics_Context;
     audio_context       : Audio_Context;
 
-    // Asset Paths
-    sprites_path    :: "assets/sprites";
-    fonts_path      :: "assets/fonts";
-    music_path      :: "assets/audio/music";
-    sfx_path        :: "assets/audio/sfx";
-    shaders_path    :: "assets/shaders";
-
-    data_path       :: "assets/data";
-
-    tweaks_path     :: "bin";
-
-    // Loose Globals
-    scratch_memory  : Flat_Pool;
-
-    ////////////////////////////////////////////////////////////////////////////
-
     running := true;
 
     current_scene : Scene = .GAME;
     prior_scene : Scene;
 
-    imgui_capturing_mouse    := false;
-    imgui_capturing_keyboard := false;
     framerate : float;
-
 
     using simulation_state : struct {
         paused : bool;
@@ -55,15 +43,14 @@ using program_state : struct {
 }
 
 
-
 // Scene Definition
 ////////////////////////////////////////////////////////////////////////////////
 
 Scene :: enum {
     TITLE;
-    GAME;
     MENU;
     EDITOR;
+    GAME;
 }
 
 switch_scene :: (new_scene: Scene) {

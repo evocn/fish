@@ -1,8 +1,4 @@
-// Dayne
-// ImGui Initialization
-// September 2024
-
-// This file is copied from the jai beta. It handles a bunch of the low-level nonsense you need with Imgui/SDL.
+// This file is copied from the jai beta. It handles a bunch of the low-level nonsense you need with Imgui/SDL/GL.
 // Just ignore this for the most part!
 
 // Data

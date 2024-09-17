@@ -6,10 +6,11 @@ Actor :: struct {
     using collider: Collider;
     x_remainder: float;
     y_remainder: float;
+    is_squished: bool;
 }
 
-move_x :: (actor: *Entity, amount: float, on_collided: (*Entity) -> ()) -> collided : bool {
-    relevant_solids := filter_irrelevant_solids(simulation.solids, actor);
+move_x :: (actor: *Actor, amount: float, on_collided: (*Actor) -> ()) -> collided : bool {
+    relevant_solids := filter_irrelevant_solids(game.simulation.solids, actor);
 
     actor.x_remainder += amount;
     move := round(actor.x_remainder);
@@ -37,8 +38,8 @@ move_x :: (actor: *Entity, amount: float, on_collided: (*Entity) -> ()) -> colli
     return false;
 }
 
-move_y :: (actor: *Entity, amount: float, on_collided: (*Entity) -> ()) -> collided: bool {
-    relevant_solids := filter_irrelevant_solids(simulation.solids, actor);
+move_y :: (actor: *Actor, amount: float, on_collided: (*Actor) -> ()) -> collided: bool {
+    relevant_solids := filter_irrelevant_solids(game.simulation.solids, actor);
 
     actor.y_remainder += amount;
     move := round(actor.y_remainder);
@@ -77,7 +78,6 @@ is_riding :: (actor: *Actor, solid: Solid) -> bool {
     return false;
 }
 
-squish :: (actor: *Entity) {
-    actor.should_die = true;
-    return;
+squish :: (actor: *Actor) {
+    actor.is_squished = true;
 }

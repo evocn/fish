@@ -1,9 +1,8 @@
 // Dayne
 // Editor
-// Alex Hartford
 // February 2024
 
-#load "imgui_boilerplate.jai";
+#load "imgui_sdl_gl.jai";
 
 Editor :: struct {
 }
