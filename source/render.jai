@@ -13,6 +13,7 @@ render :: (game: Game, menu: Menu) {
         if #complete program_state.current_scene == {
             case .TITLE;
                 draw_title_screen();
+                draw_version_indicator();
 
             case .GAME;
                 draw_game(game);
@@ -20,6 +21,7 @@ render :: (game: Game, menu: Menu) {
 
             case .MENU;
                 draw_menu(menu);
+                draw_version_indicator();
 
             case .EDITOR;
                 draw_game(game);
@@ -36,13 +38,45 @@ draw_user_interface :: () {
 
 draw_title_screen :: () {
     draw_text(
-        "Dayne",
+        "Placeholder title screen",
         x = PIXEL_WIDTH / 2,
-        y = 7,
+        y = PIXEL_HEIGHT - 15,
         alignment   = Alignment.CENTER,
         progress    = -1,
         font        = .MAIN,
         color       = white,
+    );
+
+    draw_text(
+        "This is just a little fish tank simulation.",
+        x = PIXEL_WIDTH / 2,
+        y = 50,
+        alignment   = Alignment.CENTER,
+        progress    = -1,
+        font        = .SMALL,
+        color       = white,
+    );
+
+    draw_text(
+        "Press H to start.",
+        x = PIXEL_WIDTH / 2,
+        y = 15,
+        alignment   = Alignment.CENTER,
+        progress    = -1,
+        font        = .SMALL,
+        color       = white,
+    );
+}
+
+draw_version_indicator :: () {
+    draw_text(
+        tprint("fish - version %", VERSION),
+        x = 1,
+        y = 1,
+        alignment = Alignment.LEFT,
+        progress = -1,
+        font = .SMALL,
+        color = green,
     );
 }
 

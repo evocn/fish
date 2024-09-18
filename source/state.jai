@@ -31,7 +31,7 @@ using program_state : struct {
 
     running := true;
 
-    current_scene : Scene = .GAME;
+    current_scene : Scene = .TITLE;
     prior_scene : Scene;
 
     framerate : float;
