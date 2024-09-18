@@ -59,6 +59,13 @@ random :: inline (min: float, max: float) -> float {
     return random_get_within_range(min, max);
 }
 
+random :: inline (min: Vector2, max: Vector2) -> Vector2 {
+    return .{
+        random_get_within_range(min.x, max.x),
+        random_get_within_range(min.y, max.y),
+    };
+}
+
 random_choice :: inline (choices: [] $T) -> T {
     min := 0.0;
     max := cast(float)(choices.count);

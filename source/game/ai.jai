@@ -6,19 +6,17 @@ AI_Controller :: struct {
     State :: enum {
         SIT;
         WANDER;
+        WANDER_FLOOR;
         SPIN;
 
         DEBUG;
     }
     state : State;
-
     period : float = 2.0;
-    time : float;
-
-    home_base : Vector2;
 
     // State
-    wants_to_move_this_direction : Vector2; @NoSerialize
+    time: float; @NoSerialize
+    wants_to_move_this_direction: Vector2; @NoSerialize
 }
 
 
@@ -33,10 +31,16 @@ update :: (ai: *AI_Controller, dt: float) -> something_new: bool {
             if ai.time > ai.period {
                 ai.time = 0.0;
                 if random_get_zero_to_one() >= 0.5 {
-                    // Any direction
                     ai.wants_to_move_this_direction = get_random_direction_vector_on_unit_circle();
+                }
 
-                    /*
+                return true;
+            }
+
+        case .WANDER_FLOOR;
+            if ai.time > ai.period {
+                ai.time = 0.0;
+                if random_get_zero_to_one() >= 0.5 {
                     // Left or right
                     if random_get_zero_to_one() >= 0.5 {
                         ai.wants_to_move_this_direction = .{1, 0};
@@ -44,7 +48,6 @@ update :: (ai: *AI_Controller, dt: float) -> something_new: bool {
                     else {
                         ai.wants_to_move_this_direction = .{-1, 0};
                     }
-                    */
                 }
 
                 return true;

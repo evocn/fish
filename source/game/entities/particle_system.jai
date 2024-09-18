@@ -6,19 +6,20 @@ Particle_System :: struct {
     using entity: Entity;
     kind = .PARTICLE_SYSTEM;
 
-    // A more complicated particle system probably looks like this:
-    /*
+    // Properties
     one_shot : bool; // Whether or not particles respawn when their lifetime ends.
-    count : int;
-    lifetime : float; // Maybe better as a range.
-    initial_velocity : Vector2;
-    constant_acceleration : Vector2 = .{};
-    initial_range : Pair;
-    */
+    lifetime_min : float;
+    lifetime_max : float;
+
+    initial_velocity_min : Vector2;
+    initial_velocity_max : Vector2;
+
+    initial_acceleration_min : Vector2;
+    initial_acceleration_max : Vector2;
 
 
     // State
-    particles : [1000] Particle; @NoSerialize
+    particles : [200] Particle; @NoSerialize
 
     using rendering_details : struct {
         vao, vbo : GLuint;
@@ -26,15 +27,26 @@ Particle_System :: struct {
     } @NoSerialize
 }
 
+initialize_particle :: (using particle: *Particle, particle_system: *Particle_System) {
+    t = 0;
+    color = random_choice(Color.[white, blue, blue, blue, blue, green]);
+    position = .{random(0, PIXEL_WIDTH), random(0, PIXEL_HEIGHT)};
+    velocity = random(particle_system.initial_velocity_min, particle_system.initial_velocity_max);
+    acceleration = random(particle_system.initial_acceleration_min, particle_system.initial_acceleration_max);
+    lifetime = random(particle_system.lifetime_min, particle_system.lifetime_max);
+}
+
 initialize :: (using particle_system: *Particle_System) {
-    generate_particle :: (particle: *Particle, color : Color) {
-        particle.color = color;
-        particle.position = .{random(0, PIXEL_WIDTH), random(0, PIXEL_HEIGHT)};
-        particle.velocity = .{1, 0};
-    }
+    one_shot = false;
+    lifetime_min = 1.0;
+    lifetime_max = 10.0;
+    initial_velocity_min = .{0, 10};
+    initial_velocity_max = .{0, 30};
+    initial_acceleration_min = .{0, 0};
+    initial_acceleration_max = .{0, -0.1};
 
     for * particle: particles {
-        generate_particle(particle, random_color());
+        initialize_particle(particle, particle_system);
     }
 
     // Rendering Details
@@ -58,6 +70,13 @@ initialize :: (using particle_system: *Particle_System) {
 update :: (using particle_system: *Particle_System, dt: float) {
     for * particle: particles {
         update(particle, dt);
+
+        if !one_shot {
+            if particle.t > particle.lifetime {
+                initialize_particle(particle, particle_system);
+            }
+        }
+
         screen_pixel := world_space_to_screen_pixel(xx particle.x, xx particle.y);
         vbo_data[it_index * 2 + 0] = (cast(float)screen_pixel.x / PIXEL_WIDTH);
         vbo_data[it_index * 2 + 1] = (cast(float)screen_pixel.y / PIXEL_HEIGHT);
@@ -102,10 +121,15 @@ Particle :: struct {
     // State
     using position : Vector2;
     velocity : Vector2;
+    acceleration : Vector2;
+    lifetime : float;
+
+    t : float;
 }
 
 update :: (particle : *Particle, dt: float) {
     particle.position += particle.velocity * dt;
+    particle.velocity += particle.acceleration * dt;
 
-    // Update Velocity based on gravity, forces, ... below.
+    particle.t += dt;
 }

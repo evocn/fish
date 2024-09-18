@@ -53,6 +53,8 @@ update :: (using guy: *Guy, dt: float) {
         collided_y := move_y(*guy.actor, amount_to_move.y, null);
         if collided_y then velocity.y = -1 * velocity.y;
 
+        if collided_x || collided_y then play_sfx("bump", true);
+
         // Collisions with the level
         {
             extents := game.level.pixel_extents;
@@ -74,6 +76,8 @@ update :: (using guy: *Guy, dt: float) {
                 y_remainder = 0.0;
                 velocity.y = -1 * velocity.y;
             }
+
+            if collided_x || collided_y then play_sfx("bump", true);
         }
     }
 
@@ -118,7 +122,7 @@ draw :: (guy: *Guy) {
 
     draw_sprite(
         sprite,
-        index = (guy.sprite * sprite.columns) + guy.frame,
+        index = guy.frame,
         pixel = bottom_left_corner_of_sprite,
 
         scale_factor = 1,
