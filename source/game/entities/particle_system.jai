@@ -6,8 +6,6 @@ Particle_System :: struct {
     using entity: Entity;
     kind = .PARTICLE_SYSTEM;
 
-    color : Color;
-
     // A more complicated particle system probably looks like this:
     /*
     one_shot : bool; // Whether or not particles respawn when their lifetime ends.
@@ -18,12 +16,14 @@ Particle_System :: struct {
     initial_range : Pair;
     */
 
+
+    // State
     particles : [1000] Particle; @NoSerialize
 
     using rendering_details : struct {
         vao, vbo : GLuint;
         vbo_data : [..] float;
-    }
+    } @NoSerialize
 }
 
 initialize :: (using particle_system: *Particle_System) {

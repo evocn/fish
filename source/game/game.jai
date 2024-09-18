@@ -5,7 +5,7 @@
 #load "level.jai";
 
 #load "entity.jai";
-//#load "entity_serialization.jai";
+#load "entity_serialization.jai";
 #load "tile.jai";
 #load "ai.jai";
 
@@ -43,12 +43,21 @@ simulate :: (game: *Game, dt: float) {
 initialize :: (game: *Game) {
     load_level_from_file(*game.level, "1");
 
-    particle_system : *Particle_System = xx new_entity(*game.entities, .PARTICLE_SYSTEM);
+    success : bool;
 
-    test : *Test = xx new_entity(*game.entities, .TEST);
+    success = load_entities(*game.entities, "1");
+    assert(success);
+    return;
+
+    /*
+    particle_system : *Particle_System = xx new_entity(.PARTICLE_SYSTEM);
+    array_add(*game.entities, xx particle_system);
+
+    test : *Test = xx new_entity(.TEST);
+    array_add(*game.entities, xx test);
 
     // Load Entities (Hardcoded for now)
-    blowfish : *Guy = xx new_entity(*game.entities, .GUY);
+    blowfish : *Guy = xx new_entity(.GUY);
     {
         blowfish.sheet = "blowfish";
         blowfish.sprite = 2;
@@ -64,20 +73,11 @@ initialize :: (game: *Game) {
 
         array_add(*game.simulation.actors, *blowfish.actor);
 
-        blowfish.animation_sleep = animation_integer_make(
-            value = *blowfish.frame,
-            duration = 2.0,
-            keyframes = ...[
-                .{0.0, 4},
-                .{1.0, 5},
-            ],
-        );
-
         blowfish.animation_idle = animation_integer_make(
             value = *blowfish.frame,
             duration = 1.0,
             keyframes = ...[
-                .{0.0, 1},
+                .{time=0.0, value=1},
             ],
         );
 
@@ -85,30 +85,14 @@ initialize :: (game: *Game) {
             value = *blowfish.frame,
             duration = 1.0,
             keyframes = ...[
-                .{0.0, 7},
+                .{time=0.0, value=7},
             ],
         );
 
-        blowfish.animation_talk = animation_integer_make(
-            value = *blowfish.frame,
-            duration = 0.4,
-            keyframes = ...[
-                .{0.0,   9},
-                .{0.25,  10},
-            ],
-        );
-
-        blowfish.animation_dance = animation_integer_make(
-            value = *blowfish.frame,
-            duration = 0.6,
-            keyframes = ...[
-                .{0.0,  10},
-                .{0.15, 0},
-            ],
-        );
+        array_add(*game.entities, xx blowfish);
     }
 
-    jellyfish : *Guy = xx new_entity(*game.entities, .GUY);
+    jellyfish : *Guy = xx new_entity(.GUY);
     {
         jellyfish.sheet = "jellyfish";
         jellyfish.sprite = 1;
@@ -128,8 +112,8 @@ initialize :: (game: *Game) {
             value = *jellyfish.frame,
             duration = 0.8,
             keyframes = ...[
-                .{0.0, 0},
-                .{0.4, 1},
+                .{time=0.0, value=0},
+                .{time=0.4, value=1},
             ],
         );
 
@@ -137,26 +121,16 @@ initialize :: (game: *Game) {
             value = *jellyfish.frame,
             duration = 0.3,
             keyframes = ...[
-                .{0.0,  2},
-                .{0.15, 3},
+                .{time=0.0,  value=2},
+                .{time=0.15, value=3},
             ],
         );
 
-        jellyfish.animation_sleep = animation_integer_make(
-            value = *jellyfish.frame,
-            duration = 3.0,
-            keyframes = ...[
-                .{0.0,  4},
-                .{1.5,  5},
-            ],
-        );
-
-        jellyfish.animation_talk   = jellyfish.animation_idle;
-        jellyfish.animation_dance  = jellyfish.animation_idle;
+        array_add(*game.entities, xx jellyfish);
     }
 
 
-    frog : *Guy = xx new_entity(*game.entities, .GUY);
+    frog : *Guy = xx new_entity(.GUY);
     {
         frog.sheet = "frog";
         frog.sprite = 3;
@@ -176,8 +150,8 @@ initialize :: (game: *Game) {
             value = *frog.frame,
             duration = 2.0,
             keyframes = ...[
-                .{0.0, 0},
-                .{1.0, 1},
+                .{time=0.0, value=0},
+                .{time=1.0, value=1},
             ],
         );
 
@@ -185,23 +159,17 @@ initialize :: (game: *Game) {
             value = *frog.frame,
             duration = 0.8,
             keyframes = ...[
-                .{0.0, 2},
-                .{0.2, 0},
-                .{0.4, 3},
-                .{0.6, 1},
+                .{time=0.0, value=2},
+                .{time=0.2, value=0},
+                .{time=0.4, value=3},
+                .{time=0.6, value=1},
             ],
         );
 
-        frog.animation_sleep = animation_integer_make(
-            value = *frog.frame,
-            duration = 1.5,
-            keyframes = ...[
-                .{0.0, 4},
-                .{0.5, 5},
-            ],
-        );
-
-        frog.animation_talk   = frog.animation_idle;
-        frog.animation_dance  = frog.animation_idle;
+        array_add(*game.entities, xx frog);
     }
+
+    success = save_entities(game.entities, "1");
+    assert(success);
+    */
 }

@@ -1,20 +1,13 @@
 // Dayne
 // Entity Serialization
-// Alex Hartford
-// March 2024
+// September 2024
 
-// This code is using some metaprogram magic to write serialization code for structs.
+// This code is using reflection and metaprogramming to write serialization code for structs.
 // We leverage this to not have to write new serialization logic every time we add a field to a struct.
 // This approach still is lacking in numerous ways.
 // Due to the strictness of casting, I still seem to have to add new entries when adding a new entity kind.
 // Plus this code is weird, and I don't like it.
 // In any case, this works for now, and we can change it later if the spirit moves us
-
-// @TODO:
-// * Colors should just index into an array probably? That way we can choose colors properly in the editor?
-// * Floats should probably save some other way, so that it's not prone to shifting?
-
-VERSION :: 1;
 
 save_entities :: (entities : [..] *Entity, filename : string) -> success : bool {
     builder : String_Builder;
@@ -29,16 +22,14 @@ save_entities :: (entities : [..] *Entity, filename : string) -> success : bool 
 
         success : bool;
         if #complete entity.kind == {
-            case .GUY;
-                success = serialize_structure((cast(*Guy)entity).*, *builder);
-
-            case .TEST;
-                success = serialize_structure((cast(*Test)entity).*, *builder);
+            case .TEST;             success = serialize_structure((cast(*Test)entity).*, *builder);
+            case .GUY;              success = serialize_structure((cast(*Guy)entity).*, *builder);
+            case .PARTICLE_SYSTEM;  success = serialize_structure((cast(*Particle_System)entity).*, *builder);
         }
 
         if !success return false;
     }
-    full_path := tprint("%/%", data_path, filename);
+    full_path := tprint("%/%.entities", data_path, filename);
     write_entire_file(full_path, *builder);
 
     log("Saved entities to \"%\".", full_path);
@@ -51,7 +42,7 @@ load_entities :: (entities : *[..] *Entity, filename : string) -> success : bool
     handler : Text_File_Handler;
     defer deinit(*handler);
 
-    full_path := tprint("%/%", data_path, filename);
+    full_path := tprint("%/%.entities", data_path, filename);
 
     start_file(*handler, filename, full_path, optional = false);
     if handler.failed return false;
@@ -162,34 +153,82 @@ serialize  :: (to_serialize: Entity, name := "", builder: *String_Builder) -> su
 
 serialize  :: (to_serialize: Entity.Kind, name : string, builder: *String_Builder) -> success: bool {
     print_to_builder(builder, "%", cast(int)to_serialize);
+    if name print_to_builder(builder, "\t# % (%)", name, to_serialize);
+    append(builder, "\n");
+    return true;
+}
+
+serialize  :: (to_serialize: AI_Controller, name := "", builder: *String_Builder) -> success: bool { 
+    success := serialize_structure(to_serialize, builder);
+    return success;
+}
+
+serialize  :: (to_serialize: Actor, name := "", builder: *String_Builder) -> success: bool { 
+    success := serialize_structure(to_serialize, builder);
+    return success;
+}
+
+serialize  :: (to_serialize: Solid, name := "", builder: *String_Builder) -> success: bool { 
+    success := serialize_structure(to_serialize, builder);
+    return success;
+}
+
+serialize  :: (to_serialize: Collider, name := "", builder: *String_Builder) -> success: bool { 
+    success := serialize_structure(to_serialize, builder);
+    return success;
+}
+
+serialize  :: (to_serialize: Animation_Integer, name := "", builder: *String_Builder) -> success: bool { 
+    append(builder, "\n");
+    success := serialize_structure(to_serialize, builder);
+    return success;
+}
+
+serialize  :: (to_serialize: AI_Controller.State, name : string, builder: *String_Builder) -> success: bool {
+    print_to_builder(builder, "%", cast(int)to_serialize);
     if name print_to_builder(builder, "\t# %", name);
     append(builder, "\n");
     return true;
+}
+
+serialize  :: (to_serialize: Guy_Animation_State, name : string, builder: *String_Builder) -> success: bool {
+    print_to_builder(builder, "%", cast(int)to_serialize);
+    if name print_to_builder(builder, "\t# %", name);
+    append(builder, "\n");
+    return true;
+}
+
+serialize  :: (to_serialize: [..] Animation_Integer.Keyframe, name := "", builder: *String_Builder) -> success: bool { 
+    success : bool;
+    serialize(to_serialize.count, "Keyframe count", builder);
+    for keyframe : to_serialize {
+        success = serialize_structure(keyframe, builder);
+        if !success return false;
+    }
+
+    return success;
 }
 
 //
 //
 //
 
-// Assumption is that the entity pool is on the context, so we allocate everything out of that.
 get_next_entity :: (handler : *Text_File_Handler) -> entity: *Entity, success: bool {
     kind_int, is_another_entity_to_get := parse_int(handler);
     if !is_another_entity_to_get return null, false;
 
     kind := cast(Entity.Kind)kind_int;
 
-    entity := make_entity(kind);
+    entity := new_entity(kind);
     success : bool;
 
     if #complete kind == {
-        case .GUY;
-            success = unserialize_structure(cast(*Guy)entity, handler);
-
-        case .TEST;
-            success = unserialize_structure(cast(*Test)entity, handler);
+        case .TEST;             success = unserialize_structure(cast(*Test)entity, handler);
+        case .GUY;              success = unserialize_structure(cast(*Guy)entity, handler);
+        case .PARTICLE_SYSTEM;  success = unserialize_structure(cast(*Particle_System)entity, handler);
     }
 
-    determine_entity_kind_and_initialize(entity);
+    initialize(entity);
 
     assert(success, "Failed to unserialize entity of kind %\n", kind);
 
@@ -260,7 +299,50 @@ unserialize  :: (to_unserialize: *AI_Controller, handler: *Text_File_Handler) ->
     return success;
 }
 
+unserialize  :: (to_unserialize: *Actor, handler: *Text_File_Handler) -> success: bool {
+    success := unserialize_structure(to_unserialize, handler);
+    return success;
+}
 
+unserialize  :: (to_unserialize: *Solid, handler: *Text_File_Handler) -> success: bool {
+    success := unserialize_structure(to_unserialize, handler);
+    return success;
+}
+
+unserialize  :: (to_unserialize: *Collider, handler: *Text_File_Handler) -> success: bool {
+    success := unserialize_structure(to_unserialize, handler);
+    return success;
+}
+
+unserialize  :: (to_unserialize: *Animation_Integer, handler: *Text_File_Handler) -> success: bool {
+    success := unserialize_structure(to_unserialize, handler);
+    return success;
+}
+
+unserialize  :: (to_unserialize: *AI_Controller.State, handler : *Text_File_Handler) -> success: bool { 
+    e, success := parse_int(handler);
+    to_unserialize.* = cast(AI_Controller.State)e;
+    return success;
+}
+
+unserialize  :: (to_unserialize: *Guy_Animation_State, handler : *Text_File_Handler) -> success: bool { 
+    e, success := parse_int(handler);
+    to_unserialize.* = cast(Guy_Animation_State)e;
+    return success;
+}
+
+unserialize  :: (to_unserialize: *[..] Animation_Integer.Keyframe, handler: *Text_File_Handler) -> success: bool {
+    success : bool;
+    count : int;
+    unserialize(*count, handler);
+    for 0..count-1 {
+        new_keyframe := array_add(to_unserialize);
+        success = unserialize_structure(new_keyframe, handler);
+        if !success return false;
+    }
+
+    return success;
+}
 
 
 

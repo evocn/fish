@@ -4,9 +4,9 @@
 
 Actor :: struct {
     using collider: Collider;
-    x_remainder: float;
-    y_remainder: float;
-    is_squished: bool;
+    x_remainder: float; @NoSerialize
+    y_remainder: float; @NoSerialize
+    is_squished: bool;  @NoSerialize
 }
 
 move_x :: (actor: *Actor, amount: float, on_collided: (*Actor) -> ()) -> collided : bool {

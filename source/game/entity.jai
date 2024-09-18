@@ -8,20 +8,20 @@ Entity :: struct {
         GUY;
         PARTICLE_SYSTEM;
     }
-    kind : Kind;
+    kind : Kind;        @NoSerialize
 
-    id          : int;
-    should_die  : bool;
     z_index     : int;
 
+    id          : int;  @NoSerialize
+    should_die  : bool; @NoSerialize
 
     debug: struct {
         unique_color: Color;
-    }
+    } @NoSerialize
 }
 
 next_id := 0;
-new_entity :: (entities : *[..] *Entity, kind : Entity.Kind) -> *Entity {
+new_entity :: (kind : Entity.Kind) -> *Entity {
     new_entity : *Entity;
 
     if #complete kind == {
@@ -34,8 +34,6 @@ new_entity :: (entities : *[..] *Entity, kind : Entity.Kind) -> *Entity {
 
     new_entity.id = next_id;
     next_id += 1;
-
-    array_add(entities, new_entity);
 
     return new_entity;
 }

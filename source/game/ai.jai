@@ -3,15 +3,6 @@
 // August 2024
 
 AI_Controller :: struct {
-    state : State;
-
-    wants_to_move_this_direction : Vector2;
-
-    period : float = 2.0;
-    time : float;
-
-    home_base : Vector2;
-
     State :: enum {
         SIT;
         WANDER;
@@ -19,6 +10,15 @@ AI_Controller :: struct {
 
         DEBUG;
     }
+    state : State;
+
+    period : float = 2.0;
+    time : float;
+
+    home_base : Vector2;
+
+    // State
+    wants_to_move_this_direction : Vector2; @NoSerialize
 }
 
 

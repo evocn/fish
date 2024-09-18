@@ -10,27 +10,27 @@ Guy :: struct {
 
     // Simulation
     using actor : Actor;
-    velocity    : Vector2;
+    velocity    : Vector2; @NoSerialize
 
     // Appearance
-    sheet : string;
-    sprite : int;
-    frame : int = 0;
     facing_left : bool;
+    sheet : string;
+    sprite  : int;
+    frame   : int = 0; @NoSerialize
 
 
     speed : float;
-    SPRINT_MODIFIER :: 2;
+    SPRINT_MODIFIER :: 2; @NoSerialize
 
     animation_state : Guy_Animation_State;
-    animation_sleep : Animation_Integer;
+
     animation_idle  : Animation_Integer;
     animation_walk  : Animation_Integer;
-    animation_talk  : Animation_Integer;
-    animation_dance : Animation_Integer;
 }
 
 initialize :: (using guy: *Guy) {
+    animation_idle.value = *frame;
+    animation_walk.value = *frame;
 }
 
 update :: (using guy: *Guy, dt: float) {
@@ -137,11 +137,8 @@ draw_debug :: (guy: *Guy) {
 // Animation logic
 
 Guy_Animation_State :: enum {
-    SLEEP;
     IDLE;
     WALK;
-    TALK;
-    DANCE;
 }
 
 
@@ -150,39 +147,15 @@ go_to_state :: (guy: *Guy, new_state: Guy_Animation_State) {
     guy.animation_state = new_state;
 
     if #complete guy.animation_state == {
-        case .SLEEP;
-            start(*guy.animation_sleep);
-
-        case .IDLE;
-            start(*guy.animation_idle);
-
-        case .WALK;
-            start(*guy.animation_walk);
-
-        case .TALK;
-            start(*guy.animation_talk);
-
-        case .DANCE;
-            start(*guy.animation_dance);
+        case .IDLE;     start(*guy.animation_idle);
+        case .WALK;     start(*guy.animation_walk);
     }
 }
 
 update_active_animation :: (guy: *Guy, dt: float) {
     if guy.animation_state == {
-        case .SLEEP;
-            update(*guy.animation_sleep, dt);
-
-        case .IDLE;
-            update(*guy.animation_idle, dt);
-
-        case .WALK;
-            update(*guy.animation_walk, dt);
-
-        case .TALK;
-            update(*guy.animation_talk, dt);
-
-        case .DANCE;
-            update(*guy.animation_dance, dt);
+        case .IDLE;     update(*guy.animation_idle, dt);
+        case .WALK;     update(*guy.animation_walk, dt);
     }
 }
 

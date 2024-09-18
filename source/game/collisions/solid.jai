@@ -4,8 +4,8 @@
 
 Solid :: struct {
     using collider: Collider;
-    x_remainder : float;
-    y_remainder : float;
+    x_remainder : float; @NoSerialize
+    y_remainder : float; @NoSerialize
 
     collidable  : bool = true;
     one_way     : bool = false;

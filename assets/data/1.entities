@@ -1,0 +1,98 @@
+[0] # Version
+
+2	# Kind (PARTICLE_SYSTEM)
+0	# z_index
+
+0	# Kind (TEST)
+0	# z_index
+0 0	# position
+
+1	# Kind (GUY)
+0	# z_index
+3	# state
+2	# period
+0	# time
+0 0	# home_base
+0	# x
+16	# y
+14	# width
+14	# height
+0	# facing_left
+blowfish	# sheet
+2	# sprite
+150	# speed
+0	# animation_state
+
+1	# duration
+1	# Keyframe count
+0	# time
+1	# value
+
+1	# duration
+1	# Keyframe count
+0	# time
+7	# value
+
+1	# Kind (GUY)
+0	# z_index
+2	# state
+2	# period
+0	# time
+0 0	# home_base
+32	# x
+16	# y
+4	# width
+4	# height
+0	# facing_left
+jellyfish	# sheet
+1	# sprite
+6	# speed
+0	# animation_state
+
+0.8	# duration
+2	# Keyframe count
+0	# time
+0	# value
+0.4	# time
+1	# value
+
+0.3	# duration
+2	# Keyframe count
+0	# time
+2	# value
+0.15	# time
+3	# value
+
+1	# Kind (GUY)
+0	# z_index
+1	# state
+2	# period
+0	# time
+0 0	# home_base
+100	# x
+16	# y
+12	# width
+12	# height
+0	# facing_left
+frog	# sheet
+3	# sprite
+10	# speed
+0	# animation_state
+
+2	# duration
+2	# Keyframe count
+0	# time
+0	# value
+1	# time
+1	# value
+
+0.8	# duration
+4	# Keyframe count
+0	# time
+2	# value
+0.2	# time
+0	# value
+0.4	# time
+3	# value
+0.6	# time
+1	# value

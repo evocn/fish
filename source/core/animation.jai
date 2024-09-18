@@ -3,7 +3,9 @@
 // September 2024
 
 Animation_Float :: struct {
-    value: *float;
+    value: *float; @NoSerialize
+
+    duration: float;
 
     // Properties
     Keyframe :: struct {
@@ -12,13 +14,11 @@ Animation_Float :: struct {
     }
     keyframes: [..] Keyframe;
 
-    duration: float;
-
-    easing_function : (float) -> (float) = easing_identity;
+    easing_function : (float) -> (float) = easing_identity; @NoSerialize
 
     // State
-    time    : float;
-    active  : bool;
+    time    : float;    @NoSerialize
+    active  : bool;     @NoSerialize
 }
 
 animation_float_make :: (value: *float, duration: float, keyframes: ..Animation_Float.Keyframe) -> Animation_Float {
@@ -76,7 +76,9 @@ get_value :: (animation: Animation_Float) -> float {
 ////////////////////////////////////////////////////////////////////////////////
 
 Animation_Integer :: struct {
-    value : *int;
+    value : *int; @NoSerialize
+
+    duration : float;
 
     // Properties
     Keyframe :: struct {
@@ -85,11 +87,9 @@ Animation_Integer :: struct {
     }
     keyframes : [..] Keyframe;
 
-    duration : float;
-
     // State
-    time : float;
-    active : bool;
+    time : float;   @NoSerialize
+    active : bool;  @NoSerialize
 }
 
 animation_integer_make :: (value: *int, duration: float, keyframes: ..Animation_Integer.Keyframe) -> Animation_Integer {
