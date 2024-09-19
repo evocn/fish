@@ -9,6 +9,8 @@
 #load "tile.jai";
 #load "ai.jai";
 
+#load "sprite_animation.jai";
+
 #load "entities/test.jai";
 #load "entities/guy.jai";
 #load "entities/particle_system.jai";
@@ -43,186 +45,185 @@ simulate :: (game: *Game, dt: float) {
 initialize :: (game: *Game) {
     load_level_from_file(*game.level, "1");
 
-    success : bool;
-
-    // Serialization path
-    /*
-    success = load_entities(*game.entities, "1");
-    assert(success);
-    */
-
-    particle_system : *Particle_System = xx new_entity(.PARTICLE_SYSTEM);
+    // Entities
     {
-        using particle_system;
+        particle_system : *Particle_System = xx new_entity(.PARTICLE_SYSTEM);
+        {
+            using particle_system;
+        }
+        array_add(*game.entities, xx particle_system);
+
+        // Load Guys
+        frog : *Guy = xx new_entity(.GUY);
+        {
+            using frog;
+
+            name = "frog";
+
+            x = 100;
+            y = 16;
+            width  = 12;
+            height = 12;
+
+            speed = 10;
+
+            ai.state = .WANDER_FLOOR;
+
+            array_add(*animations,
+                Sprite_Animation.{
+                    sheet = "Frog-Idle",
+                    frame_count = 2,
+                    speed = 1.0,
+                }
+            );
+
+            array_add(*animations,
+                Sprite_Animation.{
+                    sheet = "Frog-Walk",
+                    frame_count = 4,
+                    speed = 4.0,
+                }
+            );
+
+            assert(animations.count > 0);
+            animation = *animations[0];
+        }
+        array_add(*game.entities, xx frog);
+        array_add(*game.simulation.actors, *frog.actor);
+
+
+        tako : *Guy = xx new_entity(.GUY);
+        {
+            using tako;
+
+            name = "tako";
+
+            x = 32;
+            y = 16;
+            width  = 10;
+            height = 10;
+
+            speed = 10;
+
+            ai.state = .SIT;
+
+            array_add(*animations,
+                Sprite_Animation.{
+                    sheet = "Tako-Idle",
+                    frame_count = 9,
+                    speed = 10.0,
+                }
+            );
+
+            assert(animations.count > 0);
+            animation = *animations[0];
+        }
+        array_add(*game.entities, xx tako);
+        array_add(*game.simulation.actors, *tako.actor);
+
+        clam : *Guy = xx new_entity(.GUY);
+        {
+            using clam;
+
+            name = "clam";
+
+            x = 160;
+            y = 16;
+            width  = 16;
+            height = 16;
+
+            speed = 0;
+
+            ai.state = .SIT;
+
+            array_add(*animations,
+                Sprite_Animation.{
+                    sheet = "Clam-Idle",
+                    frame_count = 1,
+                    speed = 1.0,
+                }
+            );
+
+            array_add(*animations,
+                Sprite_Animation.{
+                    sheet = "Clam-Surprised",
+                    frame_count = 20,
+                    speed = 10.0,
+                }
+            );
+
+            assert(animations.count > 0);
+            animation = *animations[1];
+        }
+        array_add(*game.entities, xx clam);
+        array_add(*game.simulation.actors, *clam.actor);
+
+        jelly : *Guy = xx new_entity(.GUY);
+        {
+            using jelly;
+
+            name = "jelly";
+
+            x = 128;
+            y = 16;
+            width  = 16;
+            height = 16;
+
+            speed = 30;
+
+            ai.state = .WANDER_FLOOR;
+
+            array_add(*animations,
+                Sprite_Animation.{
+                    sheet = "Jelly-Idle",
+                    frame_count = 2,
+                    speed = 5.0,
+                }
+            );
+
+            array_add(*animations,
+                Sprite_Animation.{
+                    sheet = "Jelly-Walk",
+                    frame_count = 2,
+                    speed = 10.0,
+                }
+            );
+
+            assert(animations.count > 0);
+            animation = *animations[0];
+        }
+        array_add(*game.entities, xx jelly);
+        array_add(*game.simulation.actors, *jelly.actor);
+
+        blowfish : *Guy = xx new_entity(.GUY);
+        {
+            using blowfish;
+
+            name = "blowfish";
+
+            x = 64;
+            y = 64;
+            width  = 16;
+            height = 16;
+
+            speed = 20;
+
+            ai.state = .WANDER;
+
+            array_add(*animations,
+                Sprite_Animation.{
+                    sheet = "Blowfish-Happy",
+                    frame_count = 10,
+                    speed = 10.0,
+                }
+            );
+
+            assert(animations.count > 0);
+            animation = *animations[0];
+
+            velocity = .{20, 10};
+        }
+        array_add(*game.entities, xx blowfish);
+        array_add(*game.simulation.actors, *blowfish.actor);
     }
-    array_add(*game.entities, xx particle_system);
-
-    /*
-    test : *Test = xx new_entity(.TEST);
-    array_add(*game.entities, xx test);
-    */
-
-    // Load Entities (Hardcoded for now)
-    blowfish : *Guy = xx new_entity(.GUY);
-    {
-        using blowfish;
-
-        sheet = "blowfish";
-        sprite = 2;
-
-        x = 0;
-        y = 16;
-        width  = 14;
-        height = 14;
-
-        ai.state = .DEBUG;
-
-        speed = 15;
-
-        array_add(*game.simulation.actors, *actor);
-
-        animation_idle = animation_integer_make(
-            value = *frame,
-            duration = 1.0,
-            keyframes = ...[
-                .{time=0.0, value=0},
-                .{time=0.5, value=8},
-            ],
-        );
-
-        animation_walk = animation_integer_make(
-            value = *frame,
-            duration = 0.4,
-            keyframes = ...[
-                .{time=0.0, value=0},
-                .{time=0.2, value=8},
-            ],
-        );
-    }
-    array_add(*game.entities, xx blowfish);
-
-    jellyfish : *Guy = xx new_entity(.GUY);
-    {
-        using jellyfish;
-        sheet = "jellyfish";
-        sprite = 1;
-
-        speed = 6;
-
-        x = 32;
-        y = 16;
-        width  = 4;
-        height = 4;
-
-        ai.state = .SPIN;
-
-        array_add(*game.simulation.actors, *actor);
-
-        animation_idle = animation_integer_make(
-            value = *frame,
-            duration = 0.8,
-            keyframes = ...[
-                .{time=0.0, value=0},
-                .{time=0.4, value=8},
-            ],
-        );
-
-        animation_walk = animation_integer_make(
-            value = *frame,
-            duration = 0.6,
-            keyframes = ...[
-                .{time=0.0,  value=1},
-                .{time=0.15, value=9},
-                .{time=0.30, value=17},
-                .{time=0.45, value=25},
-            ],
-        );
-    }
-    array_add(*game.entities, xx jellyfish);
-
-
-    frog : *Guy = xx new_entity(.GUY);
-    {
-        using frog;
-
-        sheet = "frog";
-        sprite = 3;
-
-        x = 100;
-        y = 16;
-        width  = 12;
-        height = 12;
-
-        speed = 10;
-
-        ai.state = .WANDER_FLOOR;
-
-        array_add(*game.simulation.actors, *actor);
-
-        animation_idle = animation_integer_make(
-            value = *frame,
-            duration = 2.0,
-            keyframes = ...[
-                .{time=0.0, value=0},
-                .{time=1.0, value=8},
-            ],
-        );
-
-        animation_walk = animation_integer_make(
-            value = *frame,
-            duration = 0.8,
-            keyframes = ...[
-                .{time=0.0, value=1},
-                .{time=0.2, value=9},
-                .{time=0.4, value=17},
-                .{time=0.6, value=25},
-            ],
-        );
-    }
-    array_add(*game.entities, xx frog);
-
-    clam : *Guy = xx new_entity(.GUY);
-    {
-        using clam;
-
-        sheet = "clam";
-        sprite = 3;
-
-        x = 160;
-        y = 80;
-        width  = 16;
-        height = 16;
-
-        speed = 0;
-
-        ai.state = .SIT;
-
-        array_add(*game.simulation.actors, *actor);
-
-        animation_idle = animation_integer_make(
-            value = *frame,
-            duration = 4.0,
-            keyframes = ...[
-                .{time=0.0, value=2},
-                .{time=1.0, value=10},
-                .{time=2.0, value=18},
-                .{time=3.0, value=26},
-            ],
-        );
-
-        animation_walk = animation_integer_make(
-            value = *frame,
-            duration = 1.0,
-            keyframes = ...[
-                .{time=0.0, value=1},
-            ],
-        );
-    }
-    array_add(*game.entities, xx clam);
-
-
-    /*
-    success = save_entities(game.entities, "1");
-    assert(success);
-    */
 }

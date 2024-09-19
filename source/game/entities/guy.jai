@@ -3,34 +3,26 @@
 // August 2024
 
 Guy :: struct {
-    using entity : Entity;
+    using entity: Entity;
     kind = .GUY;
+    
+    name : string;
 
-    ai : AI_Controller;
-
-    // Simulation
     using actor : Actor;
-    velocity    : Vector2; @NoSerialize
+    speed       : float;
+    ai          : AI_Controller;
 
-    // Appearance
-    facing_left : bool;
-    sheet : string;
-    sprite  : int;
-    frame   : int = 0; @NoSerialize
+    animations  : [..] Sprite_Animation;
+    animation   : *Sprite_Animation;
 
-
-    speed : float;
-    SPRINT_MODIFIER :: 2; @NoSerialize
-
-    animation_state : Guy_Animation_State;
-
-    animation_idle  : Animation_Integer;
-    animation_walk  : Animation_Integer;
+    // State
+    facing_left : bool;     @NoSerialize
+    velocity    : Vector2;  @NoSerialize
 }
 
 initialize :: (using guy: *Guy) {
-    animation_idle.value = *frame;
-    animation_walk.value = *frame;
+    facing_left = false;
+    velocity = .{};
 }
 
 update :: (using guy: *Guy, dt: float) {
@@ -82,25 +74,26 @@ update :: (using guy: *Guy, dt: float) {
     }
 
 
-    update_visuals :: (guy: *Guy, dt: float) {
+    update_visuals :: (using guy: *Guy, dt: float) {
         // Facing direction
-        if guy.velocity.x < 0.0 {
-            guy.facing_left = true;
+        if velocity.x < 0.0 {
+            facing_left = true;
         }
-        else if guy.velocity.x > 0.0 {
-            guy.facing_left = false;
-        }
-
-        // Animation State
-        if guy.velocity.x == 0.0 && guy.velocity.y == 0.0 {
-            go_to_state(guy, .IDLE);
-        }
-        else {
-            go_to_state(guy, .WALK);
+        else if velocity.x > 0.0 {
+            facing_left = false;
         }
 
         // Update Animation
-        update_active_animation(guy, dt);
+        if guy.ai.state == .WANDER_FLOOR {
+            if guy.velocity.x == 0.0 && guy.velocity.y == 0.0 {
+                animation = *animations[0];
+            }
+            else {
+                animation = *animations[1];
+            }
+        }
+
+        update(animation, dt);
     }
     update_visuals(guy, dt);
 }
@@ -114,7 +107,7 @@ draw :: (guy: *Guy) {
         - .{TILE_SIZE_IN_PIXELS / 2, 0} // Bottom left corner!
     ;
 
-    sprite := table_find_pointer(*graphics_context.sheets, guy.sheet);
+    sprite := table_find_pointer(*graphics_context.sheets, guy.animation.sheet);
     if !sprite {
         log_error("Couldn't load entity spritesheet.\n");
         return;
@@ -122,7 +115,7 @@ draw :: (guy: *Guy) {
 
     draw_sprite(
         sprite,
-        index = guy.frame,
+        index = guy.animation.frame,
         pixel = bottom_left_corner_of_sprite,
 
         scale_factor = 1,
@@ -135,32 +128,6 @@ draw :: (guy: *Guy) {
 
 draw_debug :: (guy: *Guy) {
     draw(guy.collider, color=guy.debug.unique_color);
-}
-
-
-// Animation logic
-
-Guy_Animation_State :: enum {
-    IDLE;
-    WALK;
-}
-
-
-go_to_state :: (guy: *Guy, new_state: Guy_Animation_State) {
-    if guy.animation_state == new_state then return;
-    guy.animation_state = new_state;
-
-    if #complete guy.animation_state == {
-        case .IDLE;     start(*guy.animation_idle);
-        case .WALK;     start(*guy.animation_walk);
-    }
-}
-
-update_active_animation :: (guy: *Guy, dt: float) {
-    if guy.animation_state == {
-        case .IDLE;     update(*guy.animation_idle, dt);
-        case .WALK;     update(*guy.animation_walk, dt);
-    }
 }
 
 

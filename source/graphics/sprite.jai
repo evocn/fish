@@ -1,6 +1,5 @@
 // Dayne
 // Sprite
-// Alex Hartford
 // February 2024
 
 Sprite :: struct {

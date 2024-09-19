@@ -9,8 +9,6 @@ main :: () {
 
     main_menu := menu_initialize();
 
-    play_music("nagata");
-
     initialize(*game);
 
     dt, last_frame := 0.0;
@@ -34,6 +32,9 @@ main :: () {
                 case .TITLE;
                     if game.player.input.south.just_pressed {
                         switch_scene(.GAME);
+
+                        // @TODO: Make this more clear.
+                        play_music("nagata");
                     }
 
                 case .MENU;
@@ -135,7 +136,6 @@ using Sound :: #import "Sound_Player";
 #load "render.jai";
 
 // Core
-#load "core/animation.jai";
 #load "core/input.jai";
 #load "core/menu.jai";
 #load "core/player.jai";
