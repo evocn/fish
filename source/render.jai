@@ -17,7 +17,7 @@ render :: (game: Game, menu: Menu) {
 
             case .GAME;
                 draw_game(game);
-                draw_user_interface();
+                draw_user_interface(game);
 
             case .MENU;
                 draw_menu(menu);
@@ -32,8 +32,33 @@ render :: (game: Game, menu: Menu) {
     render_framebuffer_to_screen();
 }
 
-draw_user_interface :: () {
+draw_user_interface :: (game: Game) {
     draw_clock_readout();
+
+    if game.player.input.mouse_active {
+        mouse_position := game.player.input.mouse_position;
+        draw_mouse_cursor(mouse_position);
+    }
+}
+
+draw_mouse_cursor :: (position : Pair) {
+    sprite := table_find_pointer(*graphics_context.sprites, "cursor");
+    if !sprite {
+        log_error("Couldn't load cursor spritesheet.\n");
+        return;
+    }
+
+    draw_sprite(
+        sprite,
+        index = 0,
+        pixel = position - .{0, 16},
+
+        scale_factor = 1,
+
+        horizontal_flip = false,
+
+        use_color_override = false,
+    );
 }
 
 draw_title_screen :: () {

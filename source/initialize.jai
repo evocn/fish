@@ -44,7 +44,7 @@ initialize_sdl :: () {
     // Settings
     {
         SDL_ShowCursor(0);
-        SDL_SetRelativeMouseMode(SDL_TRUE);
+        SDL_SetRelativeMouseMode(SDL_FALSE);
 
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, xx SDL_GL_CONTEXT_PROFILE_CORE);
     }

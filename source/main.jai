@@ -50,6 +50,7 @@ main :: () {
 
                     if #complete game.player.state == {
                         case .DEFAULT;
+                            simulate_interactions(*game);
                     }
             }
         }

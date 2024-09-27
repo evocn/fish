@@ -7,7 +7,9 @@
 #load "entity.jai";
 //#load "entity_serialization.jai";
 #load "tile.jai";
-#load "ai.jai";
+
+#load "personality.jai";
+#load "behavior.jai";
 
 #load "sprite_animation.jai";
 
@@ -17,6 +19,7 @@
 
 #load "collisions/simulation.jai";
 
+#load "interaction.jai";
 
 Game :: struct {
     player : Player_Interface;
@@ -37,7 +40,6 @@ simulate :: (game: *Game, dt: float) {
 
     game.camera = .{};
 
-
     rainbow_color = update_rainbow_color(dt);
 }
 
@@ -54,6 +56,7 @@ initialize :: (game: *Game) {
         array_add(*game.entities, xx particle_system);
 
         // Load Guys
+
         frog : *Guy = xx new_entity(.GUY);
         {
             using frog;
@@ -62,31 +65,76 @@ initialize :: (game: *Game) {
 
             x = 100;
             y = 16;
-            width  = 12;
-            height = 12;
+            width  = 14;
+            height = 14;
 
             speed = 10;
 
-            ai.state = .WANDER_FLOOR;
+            {
+                using personality;
 
-            array_add(*animations,
-                Sprite_Animation.{
+                idle := Sprite_Animation.{
                     sheet = "Frog-Idle",
                     frame_count = 2,
                     speed = 1.0,
-                }
-            );
+                };
 
-            array_add(*animations,
-                Sprite_Animation.{
+                walk := Sprite_Animation.{
                     sheet = "Frog-Walk",
                     frame_count = 4,
                     speed = 4.0,
-                }
-            );
+                };
 
-            assert(animations.count > 0);
-            animation = *animations[0];
+                sleep := Sprite_Animation.{
+                    sheet = "Frog-Sleep",
+                    frame_count = 2,
+                    speed = 1.0,
+                };
+
+                shock := Sprite_Animation.{
+                    sheet = "Frog-Shock",
+                    frame_count = 2,
+                    speed = 1.0,
+                };
+
+                {
+                    b := New(Behavior_Idle);
+                    b.animation = idle;
+
+                    b.default_boredom = 30;
+
+                    reset(b);
+                    array_add(*neutral_behaviors, xx b);
+                }
+
+                {
+                    b := New(Behavior_Wander_Floor);
+                    b.animation = walk;
+                    b.idle_animation = idle;
+
+                    b.default_boredom = 4;
+
+                    reset(b);
+                    array_add(*neutral_behaviors, xx b);
+                }
+
+                {
+                    b := New(Behavior_Wander);
+                    b.animation = walk; // @TODO
+                    b.idle_animation = idle;
+
+                    b.default_boredom = 20;
+
+                    reset(b);
+                    array_add(*neutral_behaviors, xx b);
+                }
+
+                current_whim = random_choice(neutral_behaviors);
+
+                sleep_behavior = Behavior_Sleep.{animation = sleep, default_boredom = 50};
+                shock_behavior = Behavior_Shock.{animation = shock, default_boredom = 1};
+                heart_behavior = Behavior_Heart.{};
+            }
         }
         array_add(*game.entities, xx frog);
         array_add(*game.simulation.actors, *frog.actor);
@@ -100,23 +148,65 @@ initialize :: (game: *Game) {
 
             x = 32;
             y = 16;
-            width  = 10;
-            height = 10;
+            width  = 15;
+            height = 15;
 
             speed = 10;
 
-            ai.state = .SIT;
+            {
+                using personality;
 
-            array_add(*animations,
-                Sprite_Animation.{
+
+                idle := Sprite_Animation.{
                     sheet = "Tako-Idle",
                     frame_count = 9,
                     speed = 10.0,
-                }
-            );
+                };
 
-            assert(animations.count > 0);
-            animation = *animations[0];
+                walk := Sprite_Animation.{
+                    sheet = "Tako-Walk",
+                    frame_count = 7,
+                    speed = 10.0,
+                };
+
+                sleep := Sprite_Animation.{
+                    sheet = "Tako-Sleep",
+                    frame_count = 9,
+                    speed = 10.0,
+                };
+
+                shock := Sprite_Animation.{
+                    sheet = "Tako-Shock",
+                    frame_count = 13,
+                    speed = 20.0,
+                };
+
+                {
+                    b := New(Behavior_Idle);
+                    b.animation = idle;
+
+                    b.default_boredom = 7;
+
+                    array_add(*neutral_behaviors, xx b);
+                }
+
+                {
+                    b := New(Behavior_Wander_Floor);
+                    b.animation = walk;
+                    b.idle_animation = idle;
+
+                    b.default_boredom = 15;
+
+                    reset(b);
+                    array_add(*neutral_behaviors, xx b);
+                }
+
+                current_whim = random_choice(neutral_behaviors);
+
+                sleep_behavior = Behavior_Sleep.{animation = sleep, default_boredom = 10};
+                shock_behavior = Behavior_Shock.{animation = shock, default_boredom = 0.7};
+                heart_behavior = Behavior_Heart.{};
+            }
         }
         array_add(*game.entities, xx tako);
         array_add(*game.simulation.actors, *tako.actor);
@@ -128,32 +218,49 @@ initialize :: (game: *Game) {
             name = "clam";
 
             x = 160;
-            y = 16;
+            y = 80;
             width  = 16;
             height = 16;
 
             speed = 0;
 
-            ai.state = .SIT;
+            {
+                using personality;
 
-            array_add(*animations,
-                Sprite_Animation.{
+                idle := Sprite_Animation.{
                     sheet = "Clam-Idle",
                     frame_count = 1,
                     speed = 1.0,
-                }
-            );
+                };
 
-            array_add(*animations,
-                Sprite_Animation.{
-                    sheet = "Clam-Surprised",
+                sleep := Sprite_Animation.{
+                    sheet = "Clam-Sleep",
+                    frame_count = 2,
+                    speed = 1.2,
+                };
+
+                shock := Sprite_Animation.{
+                    sheet = "Clam-Shock",
                     frame_count = 20,
-                    speed = 10.0,
-                }
-            );
+                    speed = 15.0,
+                };
 
-            assert(animations.count > 0);
-            animation = *animations[1];
+                {
+                    b := New(Behavior_Idle);
+                    b.animation = idle;
+
+                    b.default_boredom = 40;
+
+                    reset(b);
+                    array_add(*neutral_behaviors, xx b);
+                }
+
+                current_whim = random_choice(neutral_behaviors);
+
+                sleep_behavior = Behavior_Sleep.{animation = sleep, default_boredom = 100};
+                shock_behavior = Behavior_Shock.{animation = shock, default_boredom = 1.4};
+                heart_behavior = Behavior_Heart.{};
+            }
         }
         array_add(*game.entities, xx clam);
         array_add(*game.simulation.actors, *clam.actor);
@@ -171,26 +278,60 @@ initialize :: (game: *Game) {
 
             speed = 30;
 
-            ai.state = .WANDER_FLOOR;
+            {
+                using personality;
 
-            array_add(*animations,
-                Sprite_Animation.{
+                idle := Sprite_Animation.{
                     sheet = "Jelly-Idle",
                     frame_count = 2,
                     speed = 5.0,
-                }
-            );
+                };
 
-            array_add(*animations,
-                Sprite_Animation.{
+                walk := Sprite_Animation.{
                     sheet = "Jelly-Walk",
                     frame_count = 2,
                     speed = 10.0,
-                }
-            );
+                };
 
-            assert(animations.count > 0);
-            animation = *animations[0];
+                sleep := Sprite_Animation.{
+                    sheet = "Jelly-Sleep",
+                    frame_count = 14,
+                    speed = 10.0,
+                };
+
+                shock := Sprite_Animation.{
+                    sheet = "Jelly-Shock",
+                    frame_count = 2,
+                    speed = 10.0,
+                };
+
+                {
+                    b := New(Behavior_Idle);
+                    b.animation = idle;
+
+                    b.default_boredom = 7;
+
+                    reset(b);
+                    array_add(*neutral_behaviors, xx b);
+                }
+
+                {
+                    b := New(Behavior_Wander_Floor);
+                    b.animation = walk;
+                    b.idle_animation = idle;
+
+                    b.default_boredom = 4;
+
+                    reset(b);
+                    array_add(*neutral_behaviors, xx b);
+                }
+
+                current_whim = random_choice(neutral_behaviors);
+
+                sleep_behavior = Behavior_Sleep.{animation = sleep, default_boredom = 10};
+                shock_behavior = Behavior_Shock.{animation = shock, default_boredom = 2};
+                heart_behavior = Behavior_Heart.{};
+            }
         }
         array_add(*game.entities, xx jelly);
         array_add(*game.simulation.actors, *jelly.actor);
@@ -208,20 +349,44 @@ initialize :: (game: *Game) {
 
             speed = 20;
 
-            ai.state = .WANDER;
+            {
+                using personality;
 
-            array_add(*animations,
-                Sprite_Animation.{
+                heart := Sprite_Animation.{
                     sheet = "Blowfish-Happy",
                     frame_count = 10,
                     speed = 10.0,
+                };
+
+                sleep := Sprite_Animation.{
+                    sheet = "Blowfish-Sleep",
+                    frame_count = 2,
+                    speed = 1.0,
+                };
+
+                shock := Sprite_Animation.{
+                    sheet = "Blowfish-Shock",
+                    frame_count = 1,
+                    speed = 1.0,
+                };
+
+                {
+                    b := New(Behavior_Wander);
+                    b.animation = heart;
+                    b.idle_animation = heart;
+
+                    b.default_boredom = 5;
+                    reset(b);
+
+                    array_add(*neutral_behaviors, xx b);
                 }
-            );
 
-            assert(animations.count > 0);
-            animation = *animations[0];
+                current_whim = random_choice(neutral_behaviors);
 
-            velocity = .{20, 10};
+                sleep_behavior = Behavior_Sleep.{animation = sleep, default_boredom = 30};
+                shock_behavior = Behavior_Shock.{animation = shock, default_boredom = 50};
+                heart_behavior = Behavior_Heart.{};
+            }
         }
         array_add(*game.entities, xx blowfish);
         array_add(*game.simulation.actors, *blowfish.actor);

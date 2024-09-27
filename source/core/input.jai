@@ -35,6 +35,9 @@ post_frame_update :: (input: *Input) {
     update(*input.west);
     update(*input.start);
     update(*input.select);
+
+    update(*input.left_mouse);
+    update(*input.right_mouse);
 }
 
 
@@ -51,6 +54,11 @@ Input :: struct {
 
     start   : Button;
     select  : Button;
+
+    mouse_active : bool = true;
+    mouse_position : Pair;
+    left_mouse : Button;
+    right_mouse: Button;
 }
 
 
@@ -132,9 +140,42 @@ gather_input :: (input: *Input, gamepad: *SDL_Joystick) {
                     }
                 }
 
+            case SDL_MOUSEBUTTONDOWN;
+                if program_state.imgui_capturing_mouse return;
+
+                // Main Program Inputs
+                {
+                    if event.button.button == SDL_BUTTON_LEFT   press(*input.left_mouse);
+                    if event.button.button == SDL_BUTTON_RIGHT  press(*input.right_mouse);
+                }
+
+            case SDL_MOUSEBUTTONUP;
+                if program_state.imgui_capturing_mouse return;
+
+                // Main Program Inputs
+                {
+                    if event.button.button == SDL_BUTTON_LEFT   release(*input.left_mouse);
+                    if event.button.button == SDL_BUTTON_RIGHT  release(*input.right_mouse);
+                }
+
+
+
+            case SDL_MOUSEMOTION;
+                if program_state.imgui_capturing_mouse return;
+
+                // Main Program Inputs
+                {
+                    // @TODO: Review these arbitrary offsets for actual pixel correctness.
+                    input.mouse_position.x = cast(int)(event.motion.x * 
+                        (cast(float)PIXEL_WIDTH  / graphics_context.window_width)) + 1
+                    ;
+                    input.mouse_position.y = PIXEL_HEIGHT - cast(int)(event.motion.y * 
+                        (cast(float)PIXEL_HEIGHT / graphics_context.window_height)) - 1
+                    ;
+                }
+
 
             JOYSTICK_DEAD_ZONE :: 8000;
-
             case SDL_JOYBUTTONDOWN;
                 // 0, 1, 2, 3 : face buttons
                 // 4, 5 : left bumper / right bumper
@@ -174,17 +215,27 @@ gather_input :: (input: *Input, gamepad: *SDL_Joystick) {
                 gamepad = null;
 
             case SDL_WINDOWEVENT;
-                if event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED {
-                    graphics_context.window_width  = event.window.data1;
-                    graphics_context.window_height = event.window.data2;
+                if event.window.event == {
+                    case .SDL_WINDOWEVENT_SIZE_CHANGED; {
+                        graphics_context.window_width  = event.window.data1;
+                        graphics_context.window_height = event.window.data2;
 
-                    #if GAME_ASPECT_RATIO > SCREEN_ASPECT_RATIO {
-                        graphics_context.viewport_width = graphics_context.window_width;
-                        graphics_context.viewport_height  = cast(s32)(graphics_context.viewport_width / GAME_ASPECT_RATIO);
+                        #if GAME_ASPECT_RATIO > SCREEN_ASPECT_RATIO {
+                            graphics_context.viewport_width = graphics_context.window_width;
+                            graphics_context.viewport_height  = cast(s32)(graphics_context.viewport_width / GAME_ASPECT_RATIO);
+                        }
+                        else {
+                            graphics_context.viewport_height = graphics_context.window_height;
+                            graphics_context.viewport_width  = cast(s32)(graphics_context.viewport_height * GAME_ASPECT_RATIO);
+                        }
                     }
-                    else {
-                        graphics_context.viewport_height = graphics_context.window_height;
-                        graphics_context.viewport_width  = cast(s32)(graphics_context.viewport_height * GAME_ASPECT_RATIO);
+
+                    case .SDL_WINDOWEVENT_ENTER; {
+                        input.mouse_active = true;
+                    }
+
+                    case .SDL_WINDOWEVENT_LEAVE; {
+                        input.mouse_active = false;
                     }
                 }
         }

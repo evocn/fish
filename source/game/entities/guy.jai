@@ -10,9 +10,9 @@ Guy :: struct {
 
     using actor : Actor;
     speed       : float;
-    ai          : AI_Controller;
 
-    animations  : [..] Sprite_Animation;
+    personality : Personality;
+
     animation   : *Sprite_Animation;
 
     // State
@@ -26,13 +26,9 @@ initialize :: (using guy: *Guy) {
 }
 
 update :: (using guy: *Guy, dt: float) {
-    // AI update
+    // Personality update
     {
-        something_new := update(*ai, dt);
-
-        if something_new {
-            apply_ai_to_guy(guy, ai);
-        }
+        update(*personality, guy, dt);
     }
 
     // Move
@@ -82,18 +78,6 @@ update :: (using guy: *Guy, dt: float) {
         else if velocity.x > 0.0 {
             facing_left = false;
         }
-
-        // Update Animation
-        if guy.ai.state == .WANDER_FLOOR {
-            if guy.velocity.x == 0.0 && guy.velocity.y == 0.0 {
-                animation = *animations[0];
-            }
-            else {
-                animation = *animations[1];
-            }
-        }
-
-        update(animation, dt);
     }
     update_visuals(guy, dt);
 }
@@ -109,7 +93,7 @@ draw :: (guy: *Guy) {
 
     sprite := table_find_pointer(*graphics_context.sheets, guy.animation.sheet);
     if !sprite {
-        log_error("Couldn't load entity spritesheet.\n");
+        log_error("Couldn't load entity spritesheet %.\n", guy.animation.sheet);
         return;
     }
 

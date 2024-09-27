@@ -12,6 +12,11 @@ collision :: (a: Collider, b: Collider) -> bool {
         && a.x + a.width > b.x && a.y + a.height > b.y;
 }
 
+within :: (p: Pair, c: Collider) -> bool {
+    return p.x >= c.x && p.x < c.x + c.width
+        && p.y >= c.y && p.y < c.y + c.width;
+}
+
 //
 //
 
