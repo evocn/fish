@@ -75,26 +75,44 @@ initialize :: (game: *Game) {
 
                 idle := Sprite_Animation.{
                     sheet = "Frog-Idle",
-                    frame_count = 2,
-                    speed = 1.0,
+                    frame_count = 8,
+                    speed = 10.0,
                 };
 
                 walk := Sprite_Animation.{
                     sheet = "Frog-Walk",
                     frame_count = 4,
-                    speed = 4.0,
+                    speed = 10,
                 };
 
                 sleep := Sprite_Animation.{
                     sheet = "Frog-Sleep",
-                    frame_count = 2,
-                    speed = 1.0,
+                    frame_count = 15,
+                    speed = 10.0,
                 };
 
                 shock := Sprite_Animation.{
                     sheet = "Frog-Shock",
-                    frame_count = 2,
-                    speed = 1.0,
+                    frame_count = 8,
+                    speed = 8.0,
+                };
+
+                heart := Sprite_Animation.{
+                    sheet = "Frog-Heart",
+                    frame_count = 11,
+                    speed = 10.0,
+                };
+
+                swim := Sprite_Animation.{
+                    sheet = "Frog-Swim",
+                    frame_count = 5,
+                    speed = 10.0,
+                };
+
+                jump := Sprite_Animation.{
+                    sheet = "Frog-Jump",
+                    frame_count = 11,
+                    speed = 10.0,
                 };
 
                 {
@@ -120,7 +138,7 @@ initialize :: (game: *Game) {
 
                 {
                     b := New(Behavior_Wander);
-                    b.animation = walk; // @TODO
+                    b.animation = swim; // @TODO
                     b.idle_animation = idle;
 
                     b.default_boredom = 20;
@@ -133,7 +151,7 @@ initialize :: (game: *Game) {
 
                 sleep_behavior = Behavior_Sleep.{animation = sleep, default_boredom = 50};
                 shock_behavior = Behavior_Shock.{animation = shock, default_boredom = 1};
-                heart_behavior = Behavior_Heart.{};
+                heart_behavior = Behavior_Heart.{animation = heart, default_boredom = 5};
             }
         }
         array_add(*game.entities, xx frog);
@@ -181,6 +199,12 @@ initialize :: (game: *Game) {
                     speed = 20.0,
                 };
 
+                heart := Sprite_Animation.{
+                    sheet = "Tako-Heart",
+                    frame_count = 16,
+                    speed = 8.0,
+                };
+
                 {
                     b := New(Behavior_Idle);
                     b.animation = idle;
@@ -205,7 +229,7 @@ initialize :: (game: *Game) {
 
                 sleep_behavior = Behavior_Sleep.{animation = sleep, default_boredom = 10};
                 shock_behavior = Behavior_Shock.{animation = shock, default_boredom = 0.7};
-                heart_behavior = Behavior_Heart.{};
+                heart_behavior = Behavior_Heart.{animation = heart, default_boredom = 3.0};
             }
         }
         array_add(*game.entities, xx tako);
@@ -245,6 +269,12 @@ initialize :: (game: *Game) {
                     speed = 15.0,
                 };
 
+                heart := Sprite_Animation.{
+                    sheet = "Clam-Heart",
+                    frame_count = 1,
+                    speed = 15.0,
+                };
+
                 {
                     b := New(Behavior_Idle);
                     b.animation = idle;
@@ -259,7 +289,7 @@ initialize :: (game: *Game) {
 
                 sleep_behavior = Behavior_Sleep.{animation = sleep, default_boredom = 100};
                 shock_behavior = Behavior_Shock.{animation = shock, default_boredom = 1.4};
-                heart_behavior = Behavior_Heart.{};
+                heart_behavior = Behavior_Heart.{animation = heart, default_boredom = 2.0};
             }
         }
         array_add(*game.entities, xx clam);
@@ -283,13 +313,13 @@ initialize :: (game: *Game) {
 
                 idle := Sprite_Animation.{
                     sheet = "Jelly-Idle",
-                    frame_count = 2,
-                    speed = 5.0,
+                    frame_count = 10,
+                    speed = 7.0,
                 };
 
                 walk := Sprite_Animation.{
                     sheet = "Jelly-Walk",
-                    frame_count = 2,
+                    frame_count = 7,
                     speed = 10.0,
                 };
 
@@ -301,7 +331,13 @@ initialize :: (game: *Game) {
 
                 shock := Sprite_Animation.{
                     sheet = "Jelly-Shock",
-                    frame_count = 2,
+                    frame_count = 5,
+                    speed = 20,
+                };
+
+                heart := Sprite_Animation.{
+                    sheet = "Jelly-Heart",
+                    frame_count = 20,
                     speed = 10.0,
                 };
 
@@ -330,7 +366,7 @@ initialize :: (game: *Game) {
 
                 sleep_behavior = Behavior_Sleep.{animation = sleep, default_boredom = 10};
                 shock_behavior = Behavior_Shock.{animation = shock, default_boredom = 2};
-                heart_behavior = Behavior_Heart.{};
+                heart_behavior = Behavior_Heart.{animation = heart, default_boredom = 8};
             }
         }
         array_add(*game.entities, xx jelly);
@@ -352,6 +388,18 @@ initialize :: (game: *Game) {
             {
                 using personality;
 
+                idle := Sprite_Animation.{
+                    sheet = "Blowfish-Idle",
+                    frame_count = 8,
+                    speed = 7.0,
+                };
+
+                walk := Sprite_Animation.{
+                    sheet = "Blowfish-Walk",
+                    frame_count = 5,
+                    speed = 10.0,
+                };
+
                 heart := Sprite_Animation.{
                     sheet = "Blowfish-Happy",
                     frame_count = 10,
@@ -360,8 +408,8 @@ initialize :: (game: *Game) {
 
                 sleep := Sprite_Animation.{
                     sheet = "Blowfish-Sleep",
-                    frame_count = 2,
-                    speed = 1.0,
+                    frame_count = 21,
+                    speed = 10.0,
                 };
 
                 shock := Sprite_Animation.{
@@ -372,8 +420,8 @@ initialize :: (game: *Game) {
 
                 {
                     b := New(Behavior_Wander);
-                    b.animation = heart;
-                    b.idle_animation = heart;
+                    b.animation = walk;
+                    b.idle_animation = idle;
 
                     b.default_boredom = 5;
                     reset(b);
@@ -384,8 +432,8 @@ initialize :: (game: *Game) {
                 current_whim = random_choice(neutral_behaviors);
 
                 sleep_behavior = Behavior_Sleep.{animation = sleep, default_boredom = 30};
-                shock_behavior = Behavior_Shock.{animation = shock, default_boredom = 50};
-                heart_behavior = Behavior_Heart.{};
+                shock_behavior = Behavior_Shock.{animation = shock, default_boredom = 5};
+                heart_behavior = Behavior_Heart.{animation = heart, default_boredom = 10};
             }
         }
         array_add(*game.entities, xx blowfish);
