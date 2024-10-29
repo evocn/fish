@@ -18,7 +18,8 @@ Personality :: struct {
 
 update :: (using personality: *Personality, guy: *Guy, dt: float) {
     if !current_whim {
-        current_whim = random_choice(neutral_behaviors);
+        next_whim := random_choice(neutral_behaviors);
+        change_to_behavior(guy, next_whim);
     }
 
     // Update the current whim
@@ -26,9 +27,20 @@ update :: (using personality: *Personality, guy: *Guy, dt: float) {
 
     // Potentially get bored
     if check_boredom(current_whim) {
-        current_whim = random_choice(neutral_behaviors);
-        reset(current_whim);
+        current_whim.done = true;
     }
+
+    // Change behaviors
+    if current_whim.done {
+        next_whim := random_choice(neutral_behaviors);
+        change_to_behavior(guy, next_whim);
+    }
+}
+
+change_to_behavior :: (guy: *Guy, next: *Behavior) {
+    guy.personality.current_whim = next;
+    guy.velocity = .{};
+    reset(next);
 }
 
 check_boredom :: (behavior: *Behavior) -> bool {

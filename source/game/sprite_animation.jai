@@ -18,12 +18,14 @@ reset :: (using animation : *Sprite_Animation) {
     t = 0;
 }
 
-update :: (using animation : *Sprite_Animation, dt: float) {
+update :: (using animation : *Sprite_Animation, dt: float) -> finished : bool {
     t += dt;
     change_time := 1.0 / speed;
-    if t < change_time then return;
+    if t < change_time then return false;
     t = fmod_cycling(t, change_time);
 
     // Next frame
     frame = (frame + 1) % frame_count;
+
+    return 0 == frame;
 }

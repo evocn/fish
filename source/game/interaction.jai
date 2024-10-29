@@ -2,6 +2,13 @@
 // Player Interaction
 // September 2024
 
+Cursor_State :: enum {
+    NEUTRAL;
+    PET;
+    SNAP;
+    SLEEP;
+}
+
 simulate_interactions :: (game: *Game) {
     using game.player.input;
 
@@ -18,20 +25,19 @@ simulate_interactions :: (game: *Game) {
 
         if hover_guy {
             if left_mouse.just_pressed {
-                guy_trigger_shock(hover_guy);
-            }
-
-            if right_mouse.just_pressed {
-                guy_trigger_sleep(hover_guy);
+                if #complete game.cursor.state == {
+                    case .NEUTRAL;  // @TODO: Focus on the guy.
+                    case .PET;      change_to_behavior(hover_guy, xx *hover_guy.personality.heart_behavior);
+                    case .SNAP;     change_to_behavior(hover_guy, xx *hover_guy.personality.shock_behavior);
+                    case .SLEEP;    change_to_behavior(hover_guy, xx *hover_guy.personality.sleep_behavior);
+                }
             }
         }
     }
 
-    if south.just_pressed {
-        sleep_everyone(game);
-    }
-
-    if west.just_pressed {
+    if north.just_pressed {
+        // @TODO!
+        play_sfx("thunder");
         shock_everyone(game);
     }
 }
@@ -40,7 +46,7 @@ shock_everyone :: (game : *Game) {
     for game.entities {
         if it.kind != .GUY then continue;
         guy := cast(*Guy)it;
-        guy_trigger_shock(guy);
+        change_to_behavior(guy, xx *guy.personality.shock_behavior);
     }
 }
 
@@ -48,16 +54,14 @@ sleep_everyone :: (game : *Game) {
     for game.entities {
         if it.kind != .GUY then continue;
         guy := cast(*Guy)it;
-        guy_trigger_sleep(guy);
+        change_to_behavior(guy, xx *guy.personality.sleep_behavior);
     }
 }
 
-guy_trigger_sleep :: (guy: *Guy) {
-    guy.personality.current_whim = xx *guy.personality.sleep_behavior;
-    reset(guy.personality.current_whim);
-}
-
-guy_trigger_shock :: (guy: *Guy) {
-    guy.personality.current_whim = xx *guy.personality.shock_behavior;
-    reset(guy.personality.current_whim);
+heart_everyone :: (game : *Game) {
+    for game.entities {
+        if it.kind != .GUY then continue;
+        guy := cast(*Guy)it;
+        change_to_behavior(guy, xx *guy.personality.heart_behavior);
+    }
 }

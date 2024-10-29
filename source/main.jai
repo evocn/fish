@@ -3,6 +3,8 @@
 // September 2024
 
 main :: () {
+    random_seed(xx current_time_monotonic());
+
     initialize_everything();
 
     gamepad: SDL_Joystick;

@@ -38,6 +38,7 @@ post_frame_update :: (input: *Input) {
 
     update(*input.left_mouse);
     update(*input.right_mouse);
+    update(*input.middle_mouse);
 }
 
 
@@ -57,8 +58,9 @@ Input :: struct {
 
     mouse_active : bool = true;
     mouse_position : Pair;
-    left_mouse : Button;
-    right_mouse: Button;
+    left_mouse  : Button;
+    right_mouse : Button;
+    middle_mouse: Button;
 }
 
 
@@ -147,6 +149,7 @@ gather_input :: (input: *Input, gamepad: *SDL_Joystick) {
                 {
                     if event.button.button == SDL_BUTTON_LEFT   press(*input.left_mouse);
                     if event.button.button == SDL_BUTTON_RIGHT  press(*input.right_mouse);
+                    if event.button.button == SDL_BUTTON_MIDDLE press(*input.middle_mouse);
                 }
 
             case SDL_MOUSEBUTTONUP;
@@ -156,6 +159,7 @@ gather_input :: (input: *Input, gamepad: *SDL_Joystick) {
                 {
                     if event.button.button == SDL_BUTTON_LEFT   release(*input.left_mouse);
                     if event.button.button == SDL_BUTTON_RIGHT  release(*input.right_mouse);
+                    if event.button.button == SDL_BUTTON_MIDDLE release(*input.middle_mouse);
                 }
 
 

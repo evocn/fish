@@ -37,20 +37,28 @@ draw_user_interface :: (game: Game) {
 
     if game.player.input.mouse_active {
         mouse_position := game.player.input.mouse_position;
-        draw_mouse_cursor(mouse_position);
+        draw_mouse_cursor(mouse_position, game.cursor.state);
     }
 }
 
-draw_mouse_cursor :: (position : Pair) {
-    sprite := table_find_pointer(*graphics_context.sprites, "cursor");
+draw_mouse_cursor :: (position : Pair, cursor_state: Cursor_State) {
+    sprite := table_find_pointer(*graphics_context.sheets, "cursor");
     if !sprite {
         log_error("Couldn't load cursor spritesheet.\n");
         return;
     }
 
+    index : int;
+    if #complete cursor_state == {
+        case .NEUTRAL;  index = 0;
+        case .PET;      index = 1;
+        case .SNAP;     index = 2;
+        case .SLEEP;    index = 3;
+    }
+
     draw_sprite(
         sprite,
-        index = 0,
+        index = index,
         pixel = position - .{0, 16},
 
         scale_factor = 1,

@@ -11,6 +11,7 @@ Behavior :: struct {
         HEART;
 
         IDLE;
+        SWIM;
         WANDER;
         WANDER_FLOOR;
         SPIN;
@@ -21,13 +22,16 @@ Behavior :: struct {
 
     animation : Sprite_Animation;
 
+    swimming : bool;
+
     // @TODO: Should these choice-level variables be kept in the Personality? Or in the individual behaviors?
     default_boredom := 7.0;
     boredom : float;
-    excitement_factor   := 1;
+    excitement_factor := 1;
 
     // State
     time : float; @NoSerialize
+    done : bool; @NoSerialize
 }
 
 update :: (behavior: *Behavior, guy: *Guy, dt: float) {
@@ -37,6 +41,7 @@ update :: (behavior: *Behavior, guy: *Guy, dt: float) {
         case .SHOCK;        update(cast(*Behavior_Shock)behavior,       guy, dt);
         case .HEART;        update(cast(*Behavior_Heart)behavior,       guy, dt);
         case .IDLE;         update(cast(*Behavior_Idle)behavior,        guy, dt);
+        case .SWIM;         update(cast(*Behavior_Swim)behavior,        guy, dt);
         case .WANDER;       update(cast(*Behavior_Wander)behavior,      guy, dt);
         case .WANDER_FLOOR; update(cast(*Behavior_Wander_Floor)behavior,guy, dt);
         case .SPIN;         update(cast(*Behavior_Spin)behavior,        guy, dt);
@@ -45,6 +50,8 @@ update :: (behavior: *Behavior, guy: *Guy, dt: float) {
 }
 
 reset :: (behavior: *Behavior) {
+    behavior.done = false;
+
     VARIANCE :: 0.2; // Up to twenty percent above or below the stated boredom value.
     behavior.boredom = behavior.default_boredom + random(-VARIANCE, VARIANCE);
 
@@ -56,6 +63,7 @@ reset :: (behavior: *Behavior) {
         case .SHOCK;        reset(cast(*Behavior_Shock)behavior);
         case .HEART;        reset(cast(*Behavior_Heart)behavior);
         case .IDLE;         reset(cast(*Behavior_Idle)behavior);
+        case .SWIM;         reset(cast(*Behavior_Swim)behavior);
         case .WANDER;       reset(cast(*Behavior_Wander)behavior);
         case .WANDER_FLOOR; reset(cast(*Behavior_Wander_Floor)behavior);
         case .SPIN;         reset(cast(*Behavior_Spin)behavior);
@@ -74,8 +82,6 @@ reset :: (behavior: *Behavior_Sleep) {
 }
 
 update :: (behavior: *Behavior_Sleep, guy: *Guy, dt: float) {
-    guy.velocity = .{};
-
     guy.animation = *behavior.animation;
     update(guy.animation, dt);
 }
@@ -91,10 +97,8 @@ reset :: (behavior: *Behavior_Shock) {
 }
 
 update :: (behavior: *Behavior_Shock, guy: *Guy, dt: float) {
-    guy.velocity = .{};
-
     guy.animation = *behavior.animation;
-    update(guy.animation, dt);
+    behavior.done = update(guy.animation, dt);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -108,10 +112,8 @@ reset :: (behavior: *Behavior_Heart) {
 }
 
 update :: (behavior: *Behavior_Heart, guy: *Guy, dt: float) {
-    guy.velocity = .{};
-
     guy.animation = *behavior.animation;
-    update(guy.animation, dt);
+    behavior.done = update(guy.animation, dt);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -125,8 +127,6 @@ reset :: (behavior: *Behavior_Idle) {
 }
 
 update :: (behavior: *Behavior_Idle, guy: *Guy, dt: float) {
-    guy.velocity = .{};
-
     guy.animation = *behavior.animation;
     update(guy.animation, dt);
 }
@@ -136,6 +136,8 @@ update :: (behavior: *Behavior_Idle, guy: *Guy, dt: float) {
 Behavior_Debug :: struct {
     using behavior: Behavior;
     kind = .DEBUG;
+
+    speed   : float = 10.0;
 
     initial_direction :: Vector2.{1, 1};
 
@@ -149,9 +151,44 @@ reset :: (behavior: *Behavior_Debug) {
 update :: (behavior: *Behavior_Debug, guy: *Guy, dt: float) {
     if behavior.direction == Vector2.{} then behavior.direction = behavior.initial_direction;
 
-    guy.velocity = normalize(behavior.direction) * guy.speed;
+    guy.velocity = normalize(behavior.direction) * behavior.speed;
 
     guy.animation = *behavior.animation;
+    update(guy.animation, dt);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+Behavior_Swim :: struct {
+    using behavior: Behavior;
+    kind = .SWIM;
+
+    speed   : float = 8;
+
+    period  : float = 2.0;
+
+    // State
+    time_this_direction: float; @NoSerialize
+    wants_to_move_this_direction: Vector2; @NoSerialize
+}
+
+reset :: (behavior: *Behavior_Swim) {
+    behavior.time_this_direction = 0.0;
+    behavior.wants_to_move_this_direction = .{};
+}
+
+update :: (behavior: *Behavior_Swim, guy: *Guy, dt: float) {
+    behavior.time_this_direction += dt;
+
+    if behavior.time_this_direction > behavior.period {
+        behavior.time_this_direction = 0.0;
+        behavior.wants_to_move_this_direction = get_random_direction_vector_on_unit_circle();
+
+        guy.velocity = normalize(behavior.wants_to_move_this_direction) * behavior.speed;
+    }
+
+    guy.animation = *behavior.animation;
+
     update(guy.animation, dt);
 }
 
@@ -161,7 +198,9 @@ Behavior_Wander :: struct {
     using behavior: Behavior;
     kind = .WANDER;
 
-    period : float = 2.0;
+    speed   : float = 5;
+
+    period  : float = 2.0;
 
     idle_animation : Sprite_Animation;
 
@@ -188,7 +227,7 @@ update :: (behavior: *Behavior_Wander, guy: *Guy, dt: float) {
             behavior.wants_to_move_this_direction = .{};
         }
 
-        guy.velocity = normalize(behavior.wants_to_move_this_direction) * guy.speed;
+        guy.velocity = normalize(behavior.wants_to_move_this_direction) * behavior.speed;
     }
 
     if behavior.wants_to_move_this_direction == .{} {
@@ -207,7 +246,9 @@ Behavior_Wander_Floor :: struct {
     using behavior: Behavior;
     kind = .WANDER_FLOOR;
 
-    period : float = 2.0;
+    speed   : float = 6;
+
+    period  : float = 2.0;
 
     idle_animation : Sprite_Animation;
 
@@ -240,7 +281,7 @@ update :: (behavior: *Behavior_Wander_Floor, guy: *Guy, dt: float) {
             behavior.wants_to_move_this_direction = .{};
         }
 
-        guy.velocity = normalize(behavior.wants_to_move_this_direction) * guy.speed;
+        guy.velocity = normalize(behavior.wants_to_move_this_direction) * behavior.speed;
     }
 
     if behavior.wants_to_move_this_direction == .{} {
@@ -259,7 +300,9 @@ Behavior_Spin :: struct {
     using behavior: Behavior;
     kind = .SPIN;
 
-    period : float = 2.0;
+    speed   : float = 20;
+
+    period  : float = 2.0;
 
     // State
     time_this_direction: float; @NoSerialize
@@ -280,7 +323,7 @@ update :: (behavior: *Behavior_Spin, guy: *Guy, dt: float) {
         behavior.time_this_direction = 0.0;
         behavior.wants_to_move_this_direction = -behavior.wants_to_move_this_direction;
 
-        guy.velocity = normalize(behavior.wants_to_move_this_direction) * guy.speed;
+        guy.velocity = normalize(behavior.wants_to_move_this_direction) * behavior.speed;
     }
 
     guy.animation = *behavior.animation;

@@ -27,6 +27,10 @@ Game :: struct {
     level : Level;
     entities : [..] *Entity;
 
+    cursor : struct {
+        state : Cursor_State;
+    }
+
     simulation : Simulation;
 
     camera : Pair;
@@ -39,6 +43,15 @@ simulate :: (game: *Game, dt: float) {
     }
 
     game.camera = .{};
+
+    {
+        using game.player.input;
+
+        if      up.is_held      game.cursor.state = .PET;
+        else if left.is_held    game.cursor.state = .SNAP;
+        else if right.is_held   game.cursor.state = .SLEEP;
+        else                    game.cursor.state = .NEUTRAL;
+    }
 
     rainbow_color = update_rainbow_color(dt);
 }
@@ -68,21 +81,19 @@ initialize :: (game: *Game) {
             width  = 14;
             height = 14;
 
-            speed = 10;
-
             {
                 using personality;
 
                 idle := Sprite_Animation.{
                     sheet = "Frog-Idle",
                     frame_count = 8,
-                    speed = 10.0,
+                    speed = 5.0,
                 };
 
                 walk := Sprite_Animation.{
                     sheet = "Frog-Walk",
                     frame_count = 4,
-                    speed = 10,
+                    speed = 7,
                 };
 
                 sleep := Sprite_Animation.{
@@ -94,7 +105,7 @@ initialize :: (game: *Game) {
                 shock := Sprite_Animation.{
                     sheet = "Frog-Shock",
                     frame_count = 8,
-                    speed = 8.0,
+                    speed = 12.0,
                 };
 
                 heart := Sprite_Animation.{
@@ -106,7 +117,7 @@ initialize :: (game: *Game) {
                 swim := Sprite_Animation.{
                     sheet = "Frog-Swim",
                     frame_count = 5,
-                    speed = 10.0,
+                    speed = 8.0,
                 };
 
                 jump := Sprite_Animation.{
@@ -119,7 +130,7 @@ initialize :: (game: *Game) {
                     b := New(Behavior_Idle);
                     b.animation = idle;
 
-                    b.default_boredom = 30;
+                    b.default_boredom = 4;
 
                     reset(b);
                     array_add(*neutral_behaviors, xx b);
@@ -130,16 +141,19 @@ initialize :: (game: *Game) {
                     b.animation = walk;
                     b.idle_animation = idle;
 
-                    b.default_boredom = 4;
+                    b.default_boredom = 30;
 
                     reset(b);
                     array_add(*neutral_behaviors, xx b);
                 }
 
                 {
-                    b := New(Behavior_Wander);
-                    b.animation = swim; // @TODO
-                    b.idle_animation = idle;
+                    b := New(Behavior_Swim);
+                    b.animation = swim;
+
+                    b.speed = 15.0;
+
+                    b.swimming = true;
 
                     b.default_boredom = 20;
 
@@ -168,8 +182,6 @@ initialize :: (game: *Game) {
             y = 16;
             width  = 15;
             height = 15;
-
-            speed = 10;
 
             {
                 using personality;
@@ -232,8 +244,10 @@ initialize :: (game: *Game) {
                 heart_behavior = Behavior_Heart.{animation = heart, default_boredom = 3.0};
             }
         }
+        /*
         array_add(*game.entities, xx tako);
         array_add(*game.simulation.actors, *tako.actor);
+        */
 
         clam : *Guy = xx new_entity(.GUY);
         {
@@ -241,12 +255,10 @@ initialize :: (game: *Game) {
 
             name = "clam";
 
-            x = 160;
+            x = 162;
             y = 80;
-            width  = 16;
-            height = 16;
-
-            speed = 0;
+            width  = 12;
+            height = 6;
 
             {
                 using personality;
@@ -272,7 +284,7 @@ initialize :: (game: *Game) {
                 heart := Sprite_Animation.{
                     sheet = "Clam-Heart",
                     frame_count = 1,
-                    speed = 15.0,
+                    speed = 0.05,
                 };
 
                 {
@@ -305,8 +317,6 @@ initialize :: (game: *Game) {
             y = 16;
             width  = 16;
             height = 16;
-
-            speed = 30;
 
             {
                 using personality;
@@ -369,8 +379,10 @@ initialize :: (game: *Game) {
                 heart_behavior = Behavior_Heart.{animation = heart, default_boredom = 8};
             }
         }
+        /*
         array_add(*game.entities, xx jelly);
         array_add(*game.simulation.actors, *jelly.actor);
+        */
 
         blowfish : *Guy = xx new_entity(.GUY);
         {
@@ -380,10 +392,8 @@ initialize :: (game: *Game) {
 
             x = 64;
             y = 64;
-            width  = 16;
-            height = 16;
-
-            speed = 20;
+            width  = 14;
+            height = 14;
 
             {
                 using personality;
@@ -415,13 +425,29 @@ initialize :: (game: *Game) {
                 shock := Sprite_Animation.{
                     sheet = "Blowfish-Shock",
                     frame_count = 1,
-                    speed = 1.0,
+                    speed = 0.1,
                 };
 
                 {
                     b := New(Behavior_Wander);
                     b.animation = walk;
                     b.idle_animation = idle;
+
+                    b.swimming = true;
+
+                    b.default_boredom = 5;
+                    reset(b);
+
+                    array_add(*neutral_behaviors, xx b);
+                }
+
+                {
+                    b := New(Behavior_Swim);
+                    b.animation = walk;
+
+                    b.speed = 15;
+
+                    b.swimming = true;
 
                     b.default_boredom = 5;
                     reset(b);
@@ -431,9 +457,9 @@ initialize :: (game: *Game) {
 
                 current_whim = random_choice(neutral_behaviors);
 
-                sleep_behavior = Behavior_Sleep.{animation = sleep, default_boredom = 30};
-                shock_behavior = Behavior_Shock.{animation = shock, default_boredom = 5};
-                heart_behavior = Behavior_Heart.{animation = heart, default_boredom = 10};
+                sleep_behavior = Behavior_Sleep.{animation = sleep, swimming = true, default_boredom = 30};
+                shock_behavior = Behavior_Shock.{animation = shock, swimming = true, default_boredom = 5};
+                heart_behavior = Behavior_Heart.{animation = heart, swimming = true, default_boredom = 10};
             }
         }
         array_add(*game.entities, xx blowfish);

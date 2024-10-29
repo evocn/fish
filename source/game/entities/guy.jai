@@ -9,7 +9,6 @@ Guy :: struct {
     name : string;
 
     using actor : Actor;
-    speed       : float;
 
     personality : Personality;
 
@@ -29,6 +28,21 @@ update :: (using guy: *Guy, dt: float) {
     // Personality update
     {
         update(*personality, guy, dt);
+
+        update_from_gravity :: (using guy: *Guy, dt: float) {
+            grounded := check_if_grounded(*guy.actor);
+            if grounded then return;
+
+            gravity_velocity := 10.0;
+
+            guy.velocity.y -= gravity_velocity * dt;
+        }
+
+
+        if guy.name == "frog" then print("% %\n", guy.personality.current_whim.kind, guy.personality.current_whim.swimming);
+        if !personality.current_whim.swimming {
+            update_from_gravity(guy, dt);
+        }
     }
 
     // Move
@@ -36,10 +50,10 @@ update :: (using guy: *Guy, dt: float) {
         amount_to_move := velocity * dt;
 
         collided_x := move_x(*guy.actor, amount_to_move.x, null);
-        if collided_x then velocity.x = -1 * velocity.x;
+        if collided_x then velocity.x = 0;
 
         collided_y := move_y(*guy.actor, amount_to_move.y, null);
-        if collided_y then velocity.y = -1 * velocity.y;
+        if collided_y then velocity.y = 0;
 
         if collided_x || collided_y then play_sfx("bump", true);
 

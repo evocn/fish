@@ -13,7 +13,10 @@ Audio_Context :: struct {
 
 play_sfx :: (name : string, perturb := false) {
     sfx := table_find_pointer(*audio_context.sfx, name);
-    if !sfx then print("Unable to play sfx %\n", name);
+    if !sfx {
+        print("Unable to play sfx %\n", name);
+        return;
+    }
 
     stream := make_stream(sfx, .GENERAL_SFX);
 
@@ -35,7 +38,10 @@ play_music :: (name : string) {
     }
 
     music := table_find_pointer(*audio_context.music, name);
-    if !music then print("Unable to play music %\n", name);
+    if !music then {
+        print("Unable to play music %\n", name);
+        return;
+    }
 
     stream := make_stream(music, .MUSIC);
 
