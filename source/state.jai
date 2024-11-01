@@ -3,7 +3,7 @@
 // February 2024
 
 using program_state : struct {
-    VERSION :: 0;
+    VERSION :: "0.03a";
     DEBUG_MEMORY :: true;
 
     mode : enum {

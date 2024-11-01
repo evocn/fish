@@ -35,8 +35,15 @@ main :: () {
                     if game.player.input.south.just_pressed {
                         switch_scene(.GAME);
 
-                        // @TODO: Make this more clear.
-                        play_music("nagata");
+                        // @TODO: Switch as the hour goes by too!
+                        get_music_for_the_hour :: () -> string {
+                            hour := time().hour;
+                            if hour < 7 || hour > 18 then return "sleep";
+                            else if hour > 12 then return "nagata";
+                            else if hour < 12 then return "bach";
+                            else return "nagata";
+                        }
+                        play_music(get_music_for_the_hour());
                     }
 
                 case .MENU;
