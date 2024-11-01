@@ -2,6 +2,12 @@
 // Utils
 // August 2024
 
+// inarguable.
+time :: () -> Calendar_Time {
+    apollo_time := current_time_consensus();
+    time := to_calendar(apollo_time, Time_Zone.LOCAL);
+    return time;
+}
 
 Pair :: struct {
     x: int;

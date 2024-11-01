@@ -65,8 +65,7 @@ draw_menu_element :: (using element: *Menu_Element, height : int, color := white
 
 // Clock
 draw_clock_readout :: () {
-    apollo_time := current_time_consensus();
-    using time := to_calendar(apollo_time, Time_Zone.LOCAL);
+    using t := time();
 
     clock_readout : string;
     {

@@ -7,6 +7,7 @@ Entity :: struct {
         TEST;
         GUY;
         PARTICLE_SYSTEM;
+        TOY;
     }
     kind : Kind;        @NoSerialize
 
@@ -28,6 +29,7 @@ new_entity :: (kind : Entity.Kind) -> *Entity {
         case .TEST;             new_entity = xx New(Test);
         case .GUY;              new_entity = xx New(Guy);
         case .PARTICLE_SYSTEM;  new_entity = xx New(Particle_System);
+        case .TOY;              new_entity = xx New(Toy);
     }
 
     initialize(new_entity);
@@ -44,6 +46,7 @@ initialize :: (entity: *Entity) {
         case .TEST;             initialize(cast(*Test)entity);
         case .GUY;              initialize(cast(*Guy)entity);
         case .PARTICLE_SYSTEM;  initialize(cast(*Particle_System)entity);
+        case .TOY;              initialize(cast(*Toy)entity);
     }
 
 
@@ -55,6 +58,7 @@ update :: (entity: *Entity, dt: float) {
         case .TEST;             update(cast(*Test)entity, dt);
         case .GUY;              update(cast(*Guy)entity, dt);
         case .PARTICLE_SYSTEM;  update(cast(*Particle_System)entity, dt);
+        case .TOY;              update(cast(*Toy)entity, dt);
     }
 }
 
@@ -63,6 +67,7 @@ draw :: (entity: *Entity) {
         case .TEST;             draw(cast(*Test)entity);
         case .GUY;              draw(cast(*Guy)entity);
         case .PARTICLE_SYSTEM;  draw(cast(*Particle_System)entity);
+        case .TOY;              draw(cast(*Toy)entity);
     }
 }
 
@@ -71,6 +76,7 @@ draw_debug :: (entity: *Entity) {
         case .TEST;             ;
         case .GUY;              draw_debug(cast(*Guy)entity);
         case .PARTICLE_SYSTEM;  ;
+        case .TOY;              draw_debug(cast(*Toy)entity);
     }
 }
 

@@ -14,6 +14,8 @@ Guy :: struct {
 
     animation   : *Sprite_Animation;
 
+    rarity : Rarity;
+
     // State
     facing_left : bool;     @NoSerialize
     velocity    : Vector2;  @NoSerialize
@@ -38,8 +40,6 @@ update :: (using guy: *Guy, dt: float) {
             guy.velocity.y -= gravity_velocity * dt;
         }
 
-
-        if guy.name == "frog" then print("% %\n", guy.personality.current_whim.kind, guy.personality.current_whim.swimming);
         if !personality.current_whim.swimming {
             update_from_gravity(guy, dt);
         }
@@ -96,36 +96,36 @@ update :: (using guy: *Guy, dt: float) {
     update_visuals(guy, dt);
 }
 
-draw :: (guy: *Guy) {
-    screen_pixel := world_space_to_screen_pixel(guy.x, guy.y);
-
-    bottom_left_corner_of_sprite :=
-          screen_pixel                  // Bottom left corner of collider
-        + .{guy.width / 2, 0}           // Gets us the center bottom of collider
-        - .{TILE_SIZE_IN_PIXELS / 2, 0} // Bottom left corner!
-    ;
-
-    sprite := table_find_pointer(*graphics_context.sheets, guy.animation.sheet);
+draw :: (using guy: *Guy) {
+    sprite := table_find_pointer(*graphics_context.sheets, animation.sheet);
     if !sprite {
-        log_error("Couldn't load entity spritesheet %.\n", guy.animation.sheet);
+        log_error("Couldn't load entity spritesheet %.\n", animation.sheet);
         return;
     }
 
+    screen_pixel := world_space_to_screen_pixel(xx x, xx y);
+
+    bottom_left_corner_of_sprite :=
+          screen_pixel    // Bottom left corner of collider
+        + .{width / 2, 0} // Gets us the center bottom of collider
+        - .{sprite.tile_width_in_pixels / 2, 0} // Bottom left corner!
+    ;
+
     draw_sprite(
         sprite,
-        index = guy.animation.frame,
+        index = animation.frame,
         pixel = bottom_left_corner_of_sprite,
 
         scale_factor = 1,
 
-        horizontal_flip = guy.facing_left,
+        horizontal_flip = facing_left,
 
         use_color_override = false,
     );
 }
 
-draw_debug :: (guy: *Guy) {
-    draw(guy.collider, color=guy.debug.unique_color);
+draw_debug :: (using guy: *Guy) {
+    draw(collider, color=debug.unique_color);
 }
 
 
@@ -140,4 +140,22 @@ get_camera_centered_on_guy :: (guy: Guy) -> Pair {
     ;
 
     return camera_center;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+
+Rarity :: enum #complete {
+    COMMON;
+    RARE;
+    MYTHIC;
+}
+
+// Tweakable!
+get_probability :: (rarity: Rarity) -> float {
+    if #complete rarity == {
+        case .COMMON; return 0.25;
+        case .RARE;   return 0.1;
+        case .MYTHIC; return 0.05;
+    }
 }

@@ -14,11 +14,14 @@ Personality :: struct {
     sleep_behavior : Behavior_Sleep;
     shock_behavior : Behavior_Shock;
     heart_behavior : Behavior_Heart;
+    eat_behavior   : Behavior_Eat;
+
+    schedule : Schedule;
 }
 
 update :: (using personality: *Personality, guy: *Guy, dt: float) {
     if !current_whim {
-        next_whim := random_choice(neutral_behaviors);
+        next_whim := whats_next(guy);
         change_to_behavior(guy, next_whim);
     }
 
@@ -32,7 +35,7 @@ update :: (using personality: *Personality, guy: *Guy, dt: float) {
 
     // Change behaviors
     if current_whim.done {
-        next_whim := random_choice(neutral_behaviors);
+        next_whim := whats_next(guy);
         change_to_behavior(guy, next_whim);
     }
 }
@@ -40,7 +43,7 @@ update :: (using personality: *Personality, guy: *Guy, dt: float) {
 change_to_behavior :: (guy: *Guy, next: *Behavior) {
     guy.personality.current_whim = next;
     guy.velocity = .{};
-    reset(next);
+    start(next);
 }
 
 check_boredom :: (behavior: *Behavior) -> bool {
@@ -51,3 +54,16 @@ check_boredom :: (behavior: *Behavior) -> bool {
     return false;
 }
 
+// Performs a more advanced, tweakable query which accomodates:
+// - Plans from the Schedule
+// - Neutral Behaviors
+// - Eventually, circumstances, events, locations, interactions, etc.
+whats_next :: (guy: *Guy) -> behavior: *Behavior {
+    using guy.personality;
+
+    if #complete get_current_plan(schedule) == {
+        case .NEUTRAL;  return xx random_choice(neutral_behaviors);
+        case .SLEEP;    return xx *sleep_behavior;
+        case .EAT;      return xx *eat_behavior;
+    }
+}

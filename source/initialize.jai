@@ -123,13 +123,27 @@ initialize_graphics_context :: () {
 
     // Initialize Spritesheets
     {
+        // This array is of sprites who we know are not TILE_SIZE_IN_PIXELS x TILE_SIZE_IN_PIXELS.
+        size_exceptions : Table(string, Pair);
+        {
+            table_add(*size_exceptions, "anchor", .{32, 32});
+        }
+
         sheet_paths := file_list(sheets_path, recursive = true, follow_directory_symlinks = false,, allocator=temp);
         for path : sheet_paths {
             if path_extension(path) != "png" then continue;
 
             name := basename(path);
 
-            sheet := table_add(*graphics_context.sheets, copy_string(name), load_sheet(path, TILE_SIZE_IN_PIXELS, TILE_SIZE_IN_PIXELS));
+            width  := TILE_SIZE_IN_PIXELS;
+            height := TILE_SIZE_IN_PIXELS;
+            dimensions, success := table_find(*size_exceptions, name);
+            if success {
+                width  = dimensions.x;
+                height = dimensions.y;
+            }
+
+            sheet := table_add(*graphics_context.sheets, copy_string(name), load_sheet(path, width, height));
             assert(sheet.loaded);
         }
     }

@@ -9,6 +9,7 @@ Behavior :: struct {
         SLEEP;
         SHOCK;
         HEART;
+        EAT;
 
         IDLE;
         SWIM;
@@ -36,10 +37,11 @@ Behavior :: struct {
 
 update :: (behavior: *Behavior, guy: *Guy, dt: float) {
     behavior.time += dt;
-    if behavior.kind == {
+    if #complete behavior.kind == {
         case .SLEEP;        update(cast(*Behavior_Sleep)behavior,       guy, dt);
         case .SHOCK;        update(cast(*Behavior_Shock)behavior,       guy, dt);
         case .HEART;        update(cast(*Behavior_Heart)behavior,       guy, dt);
+        case .EAT;          update(cast(*Behavior_Eat)behavior,         guy, dt);
         case .IDLE;         update(cast(*Behavior_Idle)behavior,        guy, dt);
         case .SWIM;         update(cast(*Behavior_Swim)behavior,        guy, dt);
         case .WANDER;       update(cast(*Behavior_Wander)behavior,      guy, dt);
@@ -49,7 +51,7 @@ update :: (behavior: *Behavior, guy: *Guy, dt: float) {
     }
 }
 
-reset :: (behavior: *Behavior) {
+start :: (behavior: *Behavior) {
     behavior.done = false;
 
     VARIANCE :: 0.2; // Up to twenty percent above or below the stated boredom value.
@@ -58,16 +60,17 @@ reset :: (behavior: *Behavior) {
     behavior.time = 0.0;
     reset(*behavior.animation);
 
-    if behavior.kind == {
-        case .SLEEP;        reset(cast(*Behavior_Sleep)behavior);
-        case .SHOCK;        reset(cast(*Behavior_Shock)behavior);
-        case .HEART;        reset(cast(*Behavior_Heart)behavior);
-        case .IDLE;         reset(cast(*Behavior_Idle)behavior);
-        case .SWIM;         reset(cast(*Behavior_Swim)behavior);
-        case .WANDER;       reset(cast(*Behavior_Wander)behavior);
-        case .WANDER_FLOOR; reset(cast(*Behavior_Wander_Floor)behavior);
-        case .SPIN;         reset(cast(*Behavior_Spin)behavior);
-        case .DEBUG;        reset(cast(*Behavior_Debug)behavior);
+    if #complete behavior.kind == {
+        case .SLEEP;        start(cast(*Behavior_Sleep)behavior);
+        case .SHOCK;        start(cast(*Behavior_Shock)behavior);
+        case .HEART;        start(cast(*Behavior_Heart)behavior);
+        case .EAT;          start(cast(*Behavior_Eat)behavior);
+        case .IDLE;         start(cast(*Behavior_Idle)behavior);
+        case .SWIM;         start(cast(*Behavior_Swim)behavior);
+        case .WANDER;       start(cast(*Behavior_Wander)behavior);
+        case .WANDER_FLOOR; start(cast(*Behavior_Wander_Floor)behavior);
+        case .SPIN;         start(cast(*Behavior_Spin)behavior);
+        case .DEBUG;        start(cast(*Behavior_Debug)behavior);
     }
 }
 
@@ -78,7 +81,7 @@ Behavior_Sleep :: struct {
     kind = .SLEEP;
 }
 
-reset :: (behavior: *Behavior_Sleep) {
+start :: (behavior: *Behavior_Sleep) {
 }
 
 update :: (behavior: *Behavior_Sleep, guy: *Guy, dt: float) {
@@ -93,7 +96,7 @@ Behavior_Shock :: struct {
     kind = .SHOCK;
 }
 
-reset :: (behavior: *Behavior_Shock) {
+start :: (behavior: *Behavior_Shock) {
 }
 
 update :: (behavior: *Behavior_Shock, guy: *Guy, dt: float) {
@@ -108,10 +111,25 @@ Behavior_Heart :: struct {
     kind = .HEART;
 }
 
-reset :: (behavior: *Behavior_Heart) {
+start :: (behavior: *Behavior_Heart) {
 }
 
 update :: (behavior: *Behavior_Heart, guy: *Guy, dt: float) {
+    guy.animation = *behavior.animation;
+    behavior.done = update(guy.animation, dt);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+Behavior_Eat :: struct {
+    using behavior: Behavior;
+    kind = .EAT;
+}
+
+start :: (behavior: *Behavior_Eat) {
+}
+
+update :: (behavior: *Behavior_Eat, guy: *Guy, dt: float) {
     guy.animation = *behavior.animation;
     behavior.done = update(guy.animation, dt);
 }
@@ -123,7 +141,7 @@ Behavior_Idle :: struct {
     kind = .IDLE;
 }
 
-reset :: (behavior: *Behavior_Idle) {
+start :: (behavior: *Behavior_Idle) {
 }
 
 update :: (behavior: *Behavior_Idle, guy: *Guy, dt: float) {
@@ -145,7 +163,7 @@ Behavior_Debug :: struct {
     direction : Vector2;
 }
 
-reset :: (behavior: *Behavior_Debug) {
+start :: (behavior: *Behavior_Debug) {
 }
 
 update :: (behavior: *Behavior_Debug, guy: *Guy, dt: float) {
@@ -172,7 +190,7 @@ Behavior_Swim :: struct {
     wants_to_move_this_direction: Vector2; @NoSerialize
 }
 
-reset :: (behavior: *Behavior_Swim) {
+start :: (behavior: *Behavior_Swim) {
     behavior.time_this_direction = 0.0;
     behavior.wants_to_move_this_direction = .{};
 }
@@ -209,7 +227,7 @@ Behavior_Wander :: struct {
     wants_to_move_this_direction: Vector2; @NoSerialize
 }
 
-reset :: (behavior: *Behavior_Wander) {
+start :: (behavior: *Behavior_Wander) {
     reset(*behavior.idle_animation);
     behavior.time_this_direction = 0.0;
     behavior.wants_to_move_this_direction = .{};
@@ -257,7 +275,7 @@ Behavior_Wander_Floor :: struct {
     wants_to_move_this_direction: Vector2; @NoSerialize
 }
 
-reset :: (behavior: *Behavior_Wander_Floor) {
+start :: (behavior: *Behavior_Wander_Floor) {
     reset(*behavior.idle_animation);
     behavior.time_this_direction = 0.0;
     behavior.wants_to_move_this_direction = .{};
@@ -309,7 +327,7 @@ Behavior_Spin :: struct {
     wants_to_move_this_direction: Vector2; @NoSerialize
 }
 
-reset :: (behavior: *Behavior_Spin) {
+start :: (behavior: *Behavior_Spin) {
     behavior.time_this_direction = 0.0;
     behavior.wants_to_move_this_direction = .{};
 }

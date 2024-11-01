@@ -26,17 +26,28 @@ simulate_interactions :: (game: *Game) {
         if hover_guy {
             if left_mouse.just_pressed {
                 if #complete game.cursor.state == {
-                    case .NEUTRAL;  // @TODO: Focus on the guy.
-                    case .PET;      change_to_behavior(hover_guy, xx *hover_guy.personality.heart_behavior);
-                    case .SNAP;     change_to_behavior(hover_guy, xx *hover_guy.personality.shock_behavior);
-                    case .SLEEP;    change_to_behavior(hover_guy, xx *hover_guy.personality.sleep_behavior);
+                    case .NEUTRAL; {
+                        change_to_behavior(hover_guy, xx random_choice(hover_guy.personality.neutral_behaviors));
+                        // @TODO: Focus on the guy.
+                    }
+                    case .PET; {
+                        play_sfx("smooch");
+                        change_to_behavior(hover_guy, xx *hover_guy.personality.heart_behavior);
+                    }
+                    case .SNAP; {
+                        play_sfx("thunder");
+                        change_to_behavior(hover_guy, xx *hover_guy.personality.shock_behavior);
+                    }
+                    case .SLEEP; {
+                        play_sfx("sleep");
+                        change_to_behavior(hover_guy, xx *hover_guy.personality.sleep_behavior);
+                    }
                 }
             }
         }
     }
 
     if north.just_pressed {
-        // @TODO!
         play_sfx("thunder");
         shock_everyone(game);
     }
