@@ -393,7 +393,7 @@ initialize :: (game: *Game) {
 
                 walk := Sprite_Animation.{
                     sheet = "Jelly-Walk",
-                    frame_count = 7,
+                    frame_count = 8,
                     speed = 10.0,
                 };
 
@@ -528,7 +528,6 @@ initialize :: (game: *Game) {
         }
 
         // Debug checks
-        /*
         {
             array_add(*game.entities, xx frog);
             array_add(*game.simulation.actors, *frog.actor);
@@ -545,8 +544,8 @@ initialize :: (game: *Game) {
             array_add(*game.entities, xx blowfish);
             array_add(*game.simulation.actors, *blowfish.actor);
         }
-        */
 
+        /*
         // Populate for real.
         {
             // Seed the population generator with the hour and the date.
@@ -579,5 +578,6 @@ initialize :: (game: *Game) {
                 guys_in_the_tank += 1;
             }
         }
+        */
     }
 }
