@@ -50,10 +50,16 @@ update :: (using guy: *Guy, dt: float) {
         amount_to_move := velocity * dt;
 
         collided_x := move_x(*guy.actor, amount_to_move.x, null);
-        if collided_x then velocity.x = 0;
+        if collided_x {
+            if guy.personality.current_whim.bouncy then velocity.x = -velocity.x;
+            else velocity.x = 0;
+        }
 
         collided_y := move_y(*guy.actor, amount_to_move.y, null);
-        if collided_y then velocity.y = 0;
+        if collided_y {
+            if guy.personality.current_whim.bouncy then velocity.y = -velocity.y;
+            else velocity.y = 0;
+        }
 
         if collided_x || collided_y then play_sfx("bump", true);
 
@@ -71,12 +77,12 @@ update :: (using guy: *Guy, dt: float) {
             if collided_x {
                 x = clamp(x, xx extents.x, xx (extents.x + extents.width - width));
                 x_remainder = 0.0;
-                velocity.x = -1 * velocity.x;
+                velocity.x = -velocity.x;
             }
             if collided_y {
                 y = clamp(y, xx extents.y, xx (extents.y + extents.height - height));
                 y_remainder = 0.0;
-                velocity.y = -1 * velocity.y;
+                velocity.y = -velocity.y;
             }
 
             if collided_x || collided_y then play_sfx("bump", true);

@@ -191,18 +191,21 @@ initialize :: (game: *Game) {
                     b.animation = walk;
                     b.idle_animation = idle;
 
+                    b.bouncy = true;
+
                     b.default_boredom = 30;
 
                     array_add(*neutral_behaviors, xx b);
                 }
 
                 {
-                    b := New(Behavior_Swim);
+                    b := New(Behavior_Swim_Upward);
                     b.animation = swim;
 
                     b.speed = 15.0;
 
                     b.swimming = true;
+                    b.bouncy = true;
 
                     b.default_boredom = 20;
 
@@ -284,6 +287,8 @@ initialize :: (game: *Game) {
                     b := New(Behavior_Wander_Floor);
                     b.animation = walk;
                     b.idle_animation = idle;
+
+                    b.bouncy = true;
 
                     b.default_boredom = 15;
 
@@ -429,6 +434,8 @@ initialize :: (game: *Game) {
                     b.animation = walk;
                     b.idle_animation = idle;
 
+                    b.bouncy = true;
+
                     b.default_boredom = 4;
 
                     array_add(*neutral_behaviors, xx b);
@@ -469,6 +476,12 @@ initialize :: (game: *Game) {
                     speed = 10.0,
                 };
 
+                bounce := Sprite_Animation.{
+                    sheet = "Blowfish-Bounce",
+                    frame_count = 20,
+                    speed = 10.0,
+                };
+
                 heart := Sprite_Animation.{
                     sheet = "Blowfish-Happy",
                     frame_count = 10,
@@ -493,6 +506,7 @@ initialize :: (game: *Game) {
                     b.idle_animation = idle;
 
                     b.swimming = true;
+                    b.bouncy = true;
 
                     b.default_boredom = 5;
 
@@ -506,8 +520,21 @@ initialize :: (game: *Game) {
                     b.speed = 15;
 
                     b.swimming = true;
+                    b.bouncy = true;
 
                     b.default_boredom = 5;
+
+                    array_add(*neutral_behaviors, xx b);
+                }
+
+                {
+                    b := New(Behavior_Bounce);
+                    b.animation = bounce;
+
+                    b.swimming = true;
+                    b.bouncy = true;
+
+                    b.default_boredom = 20;
 
                     array_add(*neutral_behaviors, xx b);
                 }
