@@ -102,7 +102,11 @@ initialize_graphics_context :: () {
         initialize_freetype();
 
         initialize_font(*main_font,  "bm.ttf", 9);
-        initialize_font(*small_font, "gosub.otf", 6);
+
+        //initialize_font(*small_font, "gosub.otf", 6);
+        //initialize_font(*small_font, "small_5x3.ttf", 7);
+        initialize_font(*small_font, "bit5x3.ttf", 8);
+        //initialize_font(*small_font, "pix3l5.ttf", 7);
 
         FT_Done_FreeType(ft);
     }

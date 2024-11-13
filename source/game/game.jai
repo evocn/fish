@@ -36,23 +36,42 @@ Game :: struct {
     simulation: Simulation;
 
     camera: Pair;
+    camera_zoom : int;
+
+    focused_guy: *Guy;
 }
 
 
-simulate :: (game: *Game, dt: float) {
-    for entity : game.entities {
+simulate :: (using game: *Game, dt: float) {
+    {
+        using player.input;
+
+        if      up.is_held      cursor.state = .PET;
+        else if left.is_held    cursor.state = .SNAP;
+        else if right.is_held   cursor.state = .SLEEP;
+        else                    cursor.state = .NEUTRAL;
+    }
+
+    for entity : entities {
         update(entity, dt);
     }
 
-    game.camera = .{};
+    if focused_guy {
+        camera_zoom = 2;
 
-    {
-        using game.player.input;
+        running_camera : Pair;
+        {
+            running_camera = .{focused_guy.x, focused_guy.y}; // guy in bottom left.
+            running_camera += .{-1 * 2 * TILE_SIZE_IN_PIXELS, -1 * 1 * TILE_SIZE_IN_PIXELS}; // center them in the middle left of the screen
 
-        if      up.is_held      game.cursor.state = .PET;
-        else if left.is_held    game.cursor.state = .SNAP;
-        else if right.is_held   game.cursor.state = .SLEEP;
-        else                    game.cursor.state = .NEUTRAL;
+            print("%\n", PIXEL_WIDTH);
+            clamp(running_camera.x, 0, 1000);
+        }
+        camera = running_camera;
+    }
+    else {
+        camera = .{};
+        camera_zoom = 1;
     }
 
     rainbow_color = update_rainbow_color(dt);
@@ -61,6 +80,9 @@ simulate :: (game: *Game, dt: float) {
 
 initialize :: (game: *Game) {
     load_level_from_file(*game.level, "1");
+
+    game.camera = .{};
+    game.camera_zoom = 1;
 
     // Entities
     {
@@ -225,6 +247,19 @@ initialize :: (game: *Game) {
                     ];
                 }
             }
+
+            {
+                using biography;
+
+                array_add(*facts, "favorite food: fleas");
+                array_add(*facts, "can walk and swim");
+                array_add(*facts, "6 years old");
+                array_add(*facts, "has over 10,000 children");
+
+                quote = "ribbit";
+
+                color = green;
+            }
         }
 
         tako : *Guy = xx new_entity(.GUY);
@@ -308,6 +343,18 @@ initialize :: (game: *Game) {
                     ];
                 }
             }
+
+            {
+                using biography;
+
+                array_add(*facts, "professional chef");
+                array_add(*facts, "favorite food: souffle");
+                array_add(*facts, "least favorite: peas");
+
+                quote = "your order?";
+
+                color = green;
+            }
         }
 
         clam : *Guy = xx new_entity(.GUY);
@@ -371,6 +418,19 @@ initialize :: (game: *Game) {
                         .SLEEP, .SLEEP, .SLEEP, .SLEEP, .SLEEP, .SLEEP, .SLEEP, .SLEEP,
                     ];
                 }
+            }
+
+            {
+                using biography;
+
+                array_add(*facts, "a real homebody");
+                array_add(*facts, "only comes out sometimes");
+                array_add(*facts, "watches lots of movies");
+                array_add(*facts, "favorite movie: 'Rocky'");
+
+                quote = "...";
+
+                color = purple;
             }
         }
 
@@ -445,6 +505,17 @@ initialize :: (game: *Game) {
                 shock_behavior = Behavior_Shock.{animation = shock, default_boredom = 2};
                 heart_behavior = Behavior_Heart.{animation = heart, default_boredom = 8};
                 eat_behavior   = Behavior_Eat.{animation = idle, default_boredom = 1};
+            }
+
+            {
+                using biography;
+
+                array_add(*facts, "sticky");
+                array_add(*facts, "don't get too close");
+
+                quote = "zzt";
+
+                color = teal;
             }
         }
 
@@ -552,9 +623,23 @@ initialize :: (game: *Game) {
                     ];
                 }
             }
+
+            {
+                using biography;
+
+                array_add(*facts, "curious, but hesitant");
+                array_add(*facts, "does not like surprises");
+                array_add(*facts, "dreams of a trip someday");
+                array_add(*facts, "favorite person: June");
+
+                quote = "blub";
+
+                color = yellow;
+            }
         }
 
         // Debug checks
+        /*
         {
             array_add(*game.entities, xx frog);
             array_add(*game.simulation.actors, *frog.actor);
@@ -571,8 +656,8 @@ initialize :: (game: *Game) {
             array_add(*game.entities, xx blowfish);
             array_add(*game.simulation.actors, *blowfish.actor);
         }
+        */
 
-        /*
         // Populate for real.
         {
             // Seed the population generator with the hour and the date.
@@ -605,6 +690,5 @@ initialize :: (game: *Game) {
                 guys_in_the_tank += 1;
             }
         }
-        */
     }
 }

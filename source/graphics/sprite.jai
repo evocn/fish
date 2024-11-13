@@ -13,7 +13,7 @@ draw_sprite :: (
                 sprite : Sprite,
                 pixel : Pair,
                 index: int = 0,
-                scale_factor := 1,
+                scale_factor : int,
                 horizontal_flip := false,
                 use_color_override := false, color_override := white
                )
@@ -40,8 +40,8 @@ draw_sprite :: (
             y_translation := pixel.y / cast(float)PIXEL_HEIGHT;
             translation_vector := Vector3.{x_translation, y_translation, 0};
 
-            x_scale := scale_factor / (cast(float)PIXEL_WIDTH  / sprite.tile_width_in_pixels);
-            y_scale := scale_factor / (cast(float)PIXEL_HEIGHT / sprite.tile_height_in_pixels);
+            x_scale := game.camera_zoom * scale_factor / (cast(float)PIXEL_WIDTH  / sprite.tile_width_in_pixels);
+            y_scale := game.camera_zoom * scale_factor / (cast(float)PIXEL_HEIGHT / sprite.tile_height_in_pixels);
             scale_vector := Vector3.{x_scale, y_scale, 1};
 
             translate(*model, translation_vector);

@@ -94,6 +94,8 @@ render_text :: (font : Font, text : string, x : float, y : float, alignment : Al
         else
             xpos = x + glyph.bearing.x + 1;
 
+        print("%\n", glyph.bearing);
+
         ypos := y - (glyph.size.y - glyph.bearing.y);
 
         w := glyph.size.x;

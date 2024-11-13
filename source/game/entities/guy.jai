@@ -16,6 +16,8 @@ Guy :: struct {
 
     rarity : Rarity;
 
+    biography : Biography;
+
     // State
     facing_left : bool;     @NoSerialize
     velocity    : Vector2;  @NoSerialize
@@ -164,4 +166,13 @@ get_probability :: (rarity: Rarity) -> float {
         case .RARE;   return 0.1;
         case .MYTHIC; return 0.05;
     }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+Biography :: struct {
+    facts : [..] string;
+    quote : string;
+
+    color : Color = white;
 }

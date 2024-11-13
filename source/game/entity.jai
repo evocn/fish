@@ -93,6 +93,7 @@ world_space_to_screen_pixel :: (x: int, y: int) -> pixel: Pair {
     // Camera Transform
     {
         pixel -= game.camera;
+        pixel = game.camera_zoom * pixel;
     }
 
     return pixel;

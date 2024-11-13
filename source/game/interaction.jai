@@ -23,12 +23,11 @@ simulate_interactions :: (game: *Game) {
             }
         }
 
-        if hover_guy {
+        if hover_guy && !game.focused_guy {
             if left_mouse.just_pressed {
                 if #complete game.cursor.state == {
                     case .NEUTRAL; {
-                        change_to_behavior(hover_guy, xx random_choice(hover_guy.personality.neutral_behaviors));
-                        // @TODO: Focus on the guy.
+                        game.focused_guy = hover_guy;
                     }
                     case .PET; {
                         play_sfx("smooch");
@@ -43,6 +42,11 @@ simulate_interactions :: (game: *Game) {
                         change_to_behavior(hover_guy, xx *hover_guy.personality.sleep_behavior);
                     }
                 }
+            }
+        }
+        else {
+            if left_mouse.just_pressed {
+                game.focused_guy = null;
             }
         }
     }

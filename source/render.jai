@@ -35,9 +35,64 @@ render :: (game: Game, menu: Menu) {
 draw_user_interface :: (game: Game) {
     draw_clock_readout();
 
-    if game.player.input.mouse_active {
+    if game.player.input.mouse_active && !game.focused_guy {
         mouse_position := game.player.input.mouse_position;
         draw_mouse_cursor(mouse_position, game.cursor.state);
+    }
+
+    if game.focused_guy {
+        blurb_width := PIXEL_WIDTH / 2;
+        blurb_start := PIXEL_WIDTH - blurb_width;
+
+        draw_colored_quad(blurb_start, 0, blurb_width, PIXEL_HEIGHT, color = black);
+
+        {
+            using game.focused_guy.biography;
+
+            text_start_x := blurb_start + 8;
+            text_start_y := PIXEL_HEIGHT - 24;
+
+            k := 0;
+
+            draw_text(
+                game.focused_guy.name,
+                x = text_start_x,
+                y = text_start_y - k,
+                alignment   = Alignment.LEFT,
+                progress    = -1,
+                font        = .MAIN,
+                color       = color,
+            );
+
+            k += 16;
+
+            draw_text(
+                tprint("\"%\"", quote),
+                x = text_start_x,
+                y = text_start_y - k,
+                alignment   = Alignment.LEFT,
+                progress    = -1,
+                font        = .MAIN,
+                color       = color,
+            );
+
+            k += 16;
+
+            for fact : facts {
+                draw_text(
+                    fact,
+                    x = text_start_x,
+                    y = text_start_y - k,
+                    alignment   = Alignment.LEFT,
+                    progress    = -1,
+                    font        = .SMALL,
+                    color       = color,
+                );
+
+                k += 10;
+            }
+
+        }
     }
 }
 
@@ -71,39 +126,39 @@ draw_mouse_cursor :: (position : Pair, cursor_state: Cursor_State) {
 
 draw_title_screen :: () {
     draw_text(
-        "Placeholder title screen",
+        "\"fish\"",
         x = PIXEL_WIDTH / 2,
-        y = PIXEL_HEIGHT - 15,
+        y = 80,
         alignment   = Alignment.CENTER,
         progress    = -1,
         font        = .MAIN,
-        color       = white,
+        color       = blue,
     );
 
     draw_text(
-        "This is just a little fish tank simulation.",
+        "For June",
         x = PIXEL_WIDTH / 2,
         y = 50,
         alignment   = Alignment.CENTER,
         progress    = -1,
         font        = .SMALL,
-        color       = white,
+        color       = yellow,
     );
 
     draw_text(
         "Press H to start.",
         x = PIXEL_WIDTH / 2,
-        y = 15,
+        y = 25,
         alignment   = Alignment.CENTER,
         progress    = -1,
         font        = .SMALL,
-        color       = white,
+        color       = green,
     );
 }
 
 draw_version_indicator :: () {
     draw_text(
-        tprint("fish - version %", VERSION),
+        tprint("version %", VERSION),
         x = 1,
         y = 1,
         alignment = Alignment.LEFT,
