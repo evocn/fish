@@ -92,7 +92,7 @@ main :: () {
         );
 
         if program_state.current_scene == .EDITOR {
-            update_and_draw_editor();
+            update_and_draw_editor(*game);
             ImGui_ImplSdl_RenderDrawLists(ImGui.GetDrawData());
         }
 

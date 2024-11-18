@@ -24,6 +24,10 @@
 #load "interaction.jai";
 
 Game :: struct {
+    using data : struct {
+        guys : [..] *Guy;
+    }
+
     player : Player_Interface;
 
     level : Level;
@@ -64,7 +68,6 @@ simulate :: (using game: *Game, dt: float) {
             running_camera = .{focused_guy.x, focused_guy.y}; // guy in bottom left.
             running_camera += .{-1 * 2 * TILE_SIZE_IN_PIXELS, -1 * 1 * TILE_SIZE_IN_PIXELS}; // center them in the middle left of the screen
 
-            print("%\n", PIXEL_WIDTH);
             clamp(running_camera.x, 0, 1000);
         }
         camera = running_camera;
@@ -162,41 +165,53 @@ initialize :: (game: *Game) {
                     speed = 5.0;
                 }
 
-                walk := Sprite_Animation.{
-                    sheet = "Frog-Walk",
-                    frame_count = 4,
-                    speed = 7,
-                };
+                walk := New(Sprite_Animation);
+                {
+                    using walk;
+                    sheet = "Frog-Walk";
+                    frame_count = 4;
+                    speed = 7;
+                }
 
-                sleep := Sprite_Animation.{
-                    sheet = "Frog-Sleep",
-                    frame_count = 15,
-                    speed = 10.0,
-                };
+                sleep := New(Sprite_Animation);
+                {
+                    using sleep;
+                    sheet = "Frog-Sleep";
+                    frame_count = 15;
+                    speed = 10.0;
+                }
 
-                shock := Sprite_Animation.{
-                    sheet = "Frog-Shock",
-                    frame_count = 8,
-                    speed = 12.0,
-                };
+                shock := New(Sprite_Animation);
+                {
+                    using shock;
+                    sheet = "Frog-Shock";
+                    frame_count = 8;
+                    speed = 12.0;
+                }
 
-                heart := Sprite_Animation.{
-                    sheet = "Frog-Heart",
-                    frame_count = 11,
-                    speed = 10.0,
-                };
+                heart := New(Sprite_Animation);
+                {
+                    using heart;
+                    sheet = "Frog-Heart";
+                    frame_count = 11;
+                    speed = 10.0;
+                }
 
-                swim := Sprite_Animation.{
-                    sheet = "Frog-Swim",
-                    frame_count = 5,
-                    speed = 8.0,
-                };
+                swim := New(Sprite_Animation);
+                {
+                    using swim;
+                    sheet = "Frog-Swim";
+                    frame_count = 5;
+                    speed = 8.0;
+                }
 
-                jump := Sprite_Animation.{
-                    sheet = "Frog-Jump",
-                    frame_count = 11,
-                    speed = 10.0,
-                };
+                jump := New(Sprite_Animation);
+                {
+                    using jump;
+                    sheet = "Frog-Jump";
+                    frame_count = 11;
+                    speed = 10.0;
+                }
 
                 {
                     b := New(Behavior_Idle);
@@ -239,6 +254,8 @@ initialize :: (game: *Game) {
                 heart_behavior = Behavior_Heart.{animation = heart, default_boredom = 5};
                 eat_behavior   = Behavior_Eat.{animation = idle, default_boredom = 1};
 
+                animation = idle;
+
                 {
                     schedule.hours = Plan.[
                         .NEUTRAL, .SLEEP, .SLEEP, .SLEEP, .SLEEP, .SLEEP, .NEUTRAL, .SLEEP,
@@ -279,35 +296,45 @@ initialize :: (game: *Game) {
                 using personality;
 
 
-                idle := Sprite_Animation.{
-                    sheet = "Tako-Idle",
-                    frame_count = 9,
-                    speed = 10.0,
-                };
+                idle := New(Sprite_Animation);
+                {
+                    using idle;
+                    sheet = "Tako-Idle";
+                    frame_count = 9;
+                    speed = 10.0;
+                }
 
-                walk := Sprite_Animation.{
-                    sheet = "Tako-Walk",
-                    frame_count = 7,
-                    speed = 10.0,
-                };
+                walk := New(Sprite_Animation);
+                {
+                    using walk;
+                    sheet = "Tako-Walk";
+                    frame_count = 7;
+                    speed = 10.0;
+                }
 
-                sleep := Sprite_Animation.{
-                    sheet = "Tako-Sleep",
-                    frame_count = 9,
-                    speed = 10.0,
-                };
+                sleep := New(Sprite_Animation);
+                {
+                    using sleep;
+                    sheet = "Tako-Sleep";
+                    frame_count = 9;
+                    speed = 10.0;
+                }
 
-                shock := Sprite_Animation.{
-                    sheet = "Tako-Shock",
-                    frame_count = 13,
-                    speed = 20.0,
-                };
+                shock := New(Sprite_Animation);
+                {
+                    using shock;
+                    sheet = "Tako-Shock";
+                    frame_count = 13;
+                    speed = 20.0;
+                }
 
-                heart := Sprite_Animation.{
-                    sheet = "Tako-Heart",
-                    frame_count = 16,
-                    speed = 8.0,
-                };
+                heart := New(Sprite_Animation);
+                {
+                    using heart;
+                    sheet = "Tako-Heart";
+                    frame_count = 16;
+                    speed = 8.0;
+                }
 
                 {
                     b := New(Behavior_Idle);
@@ -335,11 +362,13 @@ initialize :: (game: *Game) {
                 heart_behavior = Behavior_Heart.{animation = heart, default_boredom = 3.0};
                 eat_behavior   = Behavior_Eat.{animation = idle, default_boredom = 1};
 
+                animation = idle;
+
                 {
                     schedule.hours = Plan.[
                         .SLEEP, .SLEEP, .SLEEP, .SLEEP, .SLEEP, .SLEEP, .SLEEP, .SLEEP,
+                        .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .SLEEP, .NEUTRAL,
                         .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL,
-                        .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .SLEEP, .SLEEP, .SLEEP, .SLEEP,
                     ];
                 }
             }
@@ -373,29 +402,37 @@ initialize :: (game: *Game) {
             {
                 using personality;
 
-                idle := Sprite_Animation.{
-                    sheet = "Clam-Idle",
-                    frame_count = 1,
-                    speed = 1.0,
-                };
+                idle := New(Sprite_Animation);
+                {
+                    using idle;
+                    sheet = "Clam-Idle";
+                    frame_count = 1;
+                    speed = 1.0;
+                }
 
-                sleep := Sprite_Animation.{
-                    sheet = "Clam-Sleep",
-                    frame_count = 2,
-                    speed = 1.2,
-                };
+                sleep := New(Sprite_Animation);
+                {
+                    using sleep;
+                    sheet = "Clam-Sleep";
+                    frame_count = 2;
+                    speed = 1.2;
+                }
 
-                shock := Sprite_Animation.{
-                    sheet = "Clam-Shock",
-                    frame_count = 20,
-                    speed = 15.0,
-                };
+                shock := New(Sprite_Animation);
+                {
+                    using shock;
+                    sheet = "Clam-Shock";
+                    frame_count = 20;
+                    speed = 15.0;
+                }
 
-                heart := Sprite_Animation.{
-                    sheet = "Clam-Heart",
-                    frame_count = 1,
-                    speed = 0.05,
-                };
+                heart := New(Sprite_Animation);
+                {
+                    using heart;
+                    sheet = "Clam-Heart";
+                    frame_count = 1;
+                    speed = 0.05;
+                }
 
                 {
                     b := New(Behavior_Idle);
@@ -410,6 +447,8 @@ initialize :: (game: *Game) {
                 shock_behavior = Behavior_Shock.{animation = shock, default_boredom = 1.4};
                 heart_behavior = Behavior_Heart.{animation = heart, default_boredom = 2.0};
                 eat_behavior   = Behavior_Eat.{animation = idle, default_boredom = 1};
+
+                animation = idle;
 
                 {
                     schedule.hours = Plan.[
@@ -450,35 +489,45 @@ initialize :: (game: *Game) {
             {
                 using personality;
 
-                idle := Sprite_Animation.{
-                    sheet = "Jelly-Idle",
-                    frame_count = 10,
-                    speed = 7.0,
-                };
+                idle := New(Sprite_Animation);
+                {
+                    using idle;
+                    sheet = "Jelly-Idle";
+                    frame_count = 10;
+                    speed = 7.0;
+                }
 
-                walk := Sprite_Animation.{
-                    sheet = "Jelly-Walk",
-                    frame_count = 8,
-                    speed = 10.0,
-                };
+                walk := New(Sprite_Animation);
+                {
+                    using walk;
+                    sheet = "Jelly-Walk";
+                    frame_count = 8;
+                    speed = 10.0;
+                }
 
-                sleep := Sprite_Animation.{
-                    sheet = "Jelly-Sleep",
-                    frame_count = 14,
-                    speed = 10.0,
-                };
+                sleep := New(Sprite_Animation);
+                {
+                    using sleep;
+                    sheet = "Jelly-Sleep";
+                    frame_count = 14;
+                    speed = 10.0;
+                }
 
-                shock := Sprite_Animation.{
-                    sheet = "Jelly-Shock",
-                    frame_count = 5,
-                    speed = 20,
-                };
+                shock := New(Sprite_Animation);
+                {
+                    using shock;
+                    sheet = "Jelly-Shock";
+                    frame_count = 5;
+                    speed = 20;
+                }
 
-                heart := Sprite_Animation.{
-                    sheet = "Jelly-Heart",
-                    frame_count = 20,
-                    speed = 10.0,
-                };
+                heart := New(Sprite_Animation);
+                {
+                    using heart;
+                    sheet = "Jelly-Heart";
+                    frame_count = 20;
+                    speed = 10.0;
+                }
 
                 {
                     b := New(Behavior_Idle);
@@ -505,6 +554,16 @@ initialize :: (game: *Game) {
                 shock_behavior = Behavior_Shock.{animation = shock, default_boredom = 2};
                 heart_behavior = Behavior_Heart.{animation = heart, default_boredom = 8};
                 eat_behavior   = Behavior_Eat.{animation = idle, default_boredom = 1};
+
+                animation = idle;
+
+                {
+                    schedule.hours = Plan.[
+                        .SLEEP, .SLEEP, .SLEEP, .SLEEP, .NEUTRAL, .NEUTRAL, .NEUTRAL, .SLEEP,
+                        .NEUTRAL, .NEUTRAL, .NEUTRAL, .EAT, .EAT, .EAT, .NEUTRAL, .NEUTRAL,
+                        .SLEEP, .NEUTRAL, .EAT, .EAT, .SLEEP, .NEUTRAL, .NEUTRAL, .NEUTRAL,
+                    ];
+                }
             }
 
             {
@@ -535,41 +594,53 @@ initialize :: (game: *Game) {
             {
                 using personality;
 
-                idle := Sprite_Animation.{
-                    sheet = "Blowfish-Idle",
-                    frame_count = 8,
-                    speed = 7.0,
-                };
+                idle := New(Sprite_Animation);
+                {
+                    using idle;
+                    sheet = "Blowfish-Idle";
+                    frame_count = 8;
+                    speed = 7.0;
+                }
 
-                walk := Sprite_Animation.{
-                    sheet = "Blowfish-Walk",
-                    frame_count = 5,
-                    speed = 10.0,
-                };
+                walk := New(Sprite_Animation);
+                {
+                    using walk;
+                    sheet = "Blowfish-Walk";
+                    frame_count = 5;
+                    speed = 10.0;
+                }
 
-                bounce := Sprite_Animation.{
-                    sheet = "Blowfish-Bounce",
-                    frame_count = 20,
-                    speed = 10.0,
-                };
+                bounce := New(Sprite_Animation);
+                {
+                    using bounce;
+                    sheet = "Blowfish-Bounce";
+                    frame_count = 20;
+                    speed = 10.0;
+                }
 
-                heart := Sprite_Animation.{
-                    sheet = "Blowfish-Happy",
-                    frame_count = 10,
-                    speed = 10.0,
-                };
+                heart := New(Sprite_Animation);
+                {
+                    using heart;
+                    sheet = "Blowfish-Happy";
+                    frame_count = 10;
+                    speed = 10.0;
+                }
 
-                sleep := Sprite_Animation.{
-                    sheet = "Blowfish-Sleep",
-                    frame_count = 21,
-                    speed = 10.0,
-                };
+                sleep := New(Sprite_Animation);
+                {
+                    using sleep;
+                    sheet = "Blowfish-Sleep";
+                    frame_count = 21;
+                    speed = 10.0;
+                }
 
-                shock := Sprite_Animation.{
-                    sheet = "Blowfish-Shock",
-                    frame_count = 1,
-                    speed = 0.1,
-                };
+                shock := New(Sprite_Animation);
+                {
+                    using shock;
+                    sheet = "Blowfish-Shock";
+                    frame_count = 1;
+                    speed = 0.1;
+                }
 
                 {
                     b := New(Behavior_Wander);
@@ -615,11 +686,13 @@ initialize :: (game: *Game) {
                 heart_behavior = Behavior_Heart.{animation = heart, swimming = true, default_boredom = 10};
                 eat_behavior   = Behavior_Eat.{animation = idle, swimming = true, default_boredom = 1};
 
+                animation = idle;
+
                 {
                     schedule.hours = Plan.[
-                        .SLEEP, .SLEEP, .SLEEP, .NEUTRAL, .SLEEP, .SLEEP, .SLEEP, .SLEEP,
-                        .NEUTRAL, .NEUTRAL, .NEUTRAL, .EAT, .EAT, .EAT, .NEUTRAL, .NEUTRAL,
-                        .NEUTRAL, .NEUTRAL, .EAT, .EAT, .SLEEP, .SLEEP, .SLEEP, .SLEEP,
+                        .SLEEP, .SLEEP, .SLEEP, .SLEEP, .SLEEP, .SLEEP, .SLEEP, .NEUTRAL,
+                        .NEUTRAL, .NEUTRAL, .NEUTRAL, .EAT, .EAT, .SLEEP, .NEUTRAL, .NEUTRAL,
+                        .NEUTRAL, .NEUTRAL, .EAT, .EAT, .SLEEP, .NEUTRAL, .NEUTRAL, .NEUTRAL,
                     ];
                 }
             }
@@ -638,57 +711,73 @@ initialize :: (game: *Game) {
             }
         }
 
-        // Debug checks
-        /*
         {
-            array_add(*game.entities, xx frog);
-            array_add(*game.simulation.actors, *frog.actor);
-
-            array_add(*game.entities, xx tako);
-            array_add(*game.simulation.actors, *tako.actor);
-
-            array_add(*game.entities, xx clam);
-            array_add(*game.simulation.actors, *clam.actor);
-
-            array_add(*game.entities, xx jelly);
-            array_add(*game.simulation.actors, *jelly.actor);
-
-            array_add(*game.entities, xx blowfish);
-            array_add(*game.simulation.actors, *blowfish.actor);
+            array_add(*game.guys, frog);
+            array_add(*game.guys, tako);
+            array_add(*game.guys, clam);
+            array_add(*game.guys, jelly);
+            array_add(*game.guys, blowfish);
         }
-        */
 
-        // Populate for real.
-        {
-            // Seed the population generator with the hour and the date.
-            // This way, it doesn't feel like you're just rolling the dice every time you open the app.
-            random_state : Random_State;
-            {
-                t := time();
-                seed : u64 = cast(u64)t.hour + (cast(u64)t.day_of_week_starting_at_0 << 8);
+        genocide(game);
 
-                random_seed(*random_state, seed);
-            }
+        seed := generate_seed_from_date_and_hour();
+        populate(game, seed);
+    }
+}
 
-            guys := *Guy.[frog, tako, clam, jelly, blowfish];
-            guys_in_the_tank : int;
-            for guy : guys {
-                roll := random_get_zero_to_one(*random_state);
-                print("%\n", roll);
-                if roll <= get_probability(guy.rarity) {
-                    array_add(*game.entities, xx guy);
-                    array_add(*game.simulation.actors, *guy.actor);
-                    guys_in_the_tank += 1;
-                }
-            }
+genocide :: (using game: *Game) {
+    for entities if it.kind == .GUY then remove it;
+}
 
-            // Gotta have at least one...
-            if guys_in_the_tank == 0 {
-                guy := random_choice(guys);
-                array_add(*game.entities, xx guy);
-                array_add(*game.simulation.actors, *guy.actor);
-                guys_in_the_tank += 1;
-            }
+populate_everyone :: (using game: *Game) {
+    for guy : guys {
+        array_add(*entities, xx guy);
+        array_add(*simulation.actors, *guy.actor);
+    }
+}
+
+populate :: (using game: *Game, seed: Random_State) {
+    guys_in_the_tank : int;
+    for guy : guys {
+        roll := random_get_zero_to_one(*seed);
+        if roll <= get_probability(guy.rarity) {
+            array_add(*game.entities, xx guy);
+            array_add(*game.simulation.actors, *guy.actor);
+            guys_in_the_tank += 1;
         }
     }
+
+    // Gotta have at least one...
+    if guys_in_the_tank == 0 {
+        guy := random_choice(guys);
+        array_add(*game.entities, xx guy);
+        array_add(*game.simulation.actors, *guy.actor);
+        guys_in_the_tank += 1;
+    }
+}
+
+// Seed the population generator with the hour and the date.
+// This way, it doesn't feel like you're just rolling the dice every time you open the app.
+generate_seed_from_date_and_hour :: () -> Random_State {
+    random_state : Random_State;
+
+    t := time();
+    seed : u64 = cast(u64)t.hour + (cast(u64)t.day_of_week_starting_at_0 << 8);
+
+    random_seed(*random_state, seed);
+
+    return random_state;
+}
+
+generate_seed :: () -> Random_State {
+    random_state : Random_State;
+
+    t := time();
+
+    seed : u64 = cast(u64)t.millisecond;
+
+    random_seed(*random_state, seed);
+
+    return random_state;
 }
