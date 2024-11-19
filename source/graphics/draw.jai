@@ -2,14 +2,35 @@
 // Graphics Drawing Functions
 // August 2024
 
+world_space_to_screen_pixel :: (x: int, y: int) -> pixel: Pair {
+    pixel: Pair;
+
+    pixel.x = x;
+    pixel.y = y;
+
+    // Camera Transform
+    {
+        pixel -= game.camera;
+        pixel = game.camera_zoom * pixel;
+    }
+
+    return pixel;
+}
+
+screen_pixel_zoom :: () -> zoom: int {
+    return game.camera_zoom;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 
 // Entity
 draw_tile :: (tile: Tile, place : Pair) {
     screen_position := world_space_to_screen_pixel(place.x, place.y);
-    draw_tile_at(tile, screen_position);
+    scale := screen_pixel_zoom();
+    draw_tile_at(tile, screen_position, scale);
 }
 
-draw_tile_at :: (tile: Tile, at: Pair) {
+draw_tile_at :: (tile: Tile, at: Pair, scale: int) {
     sprite := table_find_pointer(*graphics_context.sheets, "fishes");
     if !sprite {
         log_error("Couldn't load tile spritesheet.\n");
@@ -21,7 +42,7 @@ draw_tile_at :: (tile: Tile, at: Pair) {
         index = tile.sprite,
         pixel = at,
 
-        scale_factor = 1,
+        scale_factor = scale,
 
         horizontal_flip = false,
 
@@ -143,5 +164,13 @@ draw_clock_readout :: () {
 
 
 draw :: (collider: Collider, color : Color, outline_color := white) {
-    draw_colored_quad(xx collider.x, xx collider.y, xx collider.width, xx collider.height, color=color);
+    screen_position := world_space_to_screen_pixel(collider.x, collider.y);
+    scale := screen_pixel_zoom();
+    
+    draw_colored_quad(
+        xx screen_position.x, xx screen_position.y,
+        xx collider.width * scale, xx collider.height * scale,
+        color=color
+    );
 }
+

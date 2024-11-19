@@ -119,12 +119,14 @@ draw :: (using guy: *Guy) {
         - .{sprite.tile_width_in_pixels / 2, 0} // Bottom left corner!
     ;
 
+    scale := screen_pixel_zoom();
+
     draw_sprite(
         sprite,
         index = animation.frame,
         pixel = bottom_left_corner_of_sprite,
 
-        scale_factor = 1,
+        scale_factor = scale,
 
         horizontal_flip = facing_left,
 

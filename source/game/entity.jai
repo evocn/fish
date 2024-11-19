@@ -80,21 +80,3 @@ draw_debug :: (entity: *Entity) {
     }
 }
 
-
-
-////////////////////////////////////////////////////////////////////////////////
-
-world_space_to_screen_pixel :: (x: int, y: int) -> pixel: Pair {
-    pixel: Pair;
-
-    pixel.x = x;
-    pixel.y = y;
-
-    // Camera Transform
-    {
-        pixel -= game.camera;
-        pixel = game.camera_zoom * pixel;
-    }
-
-    return pixel;
-}

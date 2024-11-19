@@ -95,6 +95,9 @@ update :: (using particle_system: *Particle_System, dt: float) {
 }
 
 draw :: (using particle_system: Particle_System) {
+    scale := screen_pixel_zoom();
+    glPointSize(xx scale);
+
     glBindVertexArray(vao);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
 
@@ -102,8 +105,8 @@ draw :: (using particle_system: Particle_System) {
 
     model := Matrix4_Identity;
     set_mat4(shader, "model", model);
-    //set_vec4(shader, "color", white);
 
+    //set_vec4(shader, "color", white);
     //glDrawArrays(GL_POINTS, 0, xx vbo_data.count);
 
     for particle, index: particles {
