@@ -53,13 +53,13 @@ update :: (using guy: *Guy, dt: float) {
 
         collided_x := move_x(*guy.actor, amount_to_move.x, null);
         if collided_x {
-            if guy.personality.current_whim.bouncy then velocity.x = -velocity.x;
+            if guy.personality.current_whim.bouncy_x then velocity.x = -velocity.x;
             else velocity.x = 0;
         }
 
         collided_y := move_y(*guy.actor, amount_to_move.y, null);
         if collided_y {
-            if guy.personality.current_whim.bouncy then velocity.y = -velocity.y;
+            if guy.personality.current_whim.bouncy_y then velocity.y = -velocity.y;
             else velocity.y = 0;
         }
 
@@ -164,9 +164,9 @@ Rarity :: enum #complete {
 // Tweakable!
 get_probability :: (rarity: Rarity) -> float {
     if #complete rarity == {
-        case .COMMON; return 0.25;
-        case .RARE;   return 0.1;
-        case .MYTHIC; return 0.05;
+        case .COMMON; return 0.40;
+        case .RARE;   return 0.25;
+        case .MYTHIC; return 0.10;
     }
 }
 

@@ -14,6 +14,7 @@ purple  :: #run color_from_hex(0x2f256b);
 red     :: #run color_from_hex(0xd14444);
 green   :: #run color_from_hex(0x67ab7a);
 yellow  :: #run color_from_hex(0xECA72C);
+orange  :: #run color_from_hex(0xFF7F50);
 blue    :: #run color_from_hex(0x067ab7);
 pink    :: #run color_from_hex(0xb869d3);
 teal    :: #run color_from_hex(0x1cc7d4);

@@ -34,6 +34,15 @@ get_random_direction_vector_on_unit_circle :: () -> Vector2 {
     return result;
 }
 
+get_random_upward_direction_vectory_on_unit_circle :: () -> Vector2 {
+    result : Vector2;
+    while result.y <= 0 {
+        result = get_random_direction_vector_on_unit_circle();
+    }
+
+    return result;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 // Rounds a float to the nearest int.
@@ -76,5 +85,12 @@ random_choice :: inline (choices: [] $T) -> T {
     min := 0.0;
     max := cast(float)(choices.count);
     index := cast(int)random_get_within_range(min, max);
+    return choices[index];
+}
+
+random_choice :: inline (choices: [] $T, seed: *Random_State) -> T {
+    min := 0.0;
+    max := cast(float)(choices.count);
+    index := cast(int)random_get_within_range(seed, min, max);
     return choices[index];
 }

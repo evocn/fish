@@ -11,10 +11,10 @@ Personality :: struct {
 
     neutral_behaviors : [..] *Behavior;
 
-    sleep_behavior : Behavior_Sleep;
-    shock_behavior : Behavior_Shock;
-    heart_behavior : Behavior_Heart;
-    eat_behavior   : Behavior_Eat;
+    sleep_behavior : *Behavior;
+    shock_behavior : *Behavior;
+    heart_behavior : *Behavior;
+    eat_behavior   : *Behavior;
 
     schedule : Schedule;
 }
@@ -29,7 +29,9 @@ update :: (using personality: *Personality, guy: *Guy, dt: float) {
     update(current_whim, guy, dt);
 
     // Potentially get bored
-    if check_boredom(current_whim) {
+    whim_has_duration := current_whim.minimum_duration != 0;
+    whim_is_done := current_whim.time > current_whim.minimum_duration;
+    if whim_has_duration && whim_is_done {
         current_whim.done = true;
     }
 
@@ -44,14 +46,6 @@ change_to_behavior :: (guy: *Guy, next: *Behavior) {
     guy.personality.current_whim = next;
     guy.velocity = .{};
     start(next);
-}
-
-check_boredom :: (behavior: *Behavior) -> bool {
-    if behavior.time > behavior.boredom {
-        return true;
-    }
-
-    return false;
 }
 
 // Performs a more advanced, tweakable query which accomodates:
