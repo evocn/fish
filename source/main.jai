@@ -16,6 +16,24 @@ main :: () {
     a.data = *game.arena;
     initialize(*game,, allocator=a);
 
+    // Pump the jams
+    {
+        // @TODO: Switch as the hour goes by too!
+        get_music_for_the_hour :: () -> string {
+            hour := time().hour;
+            if hour < 7 || hour > 18 then return "sleep";
+            else if hour > 12 then return "nagata";
+            else if hour < 12 then return "bach";
+            else return "nagata";
+        }
+
+        song := get_music_for_the_hour();
+
+        print("%\n", song);
+
+        play_music(song);
+    }
+
     dt, last_frame := 0.0;
     while program_state.running {
         ////////////////////////////////////////////////////////////////////////////////
@@ -37,16 +55,6 @@ main :: () {
                 case .TITLE;
                     if game.player.input.south.just_pressed {
                         switch_scene(.GAME);
-
-                        // @TODO: Switch as the hour goes by too!
-                        get_music_for_the_hour :: () -> string {
-                            hour := time().hour;
-                            if hour < 7 || hour > 18 then return "sleep";
-                            else if hour > 12 then return "nagata";
-                            else if hour < 12 then return "bach";
-                            else return "nagata";
-                        }
-                        play_music(get_music_for_the_hour());
                     }
 
                 case .MENU;
