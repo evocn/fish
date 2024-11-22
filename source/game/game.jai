@@ -115,14 +115,7 @@ initialize :: (game: *Game) {
             width  = 32;
             height = 32;
 
-            {
-                animation = New(Sprite_Animation);
-                {
-                    using animation;
-                    sheet = "Anchor";
-                    frame_count = 1;
-                }
-            }
+            animation = make_animation("Anchor");
         }
         array_add(*game.entities, xx toy);
 
@@ -137,14 +130,7 @@ initialize :: (game: *Game) {
             width  = 16;
             height = 16;
 
-            {
-                animation = New(Sprite_Animation);
-                {
-                    using animation;
-                    sheet = "kelp";
-                    frame_count = 1;
-                }
-            }
+            animation = make_animation("Kelp");
         }
         array_add(*game.entities, xx kelp);
 
@@ -175,83 +161,20 @@ initialize :: (game: *Game) {
             {
                 using personality;
 
-                idle := New(Sprite_Animation);
-                {
-                    using idle;
-                    sheet = "Frog-Idle";
-                    frame_count = 8;
-                    speed = 5.0;
-                }
+                idle := make_animation("Frog-Idle",     speed = 5.0);
+                walk := make_animation("Frog-Walk",     speed = 7.0);
+                sleep := make_animation("Frog-Sleep",   speed = 10.0);
+                shock := make_animation("Frog-Shock",   speed = 12.0);
+                heart := make_animation("Frog-Heart",   speed = 10.0);
+                swim := make_animation("Frog-Swim",     speed = 6.0);
 
-                walk := New(Sprite_Animation);
-                {
-                    using walk;
-                    sheet = "Frog-Walk";
-                    frame_count = 4;
-                    speed = 7;
-                }
+                charge := make_animation("Frog-Charge");
+                jump := make_animation("Frog-Jump",     speed = 30.0);
+                fly := make_animation("Frog-Fly");
+                land := make_animation("Frog-Land",     speed = 50.0);
 
-                sleep := New(Sprite_Animation);
-                {
-                    using sleep;
-                    sheet = "Frog-Sleep";
-                    frame_count = 15;
-                    speed = 10.0;
-                }
+                animation = idle;
 
-                shock := New(Sprite_Animation);
-                {
-                    using shock;
-                    sheet = "Frog-Shock";
-                    frame_count = 8;
-                    speed = 12.0;
-                }
-
-                heart := New(Sprite_Animation);
-                {
-                    using heart;
-                    sheet = "Frog-Heart";
-                    frame_count = 11;
-                    speed = 10.0;
-                }
-
-                swim := New(Sprite_Animation);
-                {
-                    using swim;
-                    sheet = "Frog-Swim";
-                    frame_count = 5;
-                    speed = 6.0;
-                }
-
-                jump := New(Sprite_Animation);
-                {
-                    using jump;
-                    sheet = "Frog-Jump";
-                    frame_count = 5;
-                    speed = 30.0;
-                }
-
-                charge := New(Sprite_Animation);
-                {
-                    using charge;
-                    sheet = "Frog-Charge";
-                    frame_count = 1;
-                }
-
-                fly := New(Sprite_Animation);
-                {
-                    using fly;
-                    sheet = "Frog-Fly";
-                    frame_count = 1;
-                }
-
-                land := New(Sprite_Animation);
-                {
-                    using land;
-                    sheet = "Frog-Land";
-                    frame_count = 7;
-                    speed = 50;
-                }
 
                 {
                     b := New(Behavior_Idle);
@@ -329,8 +252,6 @@ initialize :: (game: *Game) {
                     animation = idle;
                 }
 
-                animation = idle;
-
                 {
                     schedule.hours = Plan.[
                         .SLEEP, .SLEEP, .SLEEP, .SLEEP, .SLEEP, .SLEEP, .NEUTRAL, .NEUTRAL,
@@ -370,46 +291,14 @@ initialize :: (game: *Game) {
             {
                 using personality;
 
+                idle := make_animation("Tako-Idle",     speed = 10.0);
+                walk := make_animation("Tako-Walk",     speed = 10.0);
+                sleep := make_animation("Tako-Sleep",   speed = 10.0);
+                shock := make_animation("Tako-Shock",   speed = 15.0);
+                heart := make_animation("Tako-Heart",   speed = 8.0);
 
-                idle := New(Sprite_Animation);
-                {
-                    using idle;
-                    sheet = "Tako-Idle";
-                    frame_count = 9;
-                    speed = 10.0;
-                }
+                animation = idle;
 
-                walk := New(Sprite_Animation);
-                {
-                    using walk;
-                    sheet = "Tako-Walk";
-                    frame_count = 7;
-                    speed = 10.0;
-                }
-
-                sleep := New(Sprite_Animation);
-                {
-                    using sleep;
-                    sheet = "Tako-Sleep";
-                    frame_count = 9;
-                    speed = 10.0;
-                }
-
-                shock := New(Sprite_Animation);
-                {
-                    using shock;
-                    sheet = "Tako-Shock";
-                    frame_count = 13;
-                    speed = 20.0;
-                }
-
-                heart := New(Sprite_Animation);
-                {
-                    using heart;
-                    sheet = "Tako-Heart";
-                    frame_count = 16;
-                    speed = 8.0;
-                }
 
                 {
                     b := New(Behavior_Idle);
@@ -456,8 +345,6 @@ initialize :: (game: *Game) {
                     animation = idle;
                 }
 
-                animation = idle;
-
                 {
                     schedule.hours = Plan.[
                         .SLEEP, .SLEEP, .SLEEP, .SLEEP, .SLEEP, .SLEEP, .SLEEP, .SLEEP,
@@ -496,37 +383,13 @@ initialize :: (game: *Game) {
             {
                 using personality;
 
-                idle := New(Sprite_Animation);
-                {
-                    using idle;
-                    sheet = "Clam-Idle";
-                    frame_count = 1;
-                    speed = 1.0;
-                }
+                idle := make_animation("Clam-Idle");
+                sleep := make_animation("Clam-Sleep", speed = 2.0);
+                shock := make_animation("Clam-Shock", speed = 12.0);
+                heart := make_animation("Clam-Heart", speed = 10.0);
 
-                sleep := New(Sprite_Animation);
-                {
-                    using sleep;
-                    sheet = "Clam-Sleep";
-                    frame_count = 2;
-                    speed = 1.2;
-                }
+                animation = idle;
 
-                shock := New(Sprite_Animation);
-                {
-                    using shock;
-                    sheet = "Clam-Shock";
-                    frame_count = 20;
-                    speed = 15.0;
-                }
-
-                heart := New(Sprite_Animation);
-                {
-                    using heart;
-                    sheet = "Clam-Heart";
-                    frame_count = 4;
-                    speed = 10;
-                }
 
                 {
                     b := New(Behavior_Idle);
@@ -560,8 +423,6 @@ initialize :: (game: *Game) {
                     using eat_behavior;
                     animation = idle;
                 }
-
-                animation = idle;
 
                 {
                     schedule.hours = Plan.[
@@ -602,45 +463,14 @@ initialize :: (game: *Game) {
             {
                 using personality;
 
-                idle := New(Sprite_Animation);
-                {
-                    using idle;
-                    sheet = "Jelly-Idle";
-                    frame_count = 10;
-                    speed = 7.0;
-                }
+                idle := make_animation("Jelly-Idle",    speed = 7.0);
+                walk := make_animation("Jelly-Walk",    speed = 10.0);
+                sleep := make_animation("Jelly-Sleep",  speed = 10.0);
+                shock := make_animation("Jelly-Shock",  speed = 20.0);
+                heart := make_animation("Jelly-Heart",  speed = 10.0);
 
-                walk := New(Sprite_Animation);
-                {
-                    using walk;
-                    sheet = "Jelly-Walk";
-                    frame_count = 8;
-                    speed = 10.0;
-                }
+                animation = idle;
 
-                sleep := New(Sprite_Animation);
-                {
-                    using sleep;
-                    sheet = "Jelly-Sleep";
-                    frame_count = 14;
-                    speed = 10.0;
-                }
-
-                shock := New(Sprite_Animation);
-                {
-                    using shock;
-                    sheet = "Jelly-Shock";
-                    frame_count = 5;
-                    speed = 20;
-                }
-
-                heart := New(Sprite_Animation);
-                {
-                    using heart;
-                    sheet = "Jelly-Heart";
-                    frame_count = 20;
-                    speed = 10.0;
-                }
 
                 {
                     b := New(Behavior_Idle);
@@ -687,8 +517,6 @@ initialize :: (game: *Game) {
                     animation = idle;
                 }
 
-                animation = idle;
-
                 {
                     schedule.hours = Plan.[
                         .SLEEP, .SLEEP, .SLEEP, .SLEEP, .NEUTRAL, .NEUTRAL, .NEUTRAL, .SLEEP,
@@ -726,53 +554,15 @@ initialize :: (game: *Game) {
             {
                 using personality;
 
-                idle := New(Sprite_Animation);
-                {
-                    using idle;
-                    sheet = "Blowfish-Idle";
-                    frame_count = 8;
-                    speed = 7.0;
-                }
+                idle := make_animation("Blowfish-Idle",     speed = 7.0);
+                walk := make_animation("Blowfish-Walk",     speed = 10.0);
+                bounce := make_animation("Blowfish-Bounce", speed = 10.0);
+                heart := make_animation("Blowfish-Happy",   speed = 10.0);
+                sleep := make_animation("Blowfish-Sleep",   speed = 10.0);
+                //shock := make_animation("Blowfish-Shock");
 
-                walk := New(Sprite_Animation);
-                {
-                    using walk;
-                    sheet = "Blowfish-Walk";
-                    frame_count = 5;
-                    speed = 10.0;
-                }
+                animation = idle;
 
-                bounce := New(Sprite_Animation);
-                {
-                    using bounce;
-                    sheet = "Blowfish-Bounce";
-                    frame_count = 20;
-                    speed = 10.0;
-                }
-
-                heart := New(Sprite_Animation);
-                {
-                    using heart;
-                    sheet = "Blowfish-Happy";
-                    frame_count = 10;
-                    speed = 10.0;
-                }
-
-                sleep := New(Sprite_Animation);
-                {
-                    using sleep;
-                    sheet = "Blowfish-Sleep";
-                    frame_count = 21;
-                    speed = 10.0;
-                }
-
-                shock := New(Sprite_Animation);
-                {
-                    using shock;
-                    sheet = "Blowfish-Shock";
-                    frame_count = 1;
-                    speed = 0.1;
-                }
 
                 {
                     b := New(Behavior_Wander);
@@ -841,8 +631,6 @@ initialize :: (game: *Game) {
                     eat_behavior = xx b;
                 }
 
-                animation = idle;
-
                 {
                     schedule.hours = Plan.[
                         .SLEEP, .SLEEP, .SLEEP, .SLEEP, .SLEEP, .SLEEP, .SLEEP, .NEUTRAL,
@@ -882,29 +670,11 @@ initialize :: (game: *Game) {
             {
                 using personality;
 
-                idle := New(Sprite_Animation);
-                {
-                    using idle;
-                    sheet = "Blobfish-Idle";
-                    frame_count = 1;
-                    speed = 0.0;
-                }
+                idle := make_animation("Blobfish-Idle");
+                blink := make_animation("Blobfish-Blink",       speed = 1.0);
+                yawn := make_animation("Blobfish-OpenMouth",    speed = 1.0);
 
-                blink := New(Sprite_Animation);
-                {
-                    using blink;
-                    sheet = "Blobfish-Blink";
-                    frame_count = 16;
-                    speed = 0.1;
-                }
-
-                yawn := New(Sprite_Animation);
-                {
-                    using yawn;
-                    sheet = "Blobfish-OpenMouth";
-                    frame_count = 40;
-                    speed = 0.1;
-                }
+                animation = idle;
 
                 {
                     b := New(Behavior_Idle);
@@ -957,8 +727,6 @@ initialize :: (game: *Game) {
                     animation = idle;
                 }
 
-                animation = idle;
-
                 {
                     schedule.hours = Plan.[
                         .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL,
@@ -995,45 +763,14 @@ initialize :: (game: *Game) {
             {
                 using personality;
 
-                idle := New(Sprite_Animation);
-                {
-                    using idle;
-                    sheet = "Crab-Idle";
-                    frame_count = 10;
-                    speed = 10;
-                }
+                idle := make_animation("Crab-Idle",     speed = 10.0);
+                walk := make_animation("Crab-Walk",     speed = 10.0);
+                heart := make_animation("Crab-Heart",   speed = 1.0);
+                shock := make_animation("Crab-Shock",   speed = 1.0);
+                sleep := make_animation("Crab-Sleep",   speed = 2.0);
 
-                walk := New(Sprite_Animation);
-                {
-                    using walk;
-                    sheet = "Crab-Walk";
-                    frame_count = 4;
-                    speed = 10;
-                }
+                animation = idle;
 
-                heart := New(Sprite_Animation);
-                {
-                    using heart;
-                    sheet = "Crab-Heart";
-                    frame_count = 1;
-                    speed = 1;
-                }
-
-                shock := New(Sprite_Animation);
-                {
-                    using shock;
-                    sheet = "Crab-Shock";
-                    frame_count = 1;
-                    speed = 1;
-                }
-
-                sleep := New(Sprite_Animation);
-                {
-                    using sleep;
-                    sheet = "Crab-Sleep";
-                    frame_count = 4;
-                    speed = 1;
-                }
 
                 {
                     b := New(Behavior_Idle);
@@ -1077,8 +814,6 @@ initialize :: (game: *Game) {
                     using eat_behavior;
                     animation = idle;
                 }
-
-                animation = idle;
 
                 {
                     schedule.hours = Plan.[

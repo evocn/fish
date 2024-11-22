@@ -67,7 +67,7 @@ draw_tile :: (tile: Tile, place : Pair) {
 }
 
 draw_tile_at :: (tile: Tile, at: Pair, scale: int) {
-    sprite := table_find_pointer(*graphics_context.sheets, "fishes");
+    sprite := table_find_pointer(*graphics_context.sheets, "Fishes");
     if !sprite {
         log_error("Couldn't load tile spritesheet.\n");
         return;
