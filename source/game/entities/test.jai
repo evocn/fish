@@ -28,7 +28,7 @@ draw :: (using test: Test) {
 
     draw_sprite(
         sprite,
-        index = 0,
+        frame = 0,
         pixel = screen_position,
 
         scale_factor = 1,

@@ -37,9 +37,7 @@ update :: (using guy: *Guy, dt: float) {
             grounded := check_if_grounded(*guy.actor);
             if grounded then return;
 
-            gravity_velocity := 10.0;
-
-            guy.velocity.y -= gravity_velocity * dt;
+            guy.velocity.y += game.GRAVITY * dt;
         }
 
         if !personality.current_whim.swimming {
@@ -65,30 +63,7 @@ update :: (using guy: *Guy, dt: float) {
 
         if collided_x || collided_y then play_sfx("bump", true);
 
-        // Collisions with the level
-        {
-            extents := game.level.pixel_extents;
-
-            collided_x := (x < extents.x)
-                       || (x + width > extents.width)
-            ;
-            collided_y := (y < extents.y)
-                       || (y + height > extents.height)
-            ;
-
-            if collided_x {
-                x = clamp(x, xx extents.x, xx (extents.x + extents.width - width));
-                x_remainder = 0.0;
-                velocity.x = -velocity.x;
-            }
-            if collided_y {
-                y = clamp(y, xx extents.y, xx (extents.y + extents.height - height));
-                y_remainder = 0.0;
-                velocity.y = -velocity.y;
-            }
-
-            if collided_x || collided_y then play_sfx("bump", true);
-        }
+        tank_collisions(*actor, *velocity);
     }
 
 
@@ -105,32 +80,8 @@ update :: (using guy: *Guy, dt: float) {
 }
 
 draw :: (using guy: *Guy) {
-    sprite := table_find_pointer(*graphics_context.sheets, animation.sheet);
-    if !sprite {
-        log_error("Couldn't load entity spritesheet %.\n", animation.sheet);
-        return;
-    }
-
-    screen_pixel := world_space_to_screen_pixel(xx x, xx y);
-
-    bottom_left_corner_of_sprite :=
-          screen_pixel    // Bottom left corner of collider
-        + .{width / 2, 0} // Gets us the center bottom of collider
-        - .{sprite.tile_width_in_pixels / 2, 0} // Bottom left corner!
-    ;
-
-    scale := screen_pixel_zoom();
-
-    draw_sprite(
-        sprite,
-        index = animation.frame,
-        pixel = bottom_left_corner_of_sprite,
-
-        scale_factor = scale,
-
-        horizontal_flip = facing_left,
-
-        use_color_override = false,
+    draw_sprite_relative_to_collider(
+        collider, animation.sheet, animation.frame, facing_left
     );
 }
 

@@ -56,8 +56,8 @@ whats_next :: (guy: *Guy) -> behavior: *Behavior {
     using guy.personality;
 
     if #complete get_current_plan(schedule) == {
-        case .NEUTRAL;  return xx random_choice(neutral_behaviors);
-        case .SLEEP;    return xx *sleep_behavior;
-        case .EAT;      return xx *eat_behavior;
+        case .NEUTRAL;  return random_choice(neutral_behaviors);
+        case .SLEEP;    return sleep_behavior;
+        case .EAT;      return eat_behavior;
     }
 }

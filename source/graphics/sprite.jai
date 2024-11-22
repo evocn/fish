@@ -12,7 +12,7 @@ Sprite :: struct {
 draw_sprite :: (
                 sprite : Sprite,
                 pixel : Pair,
-                index: int = 0,
+                frame: int = 0,
                 scale_factor : int,
                 horizontal_flip := false,
                 use_color_override := false, color_override := white
@@ -20,12 +20,12 @@ draw_sprite :: (
 {
     shader := use_sprite_shader();
 
-    assert(index >= 0 && index < (sprite.columns * sprite.rows));
+    assert(frame >= 0 && frame < (sprite.columns * sprite.rows));
 
     // Find the right uv coordinates for the texture.
     {
-        col := index % sprite.columns;
-        row := index / sprite.columns;
+        col := frame % sprite.columns;
+        row := frame / sprite.columns;
 
         spritesheet_offset := Vector2.{col / cast(float)sprite.columns, row / cast(float)sprite.rows};
         set_vec2(shader, "spritesheet_offset", spritesheet_offset);

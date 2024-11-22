@@ -22,6 +22,7 @@ render :: (game: Game, menu: Menu) {
             case .MENU;
                 draw_menu(menu);
                 draw_version_indicator();
+                draw_title_screen();
 
             case .EDITOR;
                 draw_game(game);
@@ -113,7 +114,7 @@ draw_mouse_cursor :: (position : Pair, cursor_state: Cursor_State) {
 
     draw_sprite(
         sprite,
-        index = index,
+        frame = index,
         pixel = position - .{0, 16},
 
         scale_factor = 1,
@@ -126,7 +127,7 @@ draw_mouse_cursor :: (position : Pair, cursor_state: Cursor_State) {
 
 draw_title_screen :: () {
     draw_text(
-        "\"fish\"",
+        "June's Fish Tank",
         x = PIXEL_WIDTH / 2,
         y = 80,
         alignment   = Alignment.CENTER,
@@ -136,23 +137,13 @@ draw_title_screen :: () {
     );
 
     draw_text(
-        "For June",
+        "A dream fulfilled!",
         x = PIXEL_WIDTH / 2,
         y = 50,
         alignment   = Alignment.CENTER,
         progress    = -1,
         font        = .SMALL,
         color       = yellow,
-    );
-
-    draw_text(
-        "Press H to start.",
-        x = PIXEL_WIDTH / 2,
-        y = 25,
-        alignment   = Alignment.CENTER,
-        progress    = -1,
-        font        = .SMALL,
-        color       = green,
     );
 }
 

@@ -2,6 +2,42 @@
 // Graphics Drawing Functions
 // August 2024
 
+draw_sprite_relative_to_collider :: (
+    using collider : Collider,
+    sheet: string,
+    frame := 0,
+    facing_left := false
+)
+{
+    sprite := table_find_pointer(*graphics_context.sheets, sheet);
+    if !sprite {
+        log_error("Couldn't load spritesheet % for drawing.\n", sheet);
+        return;
+    }
+
+    screen_pixel := world_space_to_screen_pixel(xx x, xx y);
+
+    bottom_left_corner_of_sprite :=
+          screen_pixel    // Bottom left corner of collider
+        + .{width / 2, 0} // Gets us the center bottom of collider
+        - .{sprite.tile_width_in_pixels / 2, 0} // Bottom left corner!
+    ;
+
+    scale := screen_pixel_zoom();
+
+    draw_sprite(
+        sprite,
+        frame = frame,
+        pixel = bottom_left_corner_of_sprite,
+
+        scale_factor = scale,
+
+        horizontal_flip = facing_left,
+
+        use_color_override = false,
+    );
+}
+
 world_space_to_screen_pixel :: (x: int, y: int) -> pixel: Pair {
     pixel: Pair;
 
@@ -39,7 +75,7 @@ draw_tile_at :: (tile: Tile, at: Pair, scale: int) {
 
     draw_sprite(
         sprite,
-        index = tile.sprite,
+        frame = tile.sprite,
         pixel = at,
 
         scale_factor = scale,

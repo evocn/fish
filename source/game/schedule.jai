@@ -4,7 +4,7 @@
 
 // Entities check their behaviors against schedules, which 
 
-Plan :: enum #complete {
+Plan :: enum u32 #complete {
     NEUTRAL;
     SLEEP;
     EAT;

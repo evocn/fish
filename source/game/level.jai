@@ -27,7 +27,7 @@ load_level_from_file :: (level: *Level, filename : string) {
     reset(level); 
 
     raw_text, success := read_entire_file(tprint("%/%.level", data_path, filename));
-    stripped_newlines, line_count := replace(raw_text, "\r\n", "");
+    stripped_newlines, line_count := replace(raw_text, "\r\n", "",, allocator=temp);
     assert(line_count == game.level.height, "Uh oh.. Problem with the text file.\n");
 
     for character, index : cast([]u8)stripped_newlines {

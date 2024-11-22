@@ -11,7 +11,10 @@ main :: () {
 
     main_menu := menu_initialize();
 
-    initialize(*game);
+    a: Allocator;
+    a.proc = flat_pool_allocator_proc;
+    a.data = *game.arena;
+    initialize(*game,, allocator=a);
 
     dt, last_frame := 0.0;
     while program_state.running {
@@ -112,7 +115,7 @@ main :: () {
         }
     }
 
-    cleanup_for_shutdown(*main_menu);
+    cleanup_for_shutdown(*game, *main_menu);
 
     #if DEBUG_MEMORY then report_memory_leaks();
 }

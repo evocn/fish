@@ -59,6 +59,10 @@ round :: (f: float) -> int {
 
 ////////////////////////////////////////////////////////////////////////////////
 
+coin_flip :: inline () -> bool {
+    if random() > 0.5 then return true; else return false;
+}
+
 // [0, 1]
 random :: inline () -> float {
     return random_get_zero_to_one();

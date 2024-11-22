@@ -18,12 +18,17 @@
 #load "entities/guy.jai";
 #load "entities/particle_system.jai";
 #load "entities/toy.jai";
+#load "entities/food.jai";
 
 #load "collisions/simulation.jai";
 
 #load "interaction.jai";
 
 Game :: struct {
+    using constants : struct {
+        GRAVITY :: -50.0;
+    }
+
     using data : struct {
         guys : [..] *Guy;
     }
@@ -43,6 +48,10 @@ Game :: struct {
     camera_zoom : int;
 
     focused_guy: *Guy;
+
+    using internals : struct {
+        arena : Flat_Pool;
+    }
 }
 
 
@@ -66,7 +75,7 @@ simulate :: (using game: *Game, dt: float) {
         running_camera : Pair;
         {
             running_camera = .{focused_guy.x, focused_guy.y}; // guy in bottom left.
-            running_camera += .{-1 * 2 * TILE_SIZE_IN_PIXELS, -1 * 1 * TILE_SIZE_IN_PIXELS}; // center them in the middle left of the screen
+            running_camera += .{xx (-1 * 1.4 * TILE_SIZE_IN_PIXELS), -1 * 1 * TILE_SIZE_IN_PIXELS}; // center them in the middle left of the screen
 
             clamp(running_camera.x, 0, 1000);
         }
@@ -110,7 +119,7 @@ initialize :: (game: *Game) {
                 animation = New(Sprite_Animation);
                 {
                     using animation;
-                    sheet = "anchor";
+                    sheet = "Anchor";
                     frame_count = 1;
                 }
             }
@@ -138,6 +147,15 @@ initialize :: (game: *Game) {
             }
         }
         array_add(*game.entities, xx kelp);
+
+        food : *Food = xx new_entity(.FOOD);
+        {
+            using food;
+
+            x = 40;
+            y = 112;
+        }
+        array_add(*game.entities, xx food);
 
         // Load Guys
 
@@ -209,8 +227,30 @@ initialize :: (game: *Game) {
                 {
                     using jump;
                     sheet = "Frog-Jump";
-                    frame_count = 11;
-                    speed = 10.0;
+                    frame_count = 5;
+                    speed = 30.0;
+                }
+
+                charge := New(Sprite_Animation);
+                {
+                    using charge;
+                    sheet = "Frog-Charge";
+                    frame_count = 1;
+                }
+
+                fly := New(Sprite_Animation);
+                {
+                    using fly;
+                    sheet = "Frog-Fly";
+                    frame_count = 1;
+                }
+
+                land := New(Sprite_Animation);
+                {
+                    using land;
+                    sheet = "Frog-Land";
+                    frame_count = 7;
+                    speed = 50;
                 }
 
                 {
@@ -219,7 +259,6 @@ initialize :: (game: *Game) {
 
                     b.minimum_duration = 5;
 
-                    start(b);
                     array_add(*neutral_behaviors, xx b);
                 }
 
@@ -243,9 +282,25 @@ initialize :: (game: *Game) {
 
                     b.swimming = true;
                     b.bouncy_x = true;
-                    b.bouncy_y = true;
+                    b.bouncy_y = false;
 
                     b.minimum_duration = 10;
+
+                    array_add(*neutral_behaviors, xx b);
+                }
+
+                {
+                    b := New(Behavior_Jump);
+                    b.animation = jump;
+                    b.charge_animation = charge;
+                    b.flight_animation = fly;
+                    b.land_animation = land;
+
+                    b.charge_time = 1.0;
+
+                    b.swimming = false;
+                    b.bouncy_x = true;
+                    b.bouncy_y = false;
 
                     array_add(*neutral_behaviors, xx b);
                 }
@@ -637,8 +692,8 @@ initialize :: (game: *Game) {
                 {
                     schedule.hours = Plan.[
                         .SLEEP, .SLEEP, .SLEEP, .SLEEP, .NEUTRAL, .NEUTRAL, .NEUTRAL, .SLEEP,
-                        .NEUTRAL, .NEUTRAL, .NEUTRAL, .EAT, .EAT, .EAT, .NEUTRAL, .NEUTRAL,
-                        .SLEEP, .NEUTRAL, .EAT, .EAT, .SLEEP, .NEUTRAL, .NEUTRAL, .NEUTRAL,
+                        .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL,
+                        .SLEEP, .NEUTRAL, .NEUTRAL, .NEUTRAL, .SLEEP, .NEUTRAL, .NEUTRAL, .NEUTRAL,
                     ];
                 }
             }
@@ -751,9 +806,12 @@ initialize :: (game: *Game) {
                 }
 
                 {
-                    sleep_behavior = xx New(Behavior_Sleep);
-                    using sleep_behavior;
-                    animation = sleep;
+                    b := New(Behavior_Sleep);
+                    b.animation = sleep;
+
+                    b.swimming = true;
+
+                    sleep_behavior = xx b;
                 }
 
                 {
@@ -770,15 +828,17 @@ initialize :: (game: *Game) {
                 }
 
                 {
-                    heart_behavior = xx New(Behavior_React);
-                    using heart_behavior;
-                    animation = heart;
+                    b := New(Behavior_React);
+                    b.animation = heart;
+
+                    heart_behavior = xx b;
                 }
 
                 {
-                    eat_behavior = xx New(Behavior_Eat);
-                    using eat_behavior;
-                    animation = idle;
+                    b := New(Behavior_Eat);
+                    b.animation = idle;
+
+                    eat_behavior = xx b;
                 }
 
                 animation = idle;
@@ -786,8 +846,8 @@ initialize :: (game: *Game) {
                 {
                     schedule.hours = Plan.[
                         .SLEEP, .SLEEP, .SLEEP, .SLEEP, .SLEEP, .SLEEP, .SLEEP, .NEUTRAL,
-                        .NEUTRAL, .NEUTRAL, .NEUTRAL, .EAT, .EAT, .SLEEP, .NEUTRAL, .NEUTRAL,
-                        .NEUTRAL, .NEUTRAL, .EAT, .EAT, .SLEEP, .NEUTRAL, .NEUTRAL, .NEUTRAL,
+                        .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .SLEEP, .NEUTRAL, .NEUTRAL,
+                        .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .SLEEP, .NEUTRAL, .NEUTRAL, .NEUTRAL,
                     ];
                 }
             }
@@ -1054,8 +1114,8 @@ initialize :: (game: *Game) {
         genocide(game);
 
         seed := generate_seed_from_date_and_hour();
-        //populate(game, seed);
-        populate_everyone(game);
+        populate(game, seed);
+        //populate_everyone(game);
     }
 }
 

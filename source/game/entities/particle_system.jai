@@ -19,7 +19,7 @@ Particle_System :: struct {
 
 
     // State
-    particles : [200] Particle; @NoSerialize
+    particles : [100] Particle; @NoSerialize
 
     using rendering_details : struct {
         vao, vbo : GLuint;
@@ -130,9 +130,9 @@ Particle :: struct {
     t : float;
 }
 
-update :: (particle : *Particle, dt: float) {
-    particle.position += particle.velocity * dt;
-    particle.velocity += particle.acceleration * dt;
+update :: (using particle : *Particle, dt: float) {
+    position += velocity * dt;
+    velocity += acceleration * dt;
 
-    particle.t += dt;
+    t += dt;
 }

@@ -17,6 +17,7 @@ Behavior :: struct {
         WANDER_FLOOR;
         BOUNCE;
         SPIN;
+        JUMP;
 
         DEBUG;
     }
@@ -50,6 +51,7 @@ update :: (behavior: *Behavior, guy: *Guy, dt: float) {
         case .WANDER_FLOOR; update(cast(*Behavior_Wander_Floor)behavior,guy, dt);
         case .BOUNCE;       update(cast(*Behavior_Bounce)behavior,      guy, dt);
         case .SPIN;         update(cast(*Behavior_Spin)behavior,        guy, dt);
+        case .JUMP;         update(cast(*Behavior_Jump)behavior,        guy, dt);
         case .DEBUG;        update(cast(*Behavior_Debug)behavior,       guy, dt);
     }
 }
@@ -71,6 +73,7 @@ start :: (behavior: *Behavior) {
         case .WANDER_FLOOR; start(cast(*Behavior_Wander_Floor)behavior);
         case .BOUNCE;       start(cast(*Behavior_Bounce)behavior);
         case .SPIN;         start(cast(*Behavior_Spin)behavior);
+        case .JUMP;         start(cast(*Behavior_Jump)behavior);
         case .DEBUG;        start(cast(*Behavior_Debug)behavior);
     }
 }
@@ -395,4 +398,94 @@ update :: (behavior: *Behavior_Spin, guy: *Guy, dt: float) {
 
     guy.animation = *behavior.animation;
     update(guy.animation, dt);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+Behavior_Jump :: struct {
+    using behavior: Behavior;
+    kind = .JUMP;
+
+    charge_animation : Sprite_Animation;
+    flight_animation : Sprite_Animation;
+    land_animation : Sprite_Animation;
+
+    speed : float;
+
+    charge_time : float;
+
+    // State
+    state : enum {
+        CHARGE;
+        LEAP;
+        FLY;
+        LAND;
+    }
+
+    jumping_right : bool;
+}
+
+start :: (behavior: *Behavior_Jump) {
+    behavior.state = .CHARGE;
+
+    reset(*behavior.charge_animation);
+    reset(*behavior.flight_animation);
+    reset(*behavior.land_animation);
+
+    behavior.jumping_right = coin_flip();
+}
+
+update :: (behavior: *Behavior_Jump, guy: *Guy, dt: float) {
+    if behavior.state == {
+        case .CHARGE;
+            guy.velocity.x = 0;
+
+            guy.animation = *behavior.charge_animation;
+            update(guy.animation, dt);
+
+            if !check_if_grounded(*guy.actor) {
+                behavior.done = true;
+                return;
+            }
+
+            if behavior.time > behavior.charge_time {
+                random_vertical_velocity := random(70, 100);
+                guy.velocity.y = random_vertical_velocity;
+
+                random_horizontal_velocity := random(5, 30);
+                if behavior.jumping_right then guy.velocity.x = random_horizontal_velocity;
+                                          else guy.velocity.x = -1 * random_horizontal_velocity;
+                behavior.state = .LEAP;
+            }
+
+        case .LEAP;
+            guy.animation = *behavior.animation;
+            animation_done := update(guy.animation, dt);
+            if animation_done {
+                behavior.state = .FLY;
+
+                guy.animation = *behavior.flight_animation;
+                reset(*behavior.flight_animation);
+                update(guy.animation, 0);
+            }
+
+        case .FLY;
+            guy.animation = *behavior.flight_animation;
+            update(guy.animation, dt);
+
+            if check_if_grounded(*guy.actor) then behavior.state = .LAND;
+
+        case .LAND;
+            guy.velocity.x = 0;
+
+            guy.animation = *behavior.land_animation;
+            animation_done := update(guy.animation, dt);
+            if animation_done {
+                behavior.done = true;
+
+                guy.animation = *behavior.charge_animation;
+                reset(*behavior.charge_animation);
+                update(guy.animation, 0);
+            }
+    }
 }

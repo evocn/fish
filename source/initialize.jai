@@ -31,7 +31,7 @@ initialize_everything :: () {
 initialize_sdl :: () {
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK);
 
-    window = SDL_CreateWindow("Dayne",
+    window = SDL_CreateWindow("June's Fish Tank",
         SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, graphics_context.window_width, graphics_context.window_height,
         SDL_WINDOW_OPENGL|SDL_WINDOW_SHOWN);
 
@@ -130,7 +130,8 @@ initialize_graphics_context :: () {
         // This array is of sprites who we know are not TILE_SIZE_IN_PIXELS x TILE_SIZE_IN_PIXELS.
         size_exceptions : Table(string, Pair);
         {
-            table_add(*size_exceptions, "anchor", .{32, 32});
+            table_add(*size_exceptions, "Anchor", .{32, 32});
+            table_add(*size_exceptions, "Food",   .{4, 4});
         }
 
         sheet_paths := file_list(sheets_path, recursive = true, follow_directory_symlinks = false,, allocator=temp);
@@ -150,6 +151,8 @@ initialize_graphics_context :: () {
             sheet := table_add(*graphics_context.sheets, copy_string(name), load_sheet(path, width, height));
             assert(sheet.loaded);
         }
+
+        deinit(*size_exceptions);
     }
 }
 
@@ -192,7 +195,12 @@ initialize_audio_context :: () {
 
 // Note that this function doesn't actually need to exist. The OS will always clean our stuff up.
 // This is just here so we can clean house and see the real leaks if they happen when we are debugging memory.
-cleanup_for_shutdown :: (menu: *Menu) {
+cleanup_for_shutdown :: (game: *Game, menu: *Menu) {
+    // Game Cleanup
+    {
+        reset(*game.arena, overwrite_memory=true);
+    }
+
     array_reset(*menu.elements);
 
     // Audio Cleanup
