@@ -456,6 +456,8 @@ update :: (behavior: *Behavior_Jump, guy: *Guy, dt: float) {
                 if behavior.jumping_right then guy.velocity.x = random_horizontal_velocity;
                                           else guy.velocity.x = -1 * random_horizontal_velocity;
                 behavior.state = .LEAP;
+
+                play_sfx("jump");
             }
 
         case .LEAP;
