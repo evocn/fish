@@ -98,7 +98,7 @@ draw_user_interface :: (game: Game) {
 }
 
 draw_mouse_cursor :: (position : Pair, cursor_state: Cursor_State) {
-    sprite := table_find_pointer(*graphics_context.sheets, "cursor");
+    sprite := table_find_pointer(*graphics_context.sheets, "Cursor");
     if !sprite {
         log_error("Couldn't load cursor spritesheet.\n");
         return;

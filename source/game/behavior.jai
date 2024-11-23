@@ -6,7 +6,7 @@
 
 Behavior :: struct {
     Kind :: enum {
-        REACT;
+        ONE_SHOT;
         SLEEP;
         EAT;
 
@@ -29,9 +29,9 @@ Behavior :: struct {
     bouncy_x : bool;
     bouncy_y : bool;
 
-
-    // Variables governing choice.
+    // Governing choice
     minimum_duration : float;
+    likelihood : float;
 
     // State
     time : float; @NoSerialize
@@ -41,8 +41,8 @@ Behavior :: struct {
 update :: (behavior: *Behavior, guy: *Guy, dt: float) {
     behavior.time += dt;
     if #complete behavior.kind == {
+        case .ONE_SHOT;     update(cast(*Behavior_One_Shot)behavior,    guy, dt);
         case .SLEEP;        update(cast(*Behavior_Sleep)behavior,       guy, dt);
-        case .REACT;        update(cast(*Behavior_React)behavior,       guy, dt);
         case .EAT;          update(cast(*Behavior_Eat)behavior,         guy, dt);
         case .IDLE;         update(cast(*Behavior_Idle)behavior,        guy, dt);
         case .SWIM;         update(cast(*Behavior_Swim)behavior,        guy, dt);
@@ -63,7 +63,7 @@ start :: (behavior: *Behavior) {
     reset(*behavior.animation);
 
     if #complete behavior.kind == {
-        case .REACT;        start(cast(*Behavior_React)behavior);
+        case .ONE_SHOT;     start(cast(*Behavior_One_Shot)behavior);
         case .SLEEP;        start(cast(*Behavior_Sleep)behavior);
         case .EAT;          start(cast(*Behavior_Eat)behavior);
         case .IDLE;         start(cast(*Behavior_Idle)behavior);
@@ -95,15 +95,15 @@ update :: (behavior: *Behavior_Sleep, guy: *Guy, dt: float) {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-Behavior_React :: struct {
+Behavior_One_Shot :: struct {
     using behavior: Behavior;
-    kind = .REACT;
+    kind = .ONE_SHOT;
 }
 
-start :: (behavior: *Behavior_React) {
+start :: (behavior: *Behavior_One_Shot) {
 }
 
-update :: (behavior: *Behavior_React, guy: *Guy, dt: float) {
+update :: (behavior: *Behavior_One_Shot, guy: *Guy, dt: float) {
     guy.animation = *behavior.animation;
     behavior.done = update(guy.animation, dt);
 }

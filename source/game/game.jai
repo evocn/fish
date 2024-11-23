@@ -181,6 +181,7 @@ initialize :: (game: *Game) {
                     b.animation = idle;
 
                     b.minimum_duration = 5;
+                    b.likelihood = 0.2;
 
                     array_add(*neutral_behaviors, xx b);
                 }
@@ -193,6 +194,7 @@ initialize :: (game: *Game) {
                     b.bouncy_x = true;
 
                     b.minimum_duration = 8;
+                    b.likelihood = 0.3;
 
                     array_add(*neutral_behaviors, xx b);
                 }
@@ -208,6 +210,7 @@ initialize :: (game: *Game) {
                     b.bouncy_y = false;
 
                     b.minimum_duration = 10;
+                    b.likelihood = 0.1;
 
                     array_add(*neutral_behaviors, xx b);
                 }
@@ -225,6 +228,8 @@ initialize :: (game: *Game) {
                     b.bouncy_x = true;
                     b.bouncy_y = false;
 
+                    b.likelihood = 0.4;
+
                     array_add(*neutral_behaviors, xx b);
                 }
 
@@ -235,13 +240,13 @@ initialize :: (game: *Game) {
                 }
 
                 {
-                    shock_behavior = xx New(Behavior_React);
+                    shock_behavior = xx New(Behavior_One_Shot);
                     using shock_behavior;
                     animation = shock;
                 }
 
                 {
-                    heart_behavior = xx New(Behavior_React);
+                    heart_behavior = xx New(Behavior_One_Shot);
                     using heart_behavior;
                     animation = heart;
                 }
@@ -264,10 +269,10 @@ initialize :: (game: *Game) {
             {
                 using biography;
 
-                array_add(*facts, "favorite food: fleas");
-                array_add(*facts, "can walk and swim");
                 array_add(*facts, "6 years old");
                 array_add(*facts, "has over 10,000 children");
+                array_add(*facts, "");
+                array_add(*facts, "favorite food: fleas");
 
                 quote = "ribbit";
 
@@ -304,7 +309,8 @@ initialize :: (game: *Game) {
                     b := New(Behavior_Idle);
                     b.animation = idle;
 
-                    b.minimum_duration = 7;
+                    b.minimum_duration = 5;
+                    b.likelihood = 0.5;
 
                     array_add(*neutral_behaviors, xx b);
                 }
@@ -317,6 +323,7 @@ initialize :: (game: *Game) {
                     b.bouncy_x = true;
 
                     b.minimum_duration = 15;
+                    b.likelihood = 0.5;
 
                     array_add(*neutral_behaviors, xx b);
                 }
@@ -328,13 +335,13 @@ initialize :: (game: *Game) {
                 }
 
                 {
-                    shock_behavior = xx New(Behavior_React);
+                    shock_behavior = xx New(Behavior_One_Shot);
                     using shock_behavior;
                     animation = shock;
                 }
 
                 {
-                    heart_behavior = xx New(Behavior_React);
+                    heart_behavior = xx New(Behavior_One_Shot);
                     using heart_behavior;
                     animation = heart;
                 }
@@ -363,7 +370,7 @@ initialize :: (game: *Game) {
 
                 quote = "your order?";
 
-                color = green;
+                color = red;
             }
         }
 
@@ -395,7 +402,8 @@ initialize :: (game: *Game) {
                     b := New(Behavior_Idle);
                     b.animation = idle;
 
-                    b.minimum_duration = 10;
+                    b.minimum_duration = 5;
+                    b.likelihood = 1.0;
 
                     array_add(*neutral_behaviors, xx b);
                 }
@@ -407,13 +415,13 @@ initialize :: (game: *Game) {
                 }
 
                 {
-                    shock_behavior = xx New(Behavior_React);
+                    shock_behavior = xx New(Behavior_One_Shot);
                     using shock_behavior;
                     animation = shock;
                 }
 
                 {
-                    heart_behavior = xx New(Behavior_React);
+                    heart_behavior = xx New(Behavior_One_Shot);
                     using heart_behavior;
                     animation = heart;
                 }
@@ -438,12 +446,12 @@ initialize :: (game: *Game) {
 
                 array_add(*facts, "a real homebody");
                 array_add(*facts, "only comes out sometimes");
-                array_add(*facts, "watches lots of movies");
-                array_add(*facts, "favorite movie: 'Rocky'");
+                array_add(*facts, "");
+                array_add(*facts, "extremely happy");
 
-                quote = "...";
+                quote = "hi";
 
-                color = purple;
+                color = white;
             }
         }
 
@@ -476,7 +484,8 @@ initialize :: (game: *Game) {
                     b := New(Behavior_Idle);
                     b.animation = idle;
 
-                    b.minimum_duration = 7;
+                    b.minimum_duration = 5;
+                    b.likelihood = 0.5;
 
                     array_add(*neutral_behaviors, xx b);
                 }
@@ -488,7 +497,8 @@ initialize :: (game: *Game) {
 
                     b.bouncy_x = true;
 
-                    b.minimum_duration = 4;
+                    b.minimum_duration = 10;
+                    b.likelihood = 0.5;
 
                     array_add(*neutral_behaviors, xx b);
                 }
@@ -500,13 +510,13 @@ initialize :: (game: *Game) {
                 }
 
                 {
-                    shock_behavior = xx New(Behavior_React);
+                    shock_behavior = xx New(Behavior_One_Shot);
                     using shock_behavior;
                     animation = shock;
                 }
 
                 {
-                    heart_behavior = xx New(Behavior_React);
+                    heart_behavior = xx New(Behavior_One_Shot);
                     using heart_behavior;
                     animation = heart;
                 }
@@ -575,7 +585,8 @@ initialize :: (game: *Game) {
                     b.bouncy_x = true;
                     b.bouncy_y = true;
 
-                    b.minimum_duration = 10;
+                    b.minimum_duration = 5;
+                    b.likelihood = 0.5;
 
                     array_add(*neutral_behaviors, xx b);
                 }
@@ -590,7 +601,8 @@ initialize :: (game: *Game) {
                     b.bouncy_x = true;
                     b.bouncy_y = true;
 
-                    b.minimum_duration = 5;
+                    b.minimum_duration = 10;
+                    b.likelihood = 0.5;
 
                     array_add(*neutral_behaviors, xx b);
                 }
@@ -612,13 +624,13 @@ initialize :: (game: *Game) {
                     b.bouncy_x = true;
                     b.bouncy_y = true;
 
-                    b.minimum_duration = 5;
+                    b.minimum_duration = 3;
 
                     shock_behavior = xx b;
                 }
 
                 {
-                    b := New(Behavior_React);
+                    b := New(Behavior_One_Shot);
                     b.animation = heart;
 
                     heart_behavior = xx b;
@@ -670,9 +682,9 @@ initialize :: (game: *Game) {
             {
                 using personality;
 
-                idle := make_animation("Blobfish-Idle");
-                blink := make_animation("Blobfish-Blink",       speed = 1.0);
-                yawn := make_animation("Blobfish-OpenMouth",    speed = 1.0);
+                idle := make_animation("Blobfish-Idle",         speed = 1.0);
+                blink := make_animation("Blobfish-Blink",       speed = 10.0);
+                yawn := make_animation("Blobfish-OpenMouth",    speed = 10.0);
 
                 animation = idle;
 
@@ -680,25 +692,26 @@ initialize :: (game: *Game) {
                     b := New(Behavior_Idle);
                     b.animation = idle;
 
-                    b.minimum_duration = 100;
+                    b.minimum_duration = 5;
+                    b.likelihood = 0.9;
 
                     array_add(*neutral_behaviors, xx b);
                 }
 
                 {
-                    b := New(Behavior_Idle);
+                    b := New(Behavior_One_Shot);
                     b.animation = yawn;
 
-                    b.minimum_duration = 10;
+                    b.likelihood = 0.05;
 
                     array_add(*neutral_behaviors, xx b);
                 }
 
                 {
-                    b := New(Behavior_Idle);
+                    b := New(Behavior_One_Shot);
                     b.animation = blink;
 
-                    b.minimum_duration = 10;
+                    b.likelihood = 0.05;
 
                     array_add(*neutral_behaviors, xx b);
                 }
@@ -710,13 +723,13 @@ initialize :: (game: *Game) {
                 }
 
                 {
-                    shock_behavior = xx New(Behavior_React);
+                    shock_behavior = xx New(Behavior_One_Shot);
                     using shock_behavior;
                     animation = idle;
                 }
 
                 {
-                    heart_behavior = xx New(Behavior_React);
+                    heart_behavior = xx New(Behavior_One_Shot);
                     using heart_behavior;
                     animation = idle;
                 }
@@ -739,9 +752,9 @@ initialize :: (game: *Game) {
             {
                 using biography;
 
-                array_add(*facts, "?????????????????????????????????????");
+                array_add(*facts, "???");
 
-                quote = "???";
+                quote = "?";
 
                 color = pink;
             }
@@ -776,7 +789,8 @@ initialize :: (game: *Game) {
                     b := New(Behavior_Idle);
                     b.animation = idle;
 
-                    b.minimum_duration = 10;
+                    b.minimum_duration = 3;
+                    b.likelihood = 0.2;
 
                     array_add(*neutral_behaviors, xx b);
                 }
@@ -787,6 +801,9 @@ initialize :: (game: *Game) {
                     b.idle_animation = idle;
 
                     b.minimum_duration = 10;
+                    b.likelihood = 0.8;
+
+                    b.speed = 25;
 
                     array_add(*neutral_behaviors, xx b);
                 }
@@ -798,13 +815,13 @@ initialize :: (game: *Game) {
                 }
 
                 {
-                    shock_behavior = xx New(Behavior_React);
+                    shock_behavior = xx New(Behavior_One_Shot);
                     using shock_behavior;
                     animation = shock;
                 }
 
                 {
-                    heart_behavior = xx New(Behavior_React);
+                    heart_behavior = xx New(Behavior_One_Shot);
                     using heart_behavior;
                     animation = heart;
                 }
@@ -827,8 +844,7 @@ initialize :: (game: *Game) {
             {
                 using biography;
 
-                // @TODO
-                //array_add(*facts, "");
+                array_add(*facts, "Indestructible shell");
 
                 quote = "sup";
 
@@ -836,6 +852,7 @@ initialize :: (game: *Game) {
             }
         }
 
+        // Add all the guys defined here to the list of guys who can be populated.
         {
             array_add(*game.guys, frog);
             array_add(*game.guys, tako);
@@ -846,11 +863,23 @@ initialize :: (game: *Game) {
             array_add(*game.guys, crab);
         }
 
+        // Validate some stuff about these guys
+        {
+            for guy : game.guys {
+                // Neutral behavior likelihoods must add up to 1.
+                {
+                    total := 0.0;
+                    for behavior : guy.personality.neutral_behaviors  total += behavior.likelihood;
+                    assert(total == 1.0);
+                }
+            }
+        }
+
         genocide(game);
 
         seed := generate_seed_from_date_and_hour();
-        populate(game, seed);
-        //populate_everyone(game);
+        //populate(game, seed);
+        populate_everyone(game);
     }
 }
 
