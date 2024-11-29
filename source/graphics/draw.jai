@@ -135,8 +135,11 @@ draw_clock_readout :: () {
         }
 
         hour_in_twelve_hour_time := hour;
-        if hour_in_twelve_hour_time > 12 {
+        if hour > 12 {
             hour_in_twelve_hour_time -= 12;
+        }
+        else if hour == 0 {
+            hour_in_twelve_hour_time = 12;
         }
 
         new_context := context;

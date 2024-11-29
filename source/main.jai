@@ -2,6 +2,14 @@
 // Main
 // September 2024
 
+get_music_for_the_hour :: (hour: int) -> string {
+    if      hour < 8  then return "12am";
+    else if hour < 12 then return "8am";
+    else if hour < 18 then return "12pm";
+    else if hour < 23 then return "6pm";
+    else return "bach";
+}
+
 main :: () {
     random_seed(xx current_time_monotonic());
 
@@ -16,21 +24,15 @@ main :: () {
     a.data = *game.arena;
     initialize(*game,, allocator=a);
 
-    // Pump the jams
+    song : string;
+    last_frame_hour : int;
+
     {
-        // @TODO: Switch as the hour goes by too!
-        get_music_for_the_hour :: () -> string {
-            hour := time().hour;
-            if hour < 7 || hour > 18 then return "sleep";
-            else if hour > 12 then return "nagata";
-            else if hour < 12 then return "bach";
-            else return "nagata";
-        }
+        hour := time().hour;
+        last_frame_hour = hour;
 
-        song := get_music_for_the_hour();
-
-        print("%\n", song);
-
+        song = get_music_for_the_hour(hour);
+        print("Playing song called \"%\"\n", song);
         play_music(song);
     }
 
@@ -39,6 +41,15 @@ main :: () {
         ////////////////////////////////////////////////////////////////////////////////
         // Frame Startup
         {
+            hour := time().hour;
+            if hour != last_frame_hour {
+                new_song := get_music_for_the_hour(hour);
+                if new_song != song {
+                    song = new_song;
+                    print("Playing song called \"%\"\n", song);
+                    play_music(song);
+                }
+            }
         }
 
         ////////////////////////////////////////////////////////////////////////////////

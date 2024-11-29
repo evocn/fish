@@ -366,6 +366,7 @@ initialize :: (game: *Game) {
 
                 array_add(*facts, "professional chef");
                 array_add(*facts, "favorite food: souffle");
+                array_add(*facts, "");
                 array_add(*facts, "least favorite: peas");
 
                 quote = "your order?";
@@ -657,8 +658,8 @@ initialize :: (game: *Game) {
 
                 array_add(*facts, "curious, but hesitant");
                 array_add(*facts, "does not like surprises");
+                array_add(*facts, "");
                 array_add(*facts, "dreams of a trip someday");
-                array_add(*facts, "favorite person: June");
 
                 quote = "blub";
 
