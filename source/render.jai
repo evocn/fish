@@ -128,9 +128,9 @@ draw_mouse_cursor :: (position : Pair, cursor_state: Cursor_State) {
 draw_title_screen :: () {
     draw_text(
         "June's Fish Tank",
-        x = PIXEL_WIDTH / 2,
+        x = PIXEL_WIDTH - 10,
         y = 80,
-        alignment   = Alignment.CENTER,
+        alignment   = Alignment.RIGHT,
         progress    = -1,
         font        = .MAIN,
         color       = blue,
@@ -138,9 +138,9 @@ draw_title_screen :: () {
 
     draw_text(
         "A dream fulfilled!",
-        x = PIXEL_WIDTH / 2,
-        y = 50,
-        alignment   = Alignment.CENTER,
+        x = PIXEL_WIDTH - 10,
+        y = 60,
+        alignment   = Alignment.RIGHT,
         progress    = -1,
         font        = .SMALL,
         color       = yellow,
