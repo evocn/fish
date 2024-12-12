@@ -11,7 +11,7 @@ get_music_for_the_hour :: (hour: int) -> string {
 }
 
 main :: () {
-    random_seed(xx current_time_monotonic());
+    random_seed(cast,force(u64)current_time_monotonic().low);
 
     initialize_everything();
 
@@ -124,7 +124,7 @@ main :: () {
         ////////////////////////////////////////////////////////////////////////////////
         // Frame Cleanup
         {
-            Sound.update();
+            Sound_Player.update();
 
             current_time := cast(float32)seconds_since_init();
             dt = current_time - last_frame;
@@ -158,7 +158,7 @@ using Basic :: #import "Basic"()(MEMORY_DEBUGGER=DEBUG_MEMORY);
 #import "stb_image";
 #import "freetype-2.12.1";
 ImGui :: #import "ImGui";
-using Sound :: #import "Sound_Player";
+using Sound_Player :: #import "Sound_Player";
 
 
 ////////////////////////////////////////////////////////////////////////////////

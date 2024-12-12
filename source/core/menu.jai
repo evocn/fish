@@ -63,13 +63,13 @@ menu_initialize :: () -> Menu {
 
         sfx := New(Menu_Element_Slider,, a);
         sfx.name = "Sfx";
-        sfx.value = *mix_levels[Sound_Category.GENERAL_SFX];
+        sfx.value = *Sound_Player.mix_levels[Sound_Category.GENERAL_SFX];
         sfx.callback = null;
         array_add(*elements, cast(*Menu_Element)sfx);
 
         music := New(Menu_Element_Slider,, a);
         music.name = "Music";
-        music.value = *mix_levels[Sound_Category.MUSIC];
+        music.value = *Sound_Player.mix_levels[Sound_Category.MUSIC];
         music.callback = null;
         array_add(*elements, cast(*Menu_Element)music);
 
