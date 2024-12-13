@@ -19,6 +19,8 @@ Behavior :: struct {
         SPIN;
         JUMP;
 
+        EIGHT_WAY;
+
         DEBUG;
     }
     kind : Kind;
@@ -52,6 +54,7 @@ update :: (behavior: *Behavior, guy: *Guy, dt: float) {
         case .BOUNCE;       update(cast(*Behavior_Bounce)behavior,      guy, dt);
         case .SPIN;         update(cast(*Behavior_Spin)behavior,        guy, dt);
         case .JUMP;         update(cast(*Behavior_Jump)behavior,        guy, dt);
+        case .EIGHT_WAY;    update(cast(*Behavior_Eight_Way)behavior,   guy, dt);
         case .DEBUG;        update(cast(*Behavior_Debug)behavior,       guy, dt);
     }
 }
@@ -74,6 +77,7 @@ start :: (behavior: *Behavior) {
         case .BOUNCE;       start(cast(*Behavior_Bounce)behavior);
         case .SPIN;         start(cast(*Behavior_Spin)behavior);
         case .JUMP;         start(cast(*Behavior_Jump)behavior);
+        case .EIGHT_WAY;    start(cast(*Behavior_Eight_Way)behavior);
         case .DEBUG;        start(cast(*Behavior_Debug)behavior);
     }
 }
@@ -490,4 +494,60 @@ update :: (behavior: *Behavior_Jump, guy: *Guy, dt: float) {
                 update(guy.animation, 0);
             }
     }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+Behavior_Eight_Way :: struct {
+    using behavior: Behavior;
+    kind = .EIGHT_WAY;
+
+    diagonal_animation : Sprite_Animation;
+
+    speed   : float = 50.0;
+    period  : float = 3.0;
+
+    // State
+    time_this_direction: float; @NoSerialize
+    wants_to_move_this_direction: Vector2; @NoSerialize
+}
+
+start :: (behavior: *Behavior_Eight_Way) {
+    behavior.time_this_direction = 20.0;
+}
+
+update :: (behavior: *Behavior_Eight_Way, guy: *Guy, dt: float) {
+    behavior.time_this_direction += dt;
+
+    if behavior.time_this_direction > behavior.period {
+        behavior.time_this_direction = 0.0;
+        behavior.wants_to_move_this_direction = get_random_direction_for_eight_way_swimming();
+
+        vertical := behavior.wants_to_move_this_direction == .{0, 1} || behavior.wants_to_move_this_direction == .{0, -1};
+        if vertical then guy.animation = *behavior.animation;
+        else guy.animation = *behavior.diagonal_animation;
+
+        guy.velocity = normalize(behavior.wants_to_move_this_direction) * behavior.speed;
+    }
+    /*
+    sign :: (f: float) -> int {
+        if f > 0 return 1;
+        else return -1;
+    }
+    guy.velocity.x -= 0.1 * sign(guy.velocity.x) * dt;
+    guy.velocity.y -= 0.1 * sign(guy.velocity.y) * dt;
+    */
+
+    update(guy.animation, dt);
+}
+
+get_random_direction_for_eight_way_swimming :: () -> Vector2 {
+    diagonals := Vector2.[.{1, 1}, .{1, -1}, .{-1, 1}, .{-1, -1}];
+    cardinals := Vector2.[.{1, 0}, .{0, 1}, .{-1, 0}, .{0, -1}];
+
+    direction : Vector2;
+    if random() < 0.5 then direction = random_choice(diagonals);
+    else direction = random_choice(cardinals);
+
+    return direction;
 }

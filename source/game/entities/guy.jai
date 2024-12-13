@@ -18,14 +18,18 @@ Guy :: struct {
 
     biography : Biography;
 
+    directionality : enum {
+        LEFT_RIGHT;
+        FOUR_WAY;
+    }
+
     // State
     facing_left : bool;     @NoSerialize
+    facing_down : bool;     @NoSerialize
     velocity    : Vector2;  @NoSerialize
 }
 
 initialize :: (using guy: *Guy) {
-    facing_left = false;
-    velocity = .{};
 }
 
 update :: (using guy: *Guy, dt: float) {
@@ -69,11 +73,13 @@ update :: (using guy: *Guy, dt: float) {
 
     update_visuals :: (using guy: *Guy, dt: float) {
         // Facing direction
-        if velocity.x < 0.0 {
-            facing_left = true;
-        }
-        else if velocity.x > 0.0 {
-            facing_left = false;
+        if directionality == {
+            case .LEFT_RIGHT;
+                facing_left = velocity.x > 0;
+
+            case .FOUR_WAY;
+                facing_left = velocity.x > 0;
+                facing_down = velocity.y > 0;
         }
     }
     update_visuals(guy, dt);
@@ -81,7 +87,7 @@ update :: (using guy: *Guy, dt: float) {
 
 draw :: (using guy: *Guy) {
     draw_sprite_relative_to_collider(
-        collider, animation.sheet, animation.frame, facing_left
+        collider, animation.sheet, animation.frame, facing_left, facing_down,
     );
 }
 

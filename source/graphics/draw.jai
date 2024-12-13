@@ -6,7 +6,7 @@ draw_sprite_relative_to_collider :: (
     using collider : Collider,
     sheet: string,
     frame := 0,
-    facing_left := false
+    facing_left := false, facing_down := false
 )
 {
     sprite := table_find_pointer(*graphics_context.sheets, sheet);
@@ -33,6 +33,7 @@ draw_sprite_relative_to_collider :: (
         scale_factor = scale,
 
         horizontal_flip = facing_left,
+        vertical_flip = facing_down,
 
         use_color_override = false,
     );
