@@ -75,7 +75,7 @@ update :: (using guy: *Guy, dt: float) {
         // Facing direction
         if directionality == {
             case .LEFT_RIGHT;
-                facing_left = velocity.x > 0;
+                facing_left = velocity.x < 0;
 
             case .FOUR_WAY;
                 facing_left = velocity.x > 0;

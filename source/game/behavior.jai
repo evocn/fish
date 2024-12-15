@@ -504,7 +504,7 @@ Behavior_Eight_Way :: struct {
 
     diagonal_animation : Sprite_Animation;
 
-    speed   : float = 50.0;
+    speed   : float = 40.0;
     period  : float = 3.0;
 
     // State
@@ -521,22 +521,29 @@ update :: (behavior: *Behavior_Eight_Way, guy: *Guy, dt: float) {
 
     if behavior.time_this_direction > behavior.period {
         behavior.time_this_direction = 0.0;
-        behavior.wants_to_move_this_direction = get_random_direction_for_eight_way_swimming();
+        behavior.wants_to_move_this_direction = get_random_direction_vector_on_unit_circle();
 
-        vertical := behavior.wants_to_move_this_direction == .{0, 1} || behavior.wants_to_move_this_direction == .{0, -1};
+        vertical := behavior.wants_to_move_this_direction.x < 0.3 && behavior.wants_to_move_this_direction.x > -0.3;
         if vertical then guy.animation = *behavior.animation;
         else guy.animation = *behavior.diagonal_animation;
 
         guy.velocity = normalize(behavior.wants_to_move_this_direction) * behavior.speed;
     }
-    /*
-    sign :: (f: float) -> int {
-        if f > 0 return 1;
-        else return -1;
+
+    slowdown_factor := 1.0 / behavior.period;
+    {
+        {
+            positive := guy.velocity.x >= 0;
+            if positive then guy.velocity.x -= guy.velocity.x * slowdown_factor * dt;
+                        else guy.velocity.x += guy.velocity.x * slowdown_factor * dt;
+        }
+
+        {
+            positive := guy.velocity.y >= 0;
+            if positive then guy.velocity.y -= guy.velocity.y * slowdown_factor * dt;
+                        else guy.velocity.y += guy.velocity.y * slowdown_factor * dt;
+        }
     }
-    guy.velocity.x -= 0.1 * sign(guy.velocity.x) * dt;
-    guy.velocity.y -= 0.1 * sign(guy.velocity.y) * dt;
-    */
 
     update(guy.animation, dt);
 }

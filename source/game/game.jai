@@ -871,9 +871,9 @@ initialize :: (game: *Game) {
             {
                 using personality;
 
-                idle := make_animation("Turtle-Idle",     speed = 1.0);
-                cardinal := make_animation("Turtle-Cardinal",     speed = 10.0);
-                diagonal := make_animation("Turtle-Diagonal",     speed = 10.0);
+                idle := make_animation("Turtle-Idle",     speed = 3.0);
+                cardinal := make_animation("Turtle-Cardinal",     speed = 5.0);
+                diagonal := make_animation("Turtle-Diagonal",     speed = 5.0);
                 heart := make_animation("Turtle-Heart",   speed = 1.0);
                 shock := make_animation("Turtle-Shock",   speed = 10.0);
                 sleep := make_animation("Turtle-Sleep",   speed = 5.0);
@@ -899,7 +899,7 @@ initialize :: (game: *Game) {
                     b.animation = cardinal;
                     b.diagonal_animation = diagonal;
 
-                    b.minimum_duration = 10;
+                    b.minimum_duration = 5;
                     b.likelihood = 0.7;
 
                     b.swimming = true;
@@ -913,6 +913,8 @@ initialize :: (game: *Game) {
                     sleep_behavior = xx New(Behavior_Sleep);
                     using sleep_behavior;
                     animation = sleep;
+
+                    swimming = true;
                 }
 
                 {
@@ -953,7 +955,7 @@ initialize :: (game: *Game) {
 
                 array_add(*facts, "I love turtles");
 
-                quote = "hehe";
+                quote = "snap!";
 
                 color = brown;
             }
@@ -961,7 +963,6 @@ initialize :: (game: *Game) {
 
         // Add all the guys defined here to the list of guys who can be populated.
         {
-            /*
             array_add(*game.guys, frog);
             array_add(*game.guys, tako);
             array_add(*game.guys, clam);
@@ -969,7 +970,6 @@ initialize :: (game: *Game) {
             array_add(*game.guys, blowfish);
             array_add(*game.guys, blob);
             array_add(*game.guys, crab);
-            */
             array_add(*game.guys, turtle);
         }
 
@@ -988,8 +988,8 @@ initialize :: (game: *Game) {
         genocide(game);
 
         seed := generate_seed_from_date_and_hour();
-        //populate(game, seed);
-        populate_everyone(game);
+        populate(game, seed);
+        //populate_everyone(game);
     }
 }
 
