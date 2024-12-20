@@ -3,7 +3,7 @@
 // February 2024
 
 apply_inputs_to_menu :: (menu: *Menu, input: Input) {
-    if input.start.just_pressed || input.east.just_pressed {
+    if input.start.just_pressed || input.b.just_pressed {
         return_to_prior_scene();
         play_sfx("click");
     }
@@ -31,7 +31,7 @@ apply_inputs_to_menu :: (menu: *Menu, input: Input) {
         play_sfx("click");
     }
 
-    if input.south.just_pressed {
+    if input.a.just_pressed {
         toggle_menu_element(menu.elements[menu.element_index]);
     }
 }

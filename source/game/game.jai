@@ -134,6 +134,7 @@ initialize :: (game: *Game) {
         }
         array_add(*game.entities, xx kelp);
 
+        /*
         food : *Food = xx new_entity(.FOOD);
         {
             using food;
@@ -142,6 +143,7 @@ initialize :: (game: *Game) {
             y = 112;
         }
         array_add(*game.entities, xx food);
+        */
 
         // Load Guys
 
@@ -298,6 +300,7 @@ initialize :: (game: *Game) {
 
                 idle := make_animation("Tako-Idle",     speed = 10.0);
                 walk := make_animation("Tako-Walk",     speed = 10.0);
+                swim := make_animation("Tako-Swim",     speed = 25.0);
                 sleep := make_animation("Tako-Sleep",   speed = 10.0);
                 shock := make_animation("Tako-Shock",   speed = 15.0);
                 heart := make_animation("Tako-Heart",   speed = 8.0);
@@ -310,7 +313,7 @@ initialize :: (game: *Game) {
                     b.animation = idle;
 
                     b.minimum_duration = 5;
-                    b.likelihood = 0.5;
+                    b.likelihood = 0.2;
 
                     array_add(*neutral_behaviors, xx b);
                 }
@@ -323,7 +326,23 @@ initialize :: (game: *Game) {
                     b.bouncy_x = true;
 
                     b.minimum_duration = 15;
-                    b.likelihood = 0.5;
+                    b.likelihood = 0.4;
+
+                    array_add(*neutral_behaviors, xx b);
+                }
+
+                {
+                    b := New(Behavior_Swim_Upward);
+                    b.animation = swim;
+
+                    b.speed = 30.0;
+
+                    b.swimming = true;
+                    b.bouncy_x = true;
+                    b.bouncy_y = false;
+
+                    b.minimum_duration = 6;
+                    b.likelihood = 0.4;
 
                     array_add(*neutral_behaviors, xx b);
                 }
@@ -474,6 +493,7 @@ initialize :: (game: *Game) {
 
                 idle := make_animation("Jelly-Idle",    speed = 7.0);
                 walk := make_animation("Jelly-Walk",    speed = 10.0);
+                swim := make_animation("Jelly-Swim",    speed = 25.0);
                 sleep := make_animation("Jelly-Sleep",  speed = 10.0);
                 shock := make_animation("Jelly-Shock",  speed = 20.0);
                 heart := make_animation("Jelly-Heart",  speed = 10.0);
@@ -486,7 +506,7 @@ initialize :: (game: *Game) {
                     b.animation = idle;
 
                     b.minimum_duration = 5;
-                    b.likelihood = 0.5;
+                    b.likelihood = 0.3;
 
                     array_add(*neutral_behaviors, xx b);
                 }
@@ -499,7 +519,23 @@ initialize :: (game: *Game) {
                     b.bouncy_x = true;
 
                     b.minimum_duration = 10;
-                    b.likelihood = 0.5;
+                    b.likelihood = 0.4;
+
+                    array_add(*neutral_behaviors, xx b);
+                }
+
+                {
+                    b := New(Behavior_Swim_Upward);
+                    b.animation = swim;
+
+                    b.speed = 30.0;
+
+                    b.swimming = true;
+                    b.bouncy_x = true;
+                    b.bouncy_y = false;
+
+                    b.minimum_duration = 20;
+                    b.likelihood = 0.3;
 
                     array_add(*neutral_behaviors, xx b);
                 }
@@ -634,6 +670,8 @@ initialize :: (game: *Game) {
                     b := New(Behavior_One_Shot);
                     b.animation = heart;
 
+                    b.swimming = true;
+
                     heart_behavior = xx b;
                 }
 
@@ -704,6 +742,7 @@ initialize :: (game: *Game) {
                     b.animation = yawn;
 
                     b.likelihood = 0.05;
+                    b.sfx = "yawning";
 
                     array_add(*neutral_behaviors, xx b);
                 }
@@ -713,6 +752,7 @@ initialize :: (game: *Game) {
                     b.animation = blink;
 
                     b.likelihood = 0.05;
+                    b.sfx = "SimpleBlink";
 
                     array_add(*neutral_behaviors, xx b);
                 }

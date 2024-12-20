@@ -102,9 +102,12 @@ update :: (behavior: *Behavior_Sleep, guy: *Guy, dt: float) {
 Behavior_One_Shot :: struct {
     using behavior: Behavior;
     kind = .ONE_SHOT;
+
+    sfx : string;
 }
 
 start :: (behavior: *Behavior_One_Shot) {
+    if behavior.sfx != "" then play_sfx(behavior.sfx);
 }
 
 update :: (behavior: *Behavior_One_Shot, guy: *Guy, dt: float) {
@@ -263,7 +266,8 @@ update :: (behavior: *Behavior_Swim_Upward, guy: *Guy, dt: float) {
 
     if guy.y >= game.level.pixel_extents.height - 16 then behavior.done = true;
 
-    update(guy.animation, dt);
+    animation_cycle_done := update(guy.animation, dt);
+    if animation_cycle_done then play_sfx("swim", volume = 0.5);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -504,8 +508,8 @@ Behavior_Eight_Way :: struct {
 
     diagonal_animation : Sprite_Animation;
 
-    speed   : float = 40.0;
-    period  : float = 3.0;
+    speed   : float = 20.0;
+    period  : float = 5.0;
 
     // State
     time_this_direction: float; @NoSerialize

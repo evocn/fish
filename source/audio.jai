@@ -11,7 +11,7 @@ Audio_Context :: struct {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-play_sfx :: (name : string, perturb := false) {
+play_sfx :: (name : string, perturb := false, volume := 1.0) {
     sfx := table_find_pointer(*audio_context.sfx, name);
     if !sfx {
         print("Unable to play sfx %\n", name);
@@ -22,6 +22,7 @@ play_sfx :: (name : string, perturb := false) {
 
     // Modify SFX properties
     {
+        stream.user_volume_scale = volume;
         if perturb {
             stream.user_volume_scale = random_get_within_range(0.5, 1.4);
             stream.rate_scale        = random_get_within_range(0.7, 1.22);

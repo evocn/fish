@@ -145,6 +145,16 @@ draw_title_screen :: () {
         font        = .SMALL,
         color       = yellow,
     );
+
+    draw_text(
+        "December 25, 2024",
+        x = PIXEL_WIDTH - 10,
+        y = 40,
+        alignment   = Alignment.RIGHT,
+        progress    = -1,
+        font        = .SMALL,
+        color       = gray,
+    );
 }
 
 draw_version_indicator :: () {

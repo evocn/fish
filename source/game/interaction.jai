@@ -50,11 +50,6 @@ simulate_interactions :: (game: *Game) {
             }
         }
     }
-
-    if north.just_pressed {
-        play_sfx("thunder");
-        shock_everyone(game);
-    }
 }
 
 shock_everyone :: (game : *Game) {

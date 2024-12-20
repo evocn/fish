@@ -29,7 +29,7 @@ Particle_System :: struct {
 
 initialize_particle :: (using particle: *Particle, particle_system: *Particle_System) {
     t = 0;
-    color = random_choice(Color.[white, blue, blue, blue, blue, green]);
+    color = random_choice(Color.[white, blue, blue, blue, blue, blue, blue, teal, green, pink, yellow]);
     position = .{random(0, PIXEL_WIDTH), random(0, PIXEL_HEIGHT)};
     velocity = random(particle_system.initial_velocity_min, particle_system.initial_velocity_max);
     acceleration = random(particle_system.initial_acceleration_min, particle_system.initial_acceleration_max);
