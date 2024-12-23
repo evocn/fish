@@ -49,6 +49,17 @@ update :: (using guy: *Guy, dt: float) {
         }
     }
 
+    // jet streams
+    {
+        for entity : game.entities {
+            if entity.kind != .JET continue;
+            jet := cast(*Jet)entity;
+            if collision(collider, jet.collider) {
+                guy.velocity.y += jet.acceleration;
+            }
+        }
+    }
+
     // Move
     {
         amount_to_move := velocity * dt;

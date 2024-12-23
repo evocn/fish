@@ -6,6 +6,8 @@ Particle_System :: struct {
     using entity: Entity;
     kind = .PARTICLE_SYSTEM;
 
+    position : Pair;
+
     // Properties
     one_shot : bool; // Whether or not particles respawn when their lifetime ends.
     lifetime_min : float;
@@ -17,6 +19,7 @@ Particle_System :: struct {
     initial_acceleration_min : Vector2;
     initial_acceleration_max : Vector2;
 
+    custom_initializer: (*Particle, *Particle_System);
 
     // State
     particles : [100] Particle; @NoSerialize
@@ -29,22 +32,27 @@ Particle_System :: struct {
 
 initialize_particle :: (using particle: *Particle, particle_system: *Particle_System) {
     t = 0;
-    color = random_choice(Color.[white, blue, blue, blue, blue, blue, blue, teal, green, pink, yellow]);
-    position = .{random(0, PIXEL_WIDTH), random(0, PIXEL_HEIGHT)};
+
+    if particle_system.custom_initializer {
+        particle_system.custom_initializer(particle, particle_system);
+    }
+
     velocity = random(particle_system.initial_velocity_min, particle_system.initial_velocity_max);
     acceleration = random(particle_system.initial_acceleration_min, particle_system.initial_acceleration_max);
     lifetime = random(particle_system.lifetime_min, particle_system.lifetime_max);
 }
 
-initialize :: (using particle_system: *Particle_System) {
-    one_shot = false;
-    lifetime_min = 1.0;
-    lifetime_max = 10.0;
-    initial_velocity_min = .{0, 10};
-    initial_velocity_max = .{0, 30};
-    initial_acceleration_min = .{0, 0};
-    initial_acceleration_max = .{0, -0.1};
+background_particle_initializer :: (using particle: *Particle, particle_system: *Particle_System) {
+    color = random_choice(Color.[white, blue, blue, blue, blue, blue, blue, teal, green, pink, yellow]);
+    position = .{random(0, PIXEL_WIDTH), random(0, PIXEL_HEIGHT)};
+}
 
+dustcloud_particle_initializer :: (using particle: *Particle, particle_system: *Particle_System) {
+    color = random_choice(Color.[yellow, yellow, yellow, yellow, green]);
+    position = to_vector(particle_system.position);
+}
+
+initialize :: (using particle_system: *Particle_System) {
     for * particle: particles {
         initialize_particle(particle, particle_system);
     }
@@ -67,12 +75,21 @@ initialize :: (using particle_system: *Particle_System) {
     }
 }
 
+set_count :: (using particle_system: *Particle_System, count: int) {
+    for * particle, index : particles {
+        if index > count then particle.dead = true;
+    }
+}
+
 update :: (using particle_system: *Particle_System, dt: float) {
     for * particle: particles {
         update(particle, dt);
 
-        if !one_shot {
-            if particle.t > particle.lifetime {
+        if particle.t > particle.lifetime {
+            if one_shot {
+                particle.dead = true;
+            }
+            else {
                 initialize_particle(particle, particle_system);
             }
         }
@@ -110,6 +127,7 @@ draw :: (using particle_system: Particle_System) {
     //glDrawArrays(GL_POINTS, 0, xx vbo_data.count);
 
     for particle, index: particles {
+        if particle.dead then continue;
         set_vec4(shader, "color", particle.color);
         glDrawArrays(GL_POINTS, xx (index * 2), 2);
     }
@@ -128,9 +146,12 @@ Particle :: struct {
     lifetime : float;
 
     t : float;
+    dead : bool;
 }
 
 update :: (using particle : *Particle, dt: float) {
+    if dead then return;
+
     position += velocity * dt;
     velocity += acceleration * dt;
 

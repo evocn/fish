@@ -40,6 +40,7 @@ load_level_from_file :: (level: *Level, filename : string) {
             tile_position := get_tile_position_from_level_index(game.level, index);
             new_tile.x = tile_position.x;
             new_tile.y = tile_position.y;
+            new_tile.one_way = true;
 
             array_add(*game.simulation.solids, *new_tile.solid);
         }

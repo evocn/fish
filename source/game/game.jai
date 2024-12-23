@@ -19,6 +19,7 @@
 #load "entities/particle_system.jai";
 #load "entities/toy.jai";
 #load "entities/food.jai";
+#load "entities/jet.jai";
 
 #load "collisions/simulation.jai";
 
@@ -101,8 +102,38 @@ initialize :: (game: *Game) {
         particle_system : *Particle_System = xx new_entity(.PARTICLE_SYSTEM);
         {
             using particle_system;
+
+            one_shot = false;
+            lifetime_min = 1.0;
+            lifetime_max = 10.0;
+            initial_velocity_min = .{0, 10};
+            initial_velocity_max = .{0, 30};
+            initial_acceleration_min = .{0, 0};
+            initial_acceleration_max = .{0, -0.1};
+
+            custom_initializer = background_particle_initializer;
         }
         array_add(*game.entities, xx particle_system);
+
+        dust_cloud : *Particle_System = xx new_entity(.PARTICLE_SYSTEM);
+        {
+            using dust_cloud;
+
+            position = .{16, 16};
+
+            one_shot = true;
+            lifetime_min = 0.5;
+            lifetime_max = 1.5;
+            initial_velocity_min = .{-10, 5};
+            initial_velocity_max = .{10, 10};
+            initial_acceleration_min = .{0, -10};
+            initial_acceleration_max = .{0, -15};
+
+            set_count(dust_cloud, 30);
+
+            custom_initializer = dustcloud_particle_initializer;
+        }
+        array_add(*game.entities, xx dust_cloud);
 
         toy : *Toy = xx new_entity(.TOY);
         {
@@ -125,7 +156,7 @@ initialize :: (game: *Game) {
 
             name = "kelp";
 
-            x = 32;
+            x = 0;
             y = 16;
             width  = 16;
             height = 16;
@@ -145,8 +176,20 @@ initialize :: (game: *Game) {
         array_add(*game.entities, xx food);
         */
 
-        // Load Guys
+        jet : *Jet = xx new_entity(.JET);
+        {
+            using jet;
 
+            x = 36;
+            y = 16;
+            width = 8;
+            height = 16;
+
+            animation = make_animation("Bubbles", speed = 10.0);
+        }
+        array_add(*game.entities, xx jet);
+
+        // Load Guys
         frog : *Guy = xx new_entity(.GUY);
         {
             using frog;

@@ -103,9 +103,9 @@ gather_input :: (input: *Input, gamepad: *SDL_Joystick) {
                     if event.key.keysym.sym == SDLK_RETURN  press(*input.select);
                 }
 
-                /*
                 // Development keybinds
                 {
+                    /*
                     if event.key.keysym.sym == SDLK_r {
                         if program_state.current_scene == {
                             case .GAME;
@@ -117,6 +117,7 @@ gather_input :: (input: *Input, gamepad: *SDL_Joystick) {
                             deactivate_mouse();
                         }
                     }
+                    */
 
                     if event.key.keysym.sym == SDLK_F1 {
                         program_state.mode = .NORMAL;
@@ -134,7 +135,6 @@ gather_input :: (input: *Input, gamepad: *SDL_Joystick) {
                         program_state.simulation_state.step = true;
                     }
                 }
-                */
 
             case SDL_MOUSEBUTTONDOWN;
                 if program_state.imgui_capturing_mouse return;
