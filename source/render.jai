@@ -180,9 +180,9 @@ draw_game :: (game : Game) {
         draw_sprite(
             sprite,
             frame = 0,
-            pixel = .{},
+            pixel = world_space_to_screen_pixel(0, 0),
 
-            scale_factor = 1,
+            scale_factor = screen_pixel_zoom(),
 
             horizontal_flip = false,
             use_color_override = false,
