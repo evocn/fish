@@ -171,20 +171,22 @@ draw_version_indicator :: () {
 
 ////////////////////////////////////////////////////////////////////////////////
 
+
 draw_game :: (game : Game) {
-    // Draw Level
-    for tile, index : game.level.tiles {
-        if tile.kind == .EMPTY then continue;
+    {
+        sprite := table_find_pointer(*graphics_context.sheets, "Foliage");
+        if !sprite then log_error("Couldn't load foliage spritesheet.\n");
 
-        pixel : Pair;
+        draw_sprite(
+            sprite,
+            frame = 0,
+            pixel = .{},
 
-        world_column := index % game.level.width;
-        world_row    := index / game.level.width;
+            scale_factor = 1,
 
-        pixel.x = world_column * TILE_SIZE_IN_PIXELS;
-        pixel.y = world_row    * TILE_SIZE_IN_PIXELS;
-
-        draw_tile(tile, pixel);
+            horizontal_flip = false,
+            use_color_override = false,
+        );
     }
 
     // Draw Entities
@@ -202,6 +204,21 @@ draw_game :: (game : Game) {
         for entity : game.entities {
             draw(entity);
         }
+    }
+
+    // Draw Level
+    for tile, index : game.level.tiles {
+        if tile.kind == .EMPTY then continue;
+
+        pixel : Pair;
+
+        world_column := index % game.level.width;
+        world_row    := index / game.level.width;
+
+        pixel.x = world_column * TILE_SIZE_IN_PIXELS;
+        pixel.y = world_row    * TILE_SIZE_IN_PIXELS;
+
+        draw_tile(tile, pixel);
     }
 
 

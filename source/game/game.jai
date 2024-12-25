@@ -156,12 +156,12 @@ initialize :: (game: *Game) {
 
             name = "kelp";
 
-            x = 0;
-            y = 16;
-            width  = 16;
-            height = 16;
+            x = 64;
+            y = 12;
+            width  = 32;
+            height = 64;
 
-            animation = make_animation("Kelp");
+            animation = make_animation("Seaweed");
         }
         array_add(*game.entities, xx kelp);
 
@@ -528,8 +528,8 @@ initialize :: (game: *Game) {
 
             x = 128;
             y = 16;
-            width  = 16;
-            height = 16;
+            width  = 12;
+            height = 14;
 
             {
                 using personality;
@@ -674,6 +674,7 @@ initialize :: (game: *Game) {
                 {
                     b := New(Behavior_Swim);
                     b.animation = walk;
+                    b.down_animation = walk;
 
                     b.speed = 25;
 
@@ -740,7 +741,7 @@ initialize :: (game: *Game) {
                 array_add(*facts, "curious, but hesitant");
                 array_add(*facts, "does not like surprises");
                 array_add(*facts, "");
-                array_add(*facts, "dreams of a trip someday");
+                array_add(*facts, "dreams of the ocean");
 
                 quote = "blub";
 
@@ -955,11 +956,11 @@ initialize :: (game: *Game) {
                 using personality;
 
                 idle := make_animation("Turtle-Idle",     speed = 3.0);
-                cardinal := make_animation("Turtle-Cardinal",     speed = 5.0);
-                diagonal := make_animation("Turtle-Diagonal",     speed = 5.0);
+                cardinal := make_animation("Turtle-Cardinal",     speed = 3.0);
+                diagonal := make_animation("Turtle-Diagonal",     speed = 3.0);
                 heart := make_animation("Turtle-Heart",   speed = 1.0);
                 shock := make_animation("Turtle-Shock",   speed = 10.0);
-                sleep := make_animation("Turtle-Sleep",   speed = 5.0);
+                sleep := make_animation("Turtle-Sleep",   speed = 3.0);
 
                 animation = cardinal;
 
@@ -1026,7 +1027,7 @@ initialize :: (game: *Game) {
 
                 {
                     schedule.hours = Plan.[
-                        .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL,
+                        .SLEEP, .SLEEP, .SLEEP, .SLEEP, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL,
                         .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL,
                         .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL,
                     ];
@@ -1044,18 +1045,183 @@ initialize :: (game: *Game) {
             }
         }
 
+        axolotl : *Guy = xx new_entity(.GUY);
+        {
+            using axolotl;
+
+            name = "axolotl";
+
+            rarity = .RARE;
+
+            x = 72;
+            y = 16;
+            width  = 12;
+            height = 8;
+
+            {
+                using personality;
+
+                idle    := make_animation("Axolotl-Idle",   speed = 4.0);
+                walk    := make_animation("Axolotl-Walk",   speed = 10.0);
+                flote   := make_animation("Axolotl-Float",  speed = 8.0);
+                stand   := make_animation("Axolotl-Stand",  speed = 6.0);
+                sit     := make_animation("Axolotl-Sit",    speed = 1.0);
+                roll    := make_animation("Axolotl-Roll",   speed = 6.0);
+
+                swim_up     := make_animation("Axolotl-Swim-Up",  speed = 7.0);
+                swim_down   := make_animation("Axolotl-Swim-Down",  speed = 7.0);
+
+                eat     := make_animation("Axolotl-Eat",    speed = 4.0);
+                sleep   := make_animation("Axolotl-Sleep",  speed = 4.0);
+
+                animation = idle;
+
+                {
+                    b := New(Behavior_Idle);
+                    b.animation = idle;
+
+                    b.minimum_duration = 5;
+                    b.likelihood = 0.1;
+
+                    array_add(*neutral_behaviors, xx b);
+                }
+
+                {
+                    b := New(Behavior_Idle);
+                    b.animation = sit;
+
+                    b.minimum_duration = 4;
+                    b.likelihood = 0.3;
+
+                    array_add(*neutral_behaviors, xx b);
+                }
+
+                {
+                    b := New(Behavior_Idle);
+                    b.animation = stand;
+
+                    b.minimum_duration = 4;
+                    b.likelihood = 0.1;
+
+                    array_add(*neutral_behaviors, xx b);
+                }
+
+                {
+                    b := New(Behavior_Idle);
+                    b.animation = eat;
+
+                    b.minimum_duration = 20;
+                    b.likelihood = 0.1;
+
+                    array_add(*neutral_behaviors, xx b);
+                }
+
+                {
+                    b := New(Behavior_Wander_Floor);
+                    b.animation = walk;
+                    b.idle_animation = idle;
+
+                    b.bouncy_x = true;
+
+                    b.speed = 20;
+
+                    b.minimum_duration = 5;
+                    b.likelihood = 0.1;
+
+                    array_add(*neutral_behaviors, xx b);
+                }
+
+                {
+                    b := New(Behavior_Forward);
+                    b.animation = roll;
+
+                    b.speed = 10.0;
+
+                    b.bouncy_x = true;
+
+                    b.minimum_duration = 10;
+                    b.likelihood = 0.1;
+
+                    array_add(*neutral_behaviors, xx b);
+                }
+
+                {
+                    b := New(Behavior_Swim);
+                    b.animation = swim_up;
+                    b.down_animation = swim_down;
+
+                    b.speed = 25;
+
+                    b.swimming = true;
+                    b.bouncy_x = true;
+                    b.bouncy_y = true;
+
+                    b.minimum_duration = 20;
+                    b.likelihood = 0.2;
+
+                    array_add(*neutral_behaviors, xx b);
+                }
+
+
+                {
+                    sleep_behavior = xx New(Behavior_Sleep);
+                    using sleep_behavior;
+                    animation = sleep;
+                }
+
+                {
+                    shock_behavior = xx New(Behavior_One_Shot);
+                    using shock_behavior;
+                    animation = idle;
+                }
+
+                {
+                    heart_behavior = xx New(Behavior_One_Shot);
+                    using heart_behavior;
+                    animation = idle;
+                }
+
+                {
+                    eat_behavior = xx New(Behavior_Eat);
+                    using eat_behavior;
+                    animation = idle;
+                }
+
+                {
+                    schedule.hours = Plan.[
+                        .SLEEP, .SLEEP, .SLEEP, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL,
+                        .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL,
+                        .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .SLEEP,
+                    ];
+                }
+            }
+
+            {
+                using biography;
+
+                array_add(*facts, "Axolotl are");
+                array_add(*facts, "literally indestructible.");
+
+                quote = ":3";
+
+                color = pink;
+            }
+        }
+
         // Add all the guys defined here to the list of guys who can be populated.
         {
             array_add(*game.guys, frog);
             array_add(*game.guys, tako);
             array_add(*game.guys, clam);
-            array_add(*game.guys, jelly);
-            array_add(*game.guys, blowfish);
             array_add(*game.guys, blob);
             array_add(*game.guys, crab);
+            array_add(*game.guys, jelly);
+            array_add(*game.guys, blowfish);
             array_add(*game.guys, turtle);
+            array_add(*game.guys, axolotl);
         }
 
+        /*
         // Validate some stuff about these guys
         {
             for guy : game.guys {
@@ -1067,12 +1233,13 @@ initialize :: (game: *Game) {
                 }
             }
         }
+        */
 
         genocide(game);
 
         seed := generate_seed_from_date_and_hour();
-        populate(game, seed);
-        //populate_everyone(game);
+        //populate(game, seed);
+        populate_everyone(game);
     }
 }
 

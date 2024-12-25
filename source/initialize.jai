@@ -130,8 +130,11 @@ initialize_graphics_context :: () {
         // This array is of sprites who we know are not TILE_SIZE_IN_PIXELS x TILE_SIZE_IN_PIXELS.
         size_exceptions : Table(string, Pair);
         {
-            table_add(*size_exceptions, "Anchor", .{32, 32});
-            table_add(*size_exceptions, "Food",   .{4, 4});
+            table_add(*size_exceptions, "Anchor",   .{32, 32});
+            table_add(*size_exceptions, "Food",     .{4, 4});
+            table_add(*size_exceptions, "Bubbles",  .{24, 48});
+            table_add(*size_exceptions, "Seaweed",  .{32, 64});
+            table_add(*size_exceptions, "Foliage",  .{224, 144});
         }
 
         sheet_paths := file_list(sheets_path, recursive = true, follow_directory_symlinks = false,, allocator=temp);

@@ -17,7 +17,7 @@ Tile_Properties :: struct {
 
     kind : Tile_Kind;
 
-    sprite : int;
+    sprite : string;
 }
 
 Tile_Kind :: enum {
@@ -39,19 +39,37 @@ tile_catalogue := Tile_Properties.[
     .{
         catalogue_index = 0,
         kind = .EMPTY,
-        sprite = 1023,
+        sprite = "",
     },
 
     .{
         catalogue_index = 1,
         kind = .SOLID,
-        sprite = 337,
+        sprite = "T1",
     },
 
     .{
         catalogue_index = 2,
         kind = .SOLID,
-        sprite = 336,
+        sprite = "T2",
+    },
+
+    .{
+        catalogue_index = 3,
+        kind = .SOLID,
+        sprite = "T3",
+    },
+
+    .{
+        catalogue_index = 4,
+        kind = .SOLID,
+        sprite = "T4",
+    },
+
+    .{
+        catalogue_index = 5,
+        kind = .SOLID,
+        sprite = "",
     },
 ];
 

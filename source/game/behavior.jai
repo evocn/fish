@@ -18,6 +18,7 @@ Behavior :: struct {
         BOUNCE;
         SPIN;
         JUMP;
+        FORWARD;
 
         EIGHT_WAY;
 
@@ -54,6 +55,7 @@ update :: (behavior: *Behavior, guy: *Guy, dt: float) {
         case .BOUNCE;       update(cast(*Behavior_Bounce)behavior,      guy, dt);
         case .SPIN;         update(cast(*Behavior_Spin)behavior,        guy, dt);
         case .JUMP;         update(cast(*Behavior_Jump)behavior,        guy, dt);
+        case .FORWARD;      update(cast(*Behavior_Forward)behavior,     guy, dt);
         case .EIGHT_WAY;    update(cast(*Behavior_Eight_Way)behavior,   guy, dt);
         case .DEBUG;        update(cast(*Behavior_Debug)behavior,       guy, dt);
     }
@@ -77,6 +79,7 @@ start :: (behavior: *Behavior) {
         case .BOUNCE;       start(cast(*Behavior_Bounce)behavior);
         case .SPIN;         start(cast(*Behavior_Spin)behavior);
         case .JUMP;         start(cast(*Behavior_Jump)behavior);
+        case .FORWARD;      start(cast(*Behavior_Forward)behavior);
         case .EIGHT_WAY;    start(cast(*Behavior_Eight_Way)behavior);
         case .DEBUG;        start(cast(*Behavior_Debug)behavior);
     }
@@ -201,6 +204,8 @@ Behavior_Swim :: struct {
     using behavior: Behavior;
     kind = .SWIM;
 
+    down_animation: Sprite_Animation;
+
     speed   : float = 8;
 
     period  : float = 2.0;
@@ -224,7 +229,12 @@ update :: (behavior: *Behavior_Swim, guy: *Guy, dt: float) {
         guy.velocity = normalize(behavior.wants_to_move_this_direction) * behavior.speed;
     }
 
-    guy.animation = *behavior.animation;
+    if guy.velocity.y > 0 {
+        guy.animation = *behavior.animation;
+    }
+    else {
+        guy.animation = *behavior.down_animation;
+    }
 
     update(guy.animation, dt);
 }
@@ -561,4 +571,23 @@ get_random_direction_for_eight_way_swimming :: () -> Vector2 {
     else direction = random_choice(cardinals);
 
     return direction;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+Behavior_Forward :: struct {
+    using behavior: Behavior;
+    kind = .FORWARD;
+
+    speed   : float = 20;
+}
+
+start :: (behavior: *Behavior_Forward) {
+}
+
+update :: (behavior: *Behavior_Forward, guy: *Guy, dt: float) {
+    if guy.velocity.x == 0 then guy.velocity.x = behavior.speed;
+
+    guy.animation = *behavior.animation;
+    update(guy.animation, dt);
 }
