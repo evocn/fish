@@ -115,6 +115,7 @@ initialize :: (game: *Game) {
         }
         array_add(*game.entities, xx particle_system);
 
+        /*
         toy : *Toy = xx new_entity(.TOY);
         {
             using toy;
@@ -129,6 +130,22 @@ initialize :: (game: *Game) {
             animation = make_animation("Anchor");
         }
         array_add(*game.entities, xx toy);
+
+        chest : *Toy = xx new_entity(.TOY);
+        {
+            using chest;
+
+            name = "chest";
+
+            x = 180;
+            y = 15;
+            width  = 16;
+            height = 16;
+
+            animation = make_animation("Chest");
+        }
+        array_add(*game.entities, xx chest);
+        */
 
         kelp : *Toy = xx new_entity(.TOY);
         {
@@ -160,9 +177,9 @@ initialize :: (game: *Game) {
         {
             using jet;
 
-            x = 36;
+            x = 160;
             y = 15;
-            width = 8;
+            width = 10;
             height = 20;
 
             animation = make_animation("Bubbles", speed = 10.0);
@@ -285,7 +302,7 @@ initialize :: (game: *Game) {
                 {
                     schedule.hours = Plan.[
                         .SLEEP, .SLEEP, .SLEEP, .SLEEP, .SLEEP, .SLEEP, .NEUTRAL, .NEUTRAL,
-                        .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL,
+                        .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .SLEEP, .SLEEP,
                         .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .SLEEP,
                     ];
                 }
@@ -294,12 +311,11 @@ initialize :: (game: *Game) {
             {
                 using biography;
 
-                array_add(*facts, "6 years old");
-                array_add(*facts, "has over 10,000 children");
+                array_add(*facts, "6 years old.");
+                array_add(*facts, "has over 10,000 children!");
                 array_add(*facts, "");
-                array_add(*facts, "favorite food: fleas");
-
-                quote = "ribbit";
+                array_add(*facts, "frog was the");
+                array_add(*facts, "first guy I made.");
 
                 color = green;
             }
@@ -406,12 +422,12 @@ initialize :: (game: *Game) {
             {
                 using biography;
 
-                array_add(*facts, "professional chef");
-                array_add(*facts, "favorite food: souffle");
+                array_add(*facts, "A professional chef.");
                 array_add(*facts, "");
-                array_add(*facts, "least favorite: peas");
-
-                quote = "your order?";
+                array_add(*facts, "favorite food: souffle.");
+                array_add(*facts, "least favorite: peas.");
+                array_add(*facts, "(but he will eat them");
+                array_add(*facts, "if they are on his plate.)");
 
                 color = red;
             }
@@ -487,12 +503,11 @@ initialize :: (game: *Game) {
             {
                 using biography;
 
-                array_add(*facts, "a real homebody");
-                array_add(*facts, "only comes out sometimes");
+                array_add(*facts, "A real homebody.");
+                array_add(*facts, "only comes out sometimes.");
                 array_add(*facts, "");
-                array_add(*facts, "extremely happy");
-
-                quote = "hi";
+                array_add(*facts, "I think she is watching");
+                array_add(*facts, "Gossip Girl in there.");
 
                 color = white;
             }
@@ -506,7 +521,7 @@ initialize :: (game: *Game) {
 
             rarity = .COMMON;
 
-            x = 128;
+            x = 196;
             y = 16;
             width  = 12;
             height = 14;
@@ -590,8 +605,8 @@ initialize :: (game: *Game) {
                 {
                     schedule.hours = Plan.[
                         .SLEEP, .SLEEP, .SLEEP, .SLEEP, .NEUTRAL, .NEUTRAL, .NEUTRAL, .SLEEP,
-                        .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL,
-                        .SLEEP, .NEUTRAL, .NEUTRAL, .NEUTRAL, .SLEEP, .NEUTRAL, .NEUTRAL, .NEUTRAL,
+                        .NEUTRAL, .NEUTRAL, .SLEEP, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL,
+                        .SLEEP, .NEUTRAL, .NEUTRAL, .NEUTRAL, .SLEEP, .NEUTRAL, .NEUTRAL, .SLEEP,
                     ];
                 }
             }
@@ -599,10 +614,10 @@ initialize :: (game: *Game) {
             {
                 using biography;
 
-                array_add(*facts, "sticky");
-                array_add(*facts, "don't get too close");
+                array_add(*facts, "would enjoy a hug,");
+                array_add(*facts, "but is extremely toxic.");
 
-                quote = "zzt";
+                array_add(*facts, "don't get too close!");
 
                 color = teal;
             }
@@ -709,8 +724,8 @@ initialize :: (game: *Game) {
                 {
                     schedule.hours = Plan.[
                         .SLEEP, .SLEEP, .SLEEP, .SLEEP, .SLEEP, .SLEEP, .SLEEP, .NEUTRAL,
-                        .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .SLEEP, .NEUTRAL, .NEUTRAL,
-                        .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .SLEEP, .NEUTRAL, .NEUTRAL, .NEUTRAL,
+                        .NEUTRAL, .SLEEP, .NEUTRAL, .NEUTRAL, .NEUTRAL, .SLEEP, .NEUTRAL, .NEUTRAL,
+                        .NEUTRAL, .SLEEP, .NEUTRAL, .NEUTRAL, .SLEEP, .NEUTRAL, .NEUTRAL, .NEUTRAL,
                     ];
                 }
             }
@@ -718,12 +733,10 @@ initialize :: (game: *Game) {
             {
                 using biography;
 
-                array_add(*facts, "curious, but hesitant");
-                array_add(*facts, "does not like surprises");
+                array_add(*facts, "curious, but cautious.");
+                array_add(*facts, "does not like surprises.");
                 array_add(*facts, "");
-                array_add(*facts, "dreams of the ocean");
-
-                quote = "blub";
+                array_add(*facts, "often dreams of the ocean.");
 
                 color = yellow;
             }
@@ -819,8 +832,6 @@ initialize :: (game: *Game) {
 
                 array_add(*facts, "???");
 
-                quote = "?";
-
                 color = pink;
             }
         }
@@ -900,8 +911,8 @@ initialize :: (game: *Game) {
                 {
                     schedule.hours = Plan.[
                         .SLEEP, .SLEEP, .SLEEP, .SLEEP, .SLEEP, .SLEEP, .SLEEP, .SLEEP, 
-                        .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL,
-                        .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL,
+                        .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .SLEEP, .NEUTRAL, .NEUTRAL, .NEUTRAL,
+                        .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .SLEEP, .NEUTRAL, .NEUTRAL, .NEUTRAL,
                     ];
                 }
             }
@@ -909,9 +920,11 @@ initialize :: (game: *Game) {
             {
                 using biography;
 
-                array_add(*facts, "Indestructible shell");
-
-                quote = "sup";
+                array_add(*facts, "crab likes to");
+                array_add(*facts, "hang out in the sand.");
+                array_add(*facts, "");
+                array_add(*facts, "cannot be harmed by");
+                array_add(*facts, "physical means.");
 
                 color = orange;
             }
@@ -1007,8 +1020,8 @@ initialize :: (game: *Game) {
 
                 {
                     schedule.hours = Plan.[
-                        .SLEEP, .SLEEP, .SLEEP, .SLEEP, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL,
-                        .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL,
+                        .SLEEP, .SLEEP, .SLEEP, .SLEEP, .SLEEP, .SLEEP, .SLEEP, .SLEEP,
+                        .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .SLEEP, .SLEEP, .SLEEP,
                         .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL,
                     ];
                 }
@@ -1017,9 +1030,10 @@ initialize :: (game: *Game) {
             {
                 using biography;
 
-                array_add(*facts, "I love turtles");
-
-                quote = "snap!";
+                array_add(*facts, "I");
+                array_add(*facts, "love");
+                array_add(*facts, "turtles");
+                array_add(*facts, "!");
 
                 color = brown;
             }
@@ -1170,9 +1184,9 @@ initialize :: (game: *Game) {
 
                 {
                     schedule.hours = Plan.[
-                        .SLEEP, .SLEEP, .SLEEP, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL,
+                        .SLEEP, .SLEEP, .SLEEP, .NEUTRAL, .SLEEP, .SLEEP, .SLEEP, .NEUTRAL,
                         .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL,
-                        .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .SLEEP,
+                        .SLEEP, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .SLEEP, .SLEEP,
                     ];
                 }
             }
@@ -1180,10 +1194,9 @@ initialize :: (game: *Game) {
             {
                 using biography;
 
-                array_add(*facts, "Axolotl are");
-                array_add(*facts, "literally indestructible.");
-
-                quote = ":3";
+                array_add(*facts, "like an underwater dog.");
+                array_add(*facts, "");
+                array_add(*facts, "does not know any tricks.");
 
                 color = pink;
             }

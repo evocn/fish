@@ -144,9 +144,9 @@ Rarity :: enum #complete {
 // Tweakable!
 get_probability :: (rarity: Rarity) -> float {
     if #complete rarity == {
-        case .COMMON; return 0.40;
-        case .RARE;   return 0.25;
-        case .MYTHIC; return 0.10;
+        case .COMMON; return 0.45;
+        case .RARE;   return 0.30;
+        case .MYTHIC; return 0.15;
     }
 }
 
@@ -154,7 +154,6 @@ get_probability :: (rarity: Rarity) -> float {
 
 Biography :: struct {
     facts : [..] string;
-    quote : string;
 
     color : Color = white;
 }

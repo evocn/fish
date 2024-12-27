@@ -67,18 +67,6 @@ draw_user_interface :: (game: Game) {
 
             k += 16;
 
-            draw_text(
-                tprint("\"%\"", quote),
-                x = text_start_x,
-                y = text_start_y - k,
-                alignment   = Alignment.LEFT,
-                progress    = -1,
-                font        = .MAIN,
-                color       = color,
-            );
-
-            k += 16;
-
             for fact : facts {
                 draw_text(
                     fact,

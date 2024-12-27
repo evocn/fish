@@ -43,13 +43,25 @@ main :: () {
         {
             hour := time().hour;
             if hour != last_frame_hour {
-                new_song := get_music_for_the_hour(hour);
-                if new_song != song {
-                    song = new_song;
-                    print("Playing song called \"%\"\n", song);
-                    play_music(song);
+                // Select music for the hour
+                {
+                    new_song := get_music_for_the_hour(hour);
+                    if new_song != song {
+                        song = new_song;
+                        print("Playing song called \"%\"\n", song);
+                        play_music(song);
+                    }
+                }
+
+                // @TODO: Make particles get smaller at night and bigger in day
+                {
+                    //set_particle_state_by_the_hour(hour);
+
+                    // and bubbles
+
                 }
             }
+
         }
 
         ////////////////////////////////////////////////////////////////////////////////
