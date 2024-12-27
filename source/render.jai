@@ -94,6 +94,8 @@ draw_user_interface :: (game: Game) {
             }
 
         }
+
+        draw_mouse_cursor(.{PIXEL_WIDTH / 2 + 16, 16}, game.cursor.state);
     }
 }
 
@@ -189,21 +191,20 @@ draw_game :: (game : Game) {
         );
     }
 
-    // Draw Entities
+    // Z Sort entities
     {
-        // Z Sort em real quick
-        {
-            comparison :: (a: *Entity, b: *Entity) -> int { 
-                if a.z_index > b.z_index        return 1;
-                else if a.z_index < b.z_index   return -1;
-                else return b.id - a.id;
-            }
-            quick_sort(game.entities, comparison);
+        comparison :: (a: *Entity, b: *Entity) -> int { 
+            if a.z_index > b.z_index        return 1;
+            else if a.z_index < b.z_index   return -1;
+            else return b.id - a.id;
         }
+        quick_sort(game.entities, comparison);
+    }
 
-        for entity : game.entities {
-            draw(entity);
-        }
+    // Draw Entities behind stage
+    for entity : game.entities {
+        if entity.z_index > 0 then break;
+        draw(entity);
     }
 
     // Draw Level
@@ -219,6 +220,12 @@ draw_game :: (game : Game) {
         pixel.y = world_row    * TILE_SIZE_IN_PIXELS;
 
         draw_tile(tile, pixel);
+    }
+
+    // Draw Entities in front of stage
+    for entity : game.entities {
+        if entity.z_index < 0 then continue;
+        draw(entity);
     }
 
 

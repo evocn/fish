@@ -126,6 +126,10 @@ main :: () {
         {
             Sound_Player.update();
 
+            for entity : game.entities {
+                if entity.should_die then remove entity;
+            }
+
             current_time := cast(float32)seconds_since_init();
             dt = current_time - last_frame;
             last_frame = current_time;

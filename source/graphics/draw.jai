@@ -2,6 +2,10 @@
 // Graphics Drawing Functions
 // August 2024
 
+bottom_middle_of_collider :: (using collider : Collider) -> Pair {
+    return .{x + width / 2, y};
+}
+
 draw_sprite_relative_to_collider :: (
     using collider : Collider,
     sheet: string,
@@ -62,7 +66,7 @@ screen_pixel_zoom :: () -> zoom: int {
 
 // Entity
 draw_tile :: (tile: Tile, place : Pair) {
-    screen_position := world_space_to_screen_pixel(place.x, place.y);
+    screen_position := world_space_to_screen_pixel(place.x, place.y) + .{0, 1};
     scale := screen_pixel_zoom();
     draw_tile_at(tile, screen_position, scale);
 }

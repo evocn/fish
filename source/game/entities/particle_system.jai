@@ -48,7 +48,7 @@ background_particle_initializer :: (using particle: *Particle, particle_system: 
 }
 
 dustcloud_particle_initializer :: (using particle: *Particle, particle_system: *Particle_System) {
-    color = random_choice(Color.[yellow, yellow, yellow, yellow, green]);
+    color = random_choice(Color.[yellow, yellow, yellow, yellow, green, brown]);
     position = to_vector(particle_system.position);
 }
 
@@ -109,6 +109,17 @@ update :: (using particle_system: *Particle_System, dt: float) {
             GL_DYNAMIC_DRAW,
         );
     }
+
+    // Check if there's any particles left.
+    if one_shot {
+        everyone_is_dead := true;
+
+        for * particle : particles {
+            if !particle.dead then everyone_is_dead = false;
+        }
+
+        if everyone_is_dead then should_die = true;
+    }
 }
 
 draw :: (using particle_system: Particle_System) {
@@ -156,4 +167,32 @@ update :: (using particle : *Particle, dt: float) {
     velocity += acceleration * dt;
 
     t += dt;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+make_dust_cloud :: (at: Pair) -> *Particle_System
+{
+    dust_cloud : *Particle_System = xx new_entity(.PARTICLE_SYSTEM);
+    {
+        using dust_cloud;
+
+        position = at;
+
+        one_shot = true;
+        lifetime_min = 0.5;
+        lifetime_max = 1.5;
+        initial_velocity_min = .{-10, 5};
+        initial_velocity_max = .{10, 10};
+        initial_acceleration_min = .{0, -10};
+        initial_acceleration_max = .{0, -15};
+
+        set_count(dust_cloud, 30);
+
+        custom_initializer = dustcloud_particle_initializer;
+
+        initialize(dust_cloud);
+    }
+
+    return dust_cloud;
 }

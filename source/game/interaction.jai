@@ -14,20 +14,30 @@ simulate_interactions :: (game: *Game) {
 
     if mouse_active {
         hover_guy : *Guy;
-        for game.entities {
-            if it.kind != .GUY then continue;
-            guy := cast(*Guy)it;
-            if within(mouse_position, guy.collider) {
-                hover_guy = guy;
-                // @TODO: Resolve z collisions properly.
+        if game.focused_guy {
+            hover_guy = game.focused_guy;
+        }
+        else {
+            for game.entities {
+                if it.kind != .GUY then continue;
+                guy := cast(*Guy)it;
+                if within(mouse_position, guy.collider) {
+                    hover_guy = guy;
+                    // @TODO: Resolve z collisions properly.
+                }
             }
         }
 
-        if hover_guy && !game.focused_guy {
+        if hover_guy {
             if left_mouse.just_pressed {
                 if #complete game.cursor.state == {
                     case .NEUTRAL; {
-                        game.focused_guy = hover_guy;
+                        if game.focused_guy {
+                            game.focused_guy = null;
+                        }
+                        else {
+                            game.focused_guy = hover_guy;
+                        }
                     }
                     case .PET; {
                         play_sfx("smooch");
@@ -42,11 +52,6 @@ simulate_interactions :: (game: *Game) {
                         change_to_behavior(hover_guy, hover_guy.personality.sleep_behavior);
                     }
                 }
-            }
-        }
-        else {
-            if left_mouse.just_pressed {
-                game.focused_guy = null;
             }
         }
     }

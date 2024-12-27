@@ -27,6 +27,7 @@ Guy :: struct {
     facing_left : bool;     @NoSerialize
     facing_down : bool;     @NoSerialize
     velocity    : Vector2;  @NoSerialize
+    grounded    : bool = true;
 }
 
 initialize :: (using guy: *Guy) {
@@ -38,10 +39,21 @@ update :: (using guy: *Guy, dt: float) {
         update(*personality, guy, dt);
 
         update_from_gravity :: (using guy: *Guy, dt: float) {
-            grounded := check_if_grounded(*guy.actor);
-            if grounded then return;
+            previously_grounded := grounded;
 
-            guy.velocity.y += game.GRAVITY * dt;
+            grounded = check_if_grounded(*guy.actor);
+            if !grounded {
+                guy.velocity.y += game.GRAVITY * dt;
+            }
+
+            // @HACK
+            if grounded && !previously_grounded && guy.y < 32 {
+                a: Allocator;
+                a.proc = flat_pool_allocator_proc;
+                a.data = *game.arena;
+                new_sys := make_dust_cloud(bottom_middle_of_collider(guy.collider),, a);
+                array_add(*game.entities, xx new_sys);
+            }
         }
 
         if !personality.current_whim.swimming {

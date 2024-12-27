@@ -115,26 +115,6 @@ initialize :: (game: *Game) {
         }
         array_add(*game.entities, xx particle_system);
 
-        dust_cloud : *Particle_System = xx new_entity(.PARTICLE_SYSTEM);
-        {
-            using dust_cloud;
-
-            position = .{16, 16};
-
-            one_shot = true;
-            lifetime_min = 0.5;
-            lifetime_max = 1.5;
-            initial_velocity_min = .{-10, 5};
-            initial_velocity_max = .{10, 10};
-            initial_acceleration_min = .{0, -10};
-            initial_acceleration_max = .{0, -15};
-
-            set_count(dust_cloud, 30);
-
-            custom_initializer = dustcloud_particle_initializer;
-        }
-        array_add(*game.entities, xx dust_cloud);
-
         toy : *Toy = xx new_entity(.TOY);
         {
             using toy;
@@ -142,7 +122,7 @@ initialize :: (game: *Game) {
             name = "anchor";
 
             x = 128;
-            y = 16;
+            y = 15;
             width  = 32;
             height = 32;
 
@@ -157,7 +137,7 @@ initialize :: (game: *Game) {
             name = "kelp";
 
             x = 64;
-            y = 12;
+            y = 11;
             width  = 32;
             height = 64;
 
@@ -181,9 +161,9 @@ initialize :: (game: *Game) {
             using jet;
 
             x = 36;
-            y = 16;
+            y = 15;
             width = 8;
-            height = 16;
+            height = 20;
 
             animation = make_animation("Bubbles", speed = 10.0);
         }
@@ -1073,6 +1053,7 @@ initialize :: (game: *Game) {
 
                 eat     := make_animation("Axolotl-Eat",    speed = 4.0);
                 sleep   := make_animation("Axolotl-Sleep",  speed = 4.0);
+                heart   := make_animation("Axolotl-Heart",  speed = 4.0);
 
                 animation = idle;
 
@@ -1178,7 +1159,7 @@ initialize :: (game: *Game) {
                 {
                     heart_behavior = xx New(Behavior_One_Shot);
                     using heart_behavior;
-                    animation = idle;
+                    animation = heart;
                 }
 
                 {
@@ -1213,12 +1194,14 @@ initialize :: (game: *Game) {
             array_add(*game.guys, frog);
             array_add(*game.guys, tako);
             array_add(*game.guys, clam);
-            array_add(*game.guys, blob);
             array_add(*game.guys, crab);
             array_add(*game.guys, jelly);
             array_add(*game.guys, blowfish);
             array_add(*game.guys, turtle);
             array_add(*game.guys, axolotl);
+
+            // For The Depths
+            //array_add(*game.guys, blob);
         }
 
         /*
