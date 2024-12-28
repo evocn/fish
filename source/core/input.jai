@@ -105,6 +105,7 @@ gather_input :: (input: *Input, gamepad: *SDL_Joystick) {
 
                 // Development keybinds
                 {
+                    /*
                     if event.key.keysym.sym == SDLK_r {
                         if program_state.current_scene == {
                             case .GAME;
@@ -132,6 +133,7 @@ gather_input :: (input: *Input, gamepad: *SDL_Joystick) {
                     if event.key.keysym.sym == SDLK_2 {
                         program_state.simulation_state.step = true;
                     }
+                    */
                 }
 
             case SDL_MOUSEBUTTONDOWN;

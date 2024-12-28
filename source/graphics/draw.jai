@@ -66,8 +66,8 @@ screen_pixel_zoom :: () -> zoom: int {
 
 // Entity
 draw_tile :: (tile: Tile, place : Pair) {
-    screen_position := world_space_to_screen_pixel(place.x, place.y) + .{0, 1};
     scale := screen_pixel_zoom();
+    screen_position := world_space_to_screen_pixel(place.x, place.y) + .{0, scale};
     draw_tile_at(tile, screen_position, scale);
 }
 

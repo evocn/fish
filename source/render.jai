@@ -137,7 +137,7 @@ draw_title_screen :: () {
     );
 
     draw_text(
-        "December 25, 2024",
+        "December 27, 2024",
         x = PIXEL_WIDTH - 10,
         y = 40,
         alignment   = Alignment.RIGHT,

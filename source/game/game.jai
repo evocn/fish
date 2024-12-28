@@ -115,14 +115,13 @@ initialize :: (game: *Game) {
         }
         array_add(*game.entities, xx particle_system);
 
-        /*
         toy : *Toy = xx new_entity(.TOY);
         {
             using toy;
 
             name = "anchor";
 
-            x = 128;
+            x = 30;
             y = 15;
             width  = 32;
             height = 32;
@@ -131,6 +130,7 @@ initialize :: (game: *Game) {
         }
         array_add(*game.entities, xx toy);
 
+        /*
         chest : *Toy = xx new_entity(.TOY);
         {
             using chest;
@@ -176,6 +176,8 @@ initialize :: (game: *Game) {
         jet : *Jet = xx new_entity(.JET);
         {
             using jet;
+
+            z_index = -100;
 
             x = 160;
             y = 15;
@@ -1058,7 +1060,7 @@ initialize :: (game: *Game) {
                 idle    := make_animation("Axolotl-Idle",   speed = 4.0);
                 walk    := make_animation("Axolotl-Walk",   speed = 10.0);
                 flote   := make_animation("Axolotl-Float",  speed = 8.0);
-                stand   := make_animation("Axolotl-Stand",  speed = 6.0);
+                stand   := make_animation("Axolotl-Stand",  speed = 3.0);
                 sit     := make_animation("Axolotl-Sit",    speed = 1.0);
                 roll    := make_animation("Axolotl-Roll",   speed = 6.0);
 
@@ -1186,7 +1188,7 @@ initialize :: (game: *Game) {
                     schedule.hours = Plan.[
                         .SLEEP, .SLEEP, .SLEEP, .NEUTRAL, .SLEEP, .SLEEP, .SLEEP, .NEUTRAL,
                         .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL,
-                        .SLEEP, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .SLEEP, .SLEEP,
+                        .SLEEP, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .SLEEP,
                     ];
                 }
             }
@@ -1195,8 +1197,10 @@ initialize :: (game: *Game) {
                 using biography;
 
                 array_add(*facts, "like an underwater dog.");
+                array_add(*facts, "(does not know any tricks)");
                 array_add(*facts, "");
-                array_add(*facts, "does not know any tricks.");
+                array_add(*facts, "Can regenerate its limbs");
+                array_add(*facts, "I think.");
 
                 color = pink;
             }
@@ -1234,8 +1238,8 @@ initialize :: (game: *Game) {
         genocide(game);
 
         seed := generate_seed_from_date_and_hour();
-        //populate(game, seed);
-        populate_everyone(game);
+        populate(game, seed);
+        //populate_everyone(game);
     }
 }
 
@@ -1259,6 +1263,13 @@ populate :: (using game: *Game, seed: Random_State) {
             array_add(*game.simulation.actors, *guy.actor);
             guys_in_the_tank += 1;
         }
+
+        // @HACK
+        if guy.name == "axolotl" then {
+            array_add(*game.entities, xx guy);
+            array_add(*game.simulation.actors, *guy.actor);
+            guys_in_the_tank += 1;
+        }
     }
 
     // Gotta have at least one...
@@ -1276,7 +1287,7 @@ generate_seed_from_date_and_hour :: () -> Random_State {
     random_state : Random_State;
 
     t := time();
-    seed : u64 = cast(u64)t.hour + (cast(u64)t.day_of_week_starting_at_0 << 8);
+    seed : u64 = cast(u64)t.hour - 1 + (cast(u64)t.day_of_week_starting_at_0 << 8);
 
     random_seed(*random_state, seed);
 
