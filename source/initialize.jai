@@ -135,6 +135,8 @@ initialize_graphics_context :: () {
             table_add(*size_exceptions, "Bubbles",  .{24, 48});
             table_add(*size_exceptions, "Seaweed",  .{32, 64});
             table_add(*size_exceptions, "Foliage",  .{224, 144});
+
+            table_add(*size_exceptions, "Narwhal-Idle",  .{32, 16});
         }
 
         sheet_paths := file_list(sheets_path, recursive = true, follow_directory_symlinks = false,, allocator=temp);

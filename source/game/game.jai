@@ -1206,6 +1206,319 @@ initialize :: (game: *Game) {
             }
         }
 
+        star : *Guy = xx new_entity(.GUY);
+        {
+            using star;
+
+            name = "star";
+
+            rarity = .RARE;
+
+            x = 96;
+            y = 16;
+            width  = 12;
+            height = 4;
+
+            {
+                using personality;
+
+                idle    := make_animation("Star-Idle",   speed = 4.0);
+                kick    := make_animation("Star-Kick",   speed = 8.0);
+
+                shock   := make_animation("Star-Shock",  speed = 8.0);
+                yawn    := make_animation("Star-Yawn",   speed = 5.0);
+                heart   := make_animation("Star-Heart",  speed = 8.0);
+
+                animation = idle;
+
+                {
+                    b := New(Behavior_Idle);
+                    b.animation = idle;
+
+                    b.minimum_duration = 5;
+                    b.likelihood = 0.9;
+
+                    array_add(*neutral_behaviors, xx b);
+                }
+
+                {
+                    b := New(Behavior_Idle);
+                    b.animation = kick;
+
+                    b.minimum_duration = 3;
+                    b.likelihood = 0.1;
+
+                    array_add(*neutral_behaviors, xx b);
+                }
+
+                {
+                    sleep_behavior = xx New(Behavior_Sleep);
+                    using sleep_behavior;
+                    animation = yawn;
+                }
+
+                {
+                    shock_behavior = xx New(Behavior_One_Shot);
+                    using shock_behavior;
+                    animation = shock;
+                }
+
+                {
+                    heart_behavior = xx New(Behavior_One_Shot);
+                    using heart_behavior;
+                    animation = heart;
+                }
+
+                {
+                    eat_behavior = xx New(Behavior_Eat);
+                    using eat_behavior;
+                    animation = idle;
+                }
+
+                {
+                    schedule.hours = Plan.[
+                        .SLEEP, .SLEEP, .SLEEP, .NEUTRAL, .SLEEP, .SLEEP, .SLEEP, .NEUTRAL,
+                        .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL,
+                        .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .SLEEP,
+                    ];
+                }
+            }
+
+            {
+                using biography;
+
+                array_add(*facts, "The star of the show.");
+
+                color = pink;
+            }
+        }
+
+        dumbo : *Guy = xx new_entity(.GUY);
+        {
+            using dumbo;
+
+            name = "dumbo";
+
+            rarity = .RARE;
+
+            x = 96;
+            y = 80;
+            width  = 8;
+            height = 8;
+
+            {
+                using personality;
+
+                idle    := make_animation("Dumbo-Idle",     speed = 4.0);
+
+                animation = idle;
+
+                {
+                    b := New(Behavior_Idle);
+                    b.animation = idle;
+
+                    b.minimum_duration = 5;
+                    b.likelihood = 1.0;
+
+                    b.swimming = true;
+
+                    array_add(*neutral_behaviors, xx b);
+                }
+
+                {
+                    sleep_behavior = xx New(Behavior_Sleep);
+                    using sleep_behavior;
+                    animation = idle;
+                }
+
+                {
+                    shock_behavior = xx New(Behavior_One_Shot);
+                    using shock_behavior;
+                    animation = idle;
+                }
+
+                {
+                    heart_behavior = xx New(Behavior_One_Shot);
+                    using heart_behavior;
+                    animation = idle;
+                }
+
+                {
+                    eat_behavior = xx New(Behavior_Eat);
+                    using eat_behavior;
+                    animation = idle;
+                }
+
+                {
+                    schedule.hours = Plan.[
+                        .SLEEP, .SLEEP, .SLEEP, .NEUTRAL, .SLEEP, .SLEEP, .SLEEP, .NEUTRAL,
+                        .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL,
+                        .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .SLEEP,
+                    ];
+                }
+            }
+
+            {
+                using biography;
+
+                array_add(*facts, ":.");
+
+                color = yellow;
+            }
+        }
+
+        angler : *Guy = xx new_entity(.GUY);
+        {
+            using angler;
+
+            name = "angler";
+
+            rarity = .RARE;
+
+            x = 120;
+            y = 72;
+            width  = 14;
+            height = 14;
+
+            {
+                using personality;
+
+                idle    := make_animation("Angler-Idle",     speed = 4.0);
+
+                animation = idle;
+
+                {
+                    b := New(Behavior_Idle);
+                    b.animation = idle;
+
+                    b.minimum_duration = 5;
+                    b.likelihood = 1.0;
+
+                    b.swimming = true;
+
+                    array_add(*neutral_behaviors, xx b);
+                }
+
+                {
+                    sleep_behavior = xx New(Behavior_Sleep);
+                    using sleep_behavior;
+                    animation = idle;
+                }
+
+                {
+                    shock_behavior = xx New(Behavior_One_Shot);
+                    using shock_behavior;
+                    animation = idle;
+                }
+
+                {
+                    heart_behavior = xx New(Behavior_One_Shot);
+                    using heart_behavior;
+                    animation = idle;
+                }
+
+                {
+                    eat_behavior = xx New(Behavior_Eat);
+                    using eat_behavior;
+                    animation = idle;
+                }
+
+                {
+                    schedule.hours = Plan.[
+                        .SLEEP, .SLEEP, .SLEEP, .NEUTRAL, .SLEEP, .SLEEP, .SLEEP, .NEUTRAL,
+                        .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL,
+                        .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .SLEEP,
+                    ];
+                }
+            }
+
+            {
+                using biography;
+
+                array_add(*facts, "he will eat you!");
+                array_add(*facts, "but will apologize after...");
+
+                color = blue;
+            }
+        }
+
+        narwhal : *Guy = xx new_entity(.GUY);
+        {
+            using narwhal;
+
+            name = "narwhal";
+
+            rarity = .RARE;
+
+            x = 64;
+            y = 96;
+            width  = 26;
+            height = 12;
+
+            {
+                using personality;
+
+                idle    := make_animation("Narwhal-Idle",     speed = 2.0);
+
+                animation = idle;
+
+                {
+                    b := New(Behavior_Idle);
+                    b.animation = idle;
+
+                    b.minimum_duration = 5;
+                    b.likelihood = 1.0;
+
+                    b.swimming = true;
+
+                    array_add(*neutral_behaviors, xx b);
+                }
+
+                {
+                    sleep_behavior = xx New(Behavior_Sleep);
+                    using sleep_behavior;
+                    animation = idle;
+                }
+
+                {
+                    shock_behavior = xx New(Behavior_One_Shot);
+                    using shock_behavior;
+                    animation = idle;
+                }
+
+                {
+                    heart_behavior = xx New(Behavior_One_Shot);
+                    using heart_behavior;
+                    animation = idle;
+                }
+
+                {
+                    eat_behavior = xx New(Behavior_Eat);
+                    using eat_behavior;
+                    animation = idle;
+                }
+
+                {
+                    schedule.hours = Plan.[
+                        .SLEEP, .SLEEP, .SLEEP, .NEUTRAL, .SLEEP, .SLEEP, .SLEEP, .NEUTRAL,
+                        .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL,
+                        .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .NEUTRAL, .SLEEP,
+                    ];
+                }
+            }
+
+            {
+                using biography;
+
+                array_add(*facts, "swimming in the ocean");
+                array_add(*facts, "causing a commotion");
+                array_add(*facts, "cause it is so awesome");
+
+                color = white;
+            }
+        }
+
+
         // Add all the guys defined here to the list of guys who can be populated.
         {
             array_add(*game.guys, frog);
@@ -1217,8 +1530,12 @@ initialize :: (game: *Game) {
             array_add(*game.guys, turtle);
             array_add(*game.guys, axolotl);
 
-            // For The Depths
-            //array_add(*game.guys, blob);
+            // v1.1
+            array_add(*game.guys, star);
+            array_add(*game.guys, dumbo);
+            array_add(*game.guys, narwhal);
+            array_add(*game.guys, angler);
+            array_add(*game.guys, blob);
         }
 
         /*
@@ -1238,8 +1555,8 @@ initialize :: (game: *Game) {
         genocide(game);
 
         seed := generate_seed_from_date_and_hour();
-        populate(game, seed);
-        //populate_everyone(game);
+        //populate(game, seed);
+        populate_everyone(game);
     }
 }
 
@@ -1259,13 +1576,6 @@ populate :: (using game: *Game, seed: Random_State) {
     for guy : guys {
         roll := random_get_zero_to_one(*seed);
         if roll <= get_probability(guy.rarity) {
-            array_add(*game.entities, xx guy);
-            array_add(*game.simulation.actors, *guy.actor);
-            guys_in_the_tank += 1;
-        }
-
-        // @HACK
-        if guy.name == "axolotl" then {
             array_add(*game.entities, xx guy);
             array_add(*game.simulation.actors, *guy.actor);
             guys_in_the_tank += 1;
